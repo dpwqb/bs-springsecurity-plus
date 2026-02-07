@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * @author codermy
- * @createTime 2020/8/8
+ * @createTime 2025/8/8
  */
 @Mapper
 public interface LogDao {

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author codermy
- * @createTime 2020/7/2
+ * @createTime 2025/7/2
  */
 public class TreeUtil {
     //todo 判断list是否为空

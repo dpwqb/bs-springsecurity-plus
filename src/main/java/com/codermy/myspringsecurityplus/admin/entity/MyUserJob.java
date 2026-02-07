@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * @author codermy
- * @createTime 2020/8/21
+ * @createTime 2025/8/21
  */
 @Data
 public class MyUserJob implements Serializable {

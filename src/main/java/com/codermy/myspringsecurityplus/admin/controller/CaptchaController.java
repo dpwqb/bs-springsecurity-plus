@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author codermy
- * @createTime 2020/7/19
+ * @createTime 2025/7/19
  */
 @Controller
 @Api(tags = "系统：验证码")

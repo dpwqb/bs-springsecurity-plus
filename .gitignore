@@ -18,6 +18,7 @@ Thumbs.db
 
 # Logs
 logs/
+src/main/resources/logger/
 *.log
 
 # Temporary files

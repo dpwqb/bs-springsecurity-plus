@@ -23,7 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 /**
  * @author codermy
- * @createTime 2020/7/15
+ * @createTime 2025/7/15
  */
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)

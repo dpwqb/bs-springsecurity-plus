@@ -48,13 +48,13 @@ spring:
   # 热部署
   devtools:
     restart:
-      enabled: true
-      additional-paths: src/main/java
-      exclude: WEB-INF/**
+      enabled: false  # 禁用自动重启，避免反复重启
+      # additional-paths: src/main/java  # 注释掉，避免监控源码目录
+      exclude: WEB-INF/**,mybatis-mappers/**,static/**,templates/**
 #mybatis配置
 mybatis:
   type-aliases-package: com.codermy.myspringsecurityplus.entity
-  mapper-locations: classpath:/mybatis-mappers/*
+  mapper-locations: classpath*:/mybatis-mappers/*.xml
   configuration:
     map-underscore-to-camel-case: true
 

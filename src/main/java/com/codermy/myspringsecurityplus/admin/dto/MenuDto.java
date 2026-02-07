@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * @author codermy
- * @createTime 2020/7/12
+ * @createTime 2025/7/12
  */
 @Data
 public class MenuDto implements Serializable {

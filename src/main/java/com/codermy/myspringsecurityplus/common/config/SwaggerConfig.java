@@ -33,7 +33,7 @@ import static springfox.documentation.schema.AlternateTypeRules.newRule;
 
 /**
  * @author codermy
- * @createTime 2020/7/10
+ * @createTime 2025/7/10
  */
 @Configuration
 @EnableSwagger2

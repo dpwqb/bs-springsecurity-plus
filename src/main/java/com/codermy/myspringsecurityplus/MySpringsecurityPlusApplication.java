@@ -1,12 +1,14 @@
 package com.codermy.myspringsecurityplus;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * @author codermy
- * @createTime 2020/7/10
+ * @createTime 2025/7/10
  */
 @SpringBootApplication
+@MapperScan({"com.codermy.myspringsecurityplus.admin.dao", "com.codermy.myspringsecurityplus.log.dao"})
 public class MySpringsecurityPlusApplication {
 
     public static void main(String[] args) {

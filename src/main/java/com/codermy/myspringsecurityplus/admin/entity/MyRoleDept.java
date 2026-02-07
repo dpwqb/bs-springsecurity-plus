@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * @author codermy
- * @createTime 2020/8/23
+ * @createTime 2025/8/23
  */
 @Data
 public class MyRoleDept implements Serializable {

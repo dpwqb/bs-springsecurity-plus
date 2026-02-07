@@ -13,7 +13,7 @@ import java.io.IOException;
 
 /**
  * @author codermy
- * @createTime 2020/7/31
+ * @createTime 2025/7/31
  */
 @Component
 public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
