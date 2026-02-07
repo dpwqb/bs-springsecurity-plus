@@ -123,7 +123,7 @@
             <version>4.4.2</version>
         </dependency>
 
-        <!--ip2region，这是根据ip查地址的工具，有兴趣自己可以了解-->
+        <!--ip2region，根据ip查地址的工具-->
         <!-- <dependency>-->
         <!-- <groupId>org.lionsoul</groupId>-->
         <!-- <artifactId>ip2region</artifactId>-->

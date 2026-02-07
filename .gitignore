@@ -4,3 +4,35 @@
 *.html linguist-language=java
 *.md linguist-language=java
 target/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Cache files
+.cache/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Build outputs
+*.jar
+*.war
+*.ear
