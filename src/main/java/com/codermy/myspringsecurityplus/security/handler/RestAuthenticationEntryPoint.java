@@ -23,7 +23,8 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
-        response.getWriter().println(JSON.toJSONString(Result.error().message("尚未登录，或者登录过期   " + authException.getMessage())));
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 返回 401 而非默认的 403
+        response.getWriter().println(JSON.toJSONString(Result.error().message("尚未登录，或者登录过期 - " + authException.getMessage())));
         response.getWriter().flush();
     }
 }

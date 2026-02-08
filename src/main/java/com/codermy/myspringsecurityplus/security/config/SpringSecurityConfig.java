@@ -20,6 +20,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 
 /**
  * @author codermy
@@ -37,6 +38,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Autowired
     private VerifyCodeFilter verifyCodeFilter;
+
+    /**
+     * JWT 认证过滤器
+     */
+    @Autowired
+    private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
     /**
      * 登录成功逻辑
@@ -99,18 +106,38 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // 添加过滤器到过滤器链
+        // 先添加验证码过滤器
         http.addFilterBefore(verifyCodeFilter, UsernamePasswordAuthenticationFilter.class);
+        // 再添加 JWT 过滤器（在验证码过滤器之后，UsernamePasswordAuthenticationFilter 之前）
+        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
         //关闭csrf
         http.csrf().disable()
-                // .sessionManagement()// 基于token，所以不需要session
-                // .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                // .and()
+                // 启用无状态 Session 管理（禁用 Session）
+                .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 //未登陆时返回 JSON 格式的数据给前端
                 .httpBasic().authenticationEntryPoint(restAuthenticationEntryPoint)
                 .and()
                 .authorizeRequests()
                 //任何人都能访问这个请求
                 .antMatchers("/captcha").permitAll()
+                // 公开 API（无需认证）
+                .antMatchers(
+                    "/login",
+                    "/api/resource",
+                    "/api/resource/*",
+                    "/api/resource/**",
+                    "/api/article/**",
+                    "/api/article/category/**",
+                    "/api/tag/**",
+                    "/api/resource/category/**"
+                ).permitAll()
+                // AI 对话需要认证
+                .antMatchers("/api/ai/**").authenticated()
+                // 其他所有 API 需要认证
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

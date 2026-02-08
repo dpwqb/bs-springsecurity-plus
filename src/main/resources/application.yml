@@ -45,6 +45,12 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+  # 文件上传配置
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
   # 热部署
   devtools:
     restart:
@@ -75,3 +81,18 @@ pagehelper:
   support-methods-arguments: true
   params: count=countSql
   pageSizeZero: true #pageSize=0 or RowBounds.Limit = 0的时候就不适用分页，但是返回对象还是PageInfo
+
+# 文件上传配置
+upload:
+  path: ./uploads/                       # 相对路径：jar包运行目录下的uploads文件夹
+  max-size: 52428800                     # 50MB
+  allowed-types: pdf,doc,docx,ppt,pptx,txt
+
+# AI服务配置（支持任意OpenAI兼容的API）
+ai:
+  api:
+    base-url: http://localhost:11434     # 可改为 https://api.deepseek.com 等
+    key: ollama                          # 用户自行配置
+    model: qwen2.5:1.5b                  # 可改为 deepseek-chat 等
+    timeout: 30000                       # 30秒超时
+    max-tokens: 1000                     # 最大token数

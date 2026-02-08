@@ -42,22 +42,27 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         //拿到requset中的head
         String authHeader = request.getHeader(this.tokenHeader);
         if (authHeader != null && authHeader.startsWith(this.tokenHead)) {
-            // The part after "Bearer "
-            String authToken = authHeader.substring(this.tokenHead.length());
-            //解析token获取用户名
-            String username = jwtUtils.getUserNameFromToken(authToken);
-            log.info("checking username:{}", username);
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-                if (userDetails != null) {
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    log.info("authenticated user:{}", username);
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+            try {
+                // The part after "Bearer "
+                String authToken = authHeader.substring(this.tokenHead.length());
+                //解析token获取用户名
+                String username = jwtUtils.getUserNameFromToken(authToken);
+                log.debug("checking username:{}", username);
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+                    if (userDetails != null) {
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        log.info("authenticated user:{}", username);
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
                 }
+            } catch (Exception e) {
+                log.error("JWT token 解析失败: {}", e.getMessage());
+                // 不抛出异常，继续执行过滤器链
+                // 未认证的请求会在后续的 Spring Security 检查中被拦截
             }
         }
         chain.doFilter(request, response);
     }
-    }
-
+}

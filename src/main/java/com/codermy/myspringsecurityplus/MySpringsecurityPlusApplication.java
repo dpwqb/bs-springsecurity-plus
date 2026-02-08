@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @createTime 2025/7/10
  */
 @SpringBootApplication
-@MapperScan({"com.codermy.myspringsecurityplus.admin.dao", "com.codermy.myspringsecurityplus.log.dao"})
+@MapperScan({"com.codermy.myspringsecurityplus.admin.dao", "com.codermy.myspringsecurityplus.log.dao", "com.codermy.myspringsecurityplus.resource.dao"})
 public class MySpringsecurityPlusApplication {
 
     public static void main(String[] args) {
