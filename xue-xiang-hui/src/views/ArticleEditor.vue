@@ -9,7 +9,7 @@
         </el-button>
         <h1>{{ isEdit ? '编辑文章' : '写文章' }}</h1>
         <div class="header-actions">
-          <el-button @click="saveDraft" :loading="saving">保存草稿</el-button>
+          <el-button @click="handleSaveDraft" :loading="saving">保存草稿</el-button>
           <el-button type="primary" @click="publish" :loading="publishing">发布</el-button>
         </div>
       </div>
@@ -168,7 +168,7 @@ const beforeCoverUpload = (file) => {
   return false
 }
 
-const saveDraft = async () => {
+const handleSaveDraft = async () => {
   if (!articleForm.value.title) {
     ElMessage.warning('请输入文章标题')
     return
