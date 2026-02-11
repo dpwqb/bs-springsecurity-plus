@@ -1,5 +1,6 @@
 package com.codermy.myspringsecurityplus.resource.service;
 
+import com.codermy.myspringsecurityplus.resource.dto.ResourceStatisticsDto;
 import com.codermy.myspringsecurityplus.resource.entity.ResourceInfo;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -72,4 +73,33 @@ public interface ResourceService {
      * @return 资源列表
      */
     java.util.List<ResourceInfo> getResourcesByUploaderId(Integer uploaderId, Map<String, Object> params);
+
+    /**
+     * 管理员获取所有资源（包括所有状态）
+     * @param params 查询参数
+     * @return 资源列表
+     */
+    java.util.List<ResourceInfo> getAllResources(Map<String, Object> params);
+
+    /**
+     * 更新资源状态
+     * @param resourceId 资源ID
+     * @param status 状态（1已发布，0已下架）
+     * @return 是否成功
+     */
+    boolean updateStatus(Integer resourceId, Integer status);
+
+    /**
+     * 批量更新状态
+     * @param resourceIds 资源ID数组
+     * @param status 状态
+     * @return 是否成功
+     */
+    boolean batchUpdateStatus(Integer[] resourceIds, Integer status);
+
+    /**
+     * 获取资源统计
+     * @return 统计数据DTO
+     */
+    ResourceStatisticsDto getResourceStatistics();
 }

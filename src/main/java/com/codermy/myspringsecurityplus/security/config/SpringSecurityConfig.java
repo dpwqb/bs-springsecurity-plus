@@ -79,7 +79,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/swagger-resources/**",
                         "/PearAdmin/**",
                         "/component/**",
-                        "/admin/**",
                         "/**/*.html",
                         "/**/*.css",
                         "/**/*.js",

@@ -54,7 +54,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         List<MenuIndexDto> list = menuDao.listByUserId(user.getUserId());
-        List<String> collect = list.stream().map(MenuIndexDto::getPermission).collect(Collectors.toList());
+        // 添加空检查，防止 NullPointerException
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        // 过滤掉 null 元素和 null 的 permission
+        List<String> collect = list.stream()
+                .filter(obj -> obj != null)
+                .map(MenuIndexDto::getPermission)
+                .filter(perm -> perm != null && !perm.isEmpty())
+                .collect(Collectors.toList());
         for (String authority : collect){
             if (!("").equals(authority) & authority !=null){
                 GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(authority);

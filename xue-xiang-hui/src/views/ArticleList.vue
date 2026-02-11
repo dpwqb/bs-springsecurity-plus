@@ -1,40 +1,31 @@
 <template>
-  <div class="article-list-container">
-    <el-container>
-      <!-- 顶部导航 -->
-      <el-header class="header">
-        <div class="header-content">
-          <div class="logo" @click="router.push('/')">
-            <h2>📚 学享汇</h2>
-          </div>
-          <el-menu
-            :default-active="activeMenu"
-            class="menu"
-            mode="horizontal"
-            @select="handleMenuSelect"
-          >
-            <el-menu-item index="/">首页</el-menu-item>
-            <el-menu-item index="/resources">资源库</el-menu-item>
-            <el-menu-item index="/articles">文章广场</el-menu-item>
-          </el-menu>
-          <div class="user-actions">
-            <el-button type="primary" @click="handlePublish">
-              <el-icon><Edit /></el-icon>
-              写文章
-            </el-button>
-          </div>
+  <div class="article-list-page">
+    <AppHeader />
+    <div class="page-container">
+      <div class="page-header">
+        <el-breadcrumb>
+          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item>文章广场</el-breadcrumb-item>
+        </el-breadcrumb>
+        <div class="header-actions">
+          <h1 class="page-title">文章广场</h1>
+          <el-button type="primary" @click="handlePublish">
+            <el-icon><Edit /></el-icon>
+            写文章
+          </el-button>
         </div>
-      </el-header>
+      </div>
 
       <!-- 筛选栏 -->
-      <div class="filter-bar">
-        <el-row :gutter="20">
-          <el-col :span="6">
+      <el-card class="filter-card" shadow="never">
+        <el-row :gutter="16">
+          <el-col :xs="24" :sm="12" :md="6">
             <el-select
               v-model="queryParams.categoryId"
               placeholder="选择分类"
               clearable
               @change="handleSearch"
+              class="filter-select"
             >
               <el-option
                 v-for="category in categories"
@@ -44,89 +35,95 @@
               />
             </el-select>
           </el-col>
-          <el-col :span="18">
+          <el-col :xs="24" :sm="12" :md="18">
             <el-input
               v-model="queryParams.keyword"
-              placeholder="搜索文章标题、摘要..."
+              placeholder="搜索文章标题、内容..."
+              clearable
               @keyup.enter="handleSearch"
             >
+              <template #prefix>
+                <el-icon><Search /></el-icon>
+              </template>
               <template #append>
                 <el-button :icon="Search" @click="handleSearch" />
               </template>
             </el-input>
           </el-col>
         </el-row>
-      </div>
+      </el-card>
 
       <!-- 文章列表 -->
-      <el-main class="main-content">
-        <div v-loading="loading">
-          <el-card
-            v-for="article in articles"
-            :key="article.id"
-            class="article-card"
-            @click="viewArticle(article.id)"
-          >
-            <div class="article-content">
-              <h3 class="article-title">{{ article.title }}</h3>
-              <p class="article-summary">{{ article.summary }}</p>
-              <div class="article-meta">
-                <span>
-                  <el-icon><User /></el-icon>
-                  {{ article.authorName }}
-                </span>
-                <span>
-                  <el-icon><View /></el-icon>
-                  {{ article.viewCount || 0 }}
-                </span>
-                <span>
-                  <el-icon><StarFilled /></el-icon>
-                  {{ article.likeCount || 0 }}
-                </span>
-                <span>
-                  <el-icon><CollectionTag /></el-icon>
-                  {{ formatDate(article.publishTime) }}
-                </span>
-              </div>
+      <div v-loading="loading" class="article-list">
+        <el-card
+          v-for="article in articles"
+          :key="article.id"
+          class="article-card"
+          shadow="hover"
+          @click="viewArticle(article.id)"
+        >
+          <div class="article-cover" v-if="article.coverImage">
+            <el-image :src="article.coverImage" fit="cover" />
+          </div>
+          <div class="article-content">
+            <h3 class="article-title">{{ article.title }}</h3>
+            <p class="article-summary">{{ article.summary || '暂无摘要' }}</p>
+            <div class="article-meta">
+              <span class="author">
+                <el-icon><User /></el-icon>
+                {{ article.authorName }}
+              </span>
+              <span class="time">
+                <el-icon><CollectionTag /></el-icon>
+                {{ formatDate(article.publishTime) }}
+              </span>
+              <span class="stats">
+                <el-icon><View /></el-icon>
+                {{ article.viewCount || 0 }}
+              </span>
+              <span class="stats">
+                <el-icon><StarFilled /></el-icon>
+                {{ article.likeCount || 0 }}
+              </span>
             </div>
-            <div class="article-cover" v-if="article.coverImage">
-              <el-image
-                :src="article.coverImage"
-                fit="cover"
-                style="width: 100%; height: 100%;"
-              />
-            </div>
-          </el-card>
-        </div>
+          </div>
+        </el-card>
+      </div>
 
-        <!-- 空状态 -->
-        <el-empty v-if="!loading && articles.length === 0" description="暂无文章" />
+      <!-- 空状态 -->
+      <el-empty v-if="!loading && articles.length === 0" description="暂无文章" />
 
-        <!-- 分页 -->
-        <div class="pagination-wrapper" v-if="articles.length > 0">
-          <el-pagination
-            v-model:current-page="queryParams.page"
-            v-model:page-size="queryParams.limit"
-            :total="total"
-            :page-sizes="[10, 20, 50]"
-            layout="total, sizes, prev, pager, next, jumper"
-            @size-change="handleSizeChange"
-            @current-change="handlePageChange"
-          />
-        </div>
-      </el-main>
-    </el-container>
+      <!-- 分页 -->
+      <div v-if="articles.length > 0" class="pagination-wrapper">
+        <el-pagination
+          v-model:current-page="queryParams.page"
+          v-model:page-size="queryParams.limit"
+          :total="total"
+          :page-sizes="[10, 20, 50]"
+          layout="total, sizes, prev, pager, next, jumper"
+          background
+          @size-change="handleSizeChange"
+          @current-change="handlePageChange"
+        />
+      </div>
+    </div>
+    <AppFooter />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+import { ElMessage } from 'element-plus'
 import { Search, Edit, User, View, StarFilled, CollectionTag } from '@element-plus/icons-vue'
 import { getArticleList, getArticleCategories } from '@/api/article'
 
 const router = useRouter()
-const activeMenu = ref('/articles')
+const userStore = useUserStore()
+
 const loading = ref(false)
 const articles = ref([])
 const categories = ref([])
@@ -147,7 +144,7 @@ const fetchArticles = async () => {
     const res = await getArticleList(queryParams.value)
     if (res.code === 200) {
       articles.value = res.data || []
-      total.value = res.data?.length || 0
+      total.value = res.total || res.data?.length || 0
     }
   } catch (error) {
     console.error('获取文章列表失败:', error)
@@ -178,6 +175,7 @@ const handleSearch = () => {
 const handlePageChange = (page) => {
   queryParams.value.page = page
   fetchArticles()
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 // 每页数量改变
@@ -194,19 +192,26 @@ const viewArticle = (id) => {
 
 // 发布文章
 const handlePublish = () => {
-  // TODO: 跳转到文章发布页面
-  console.log('发布文章')
-}
-
-// 菜单选择
-const handleMenuSelect = (index) => {
-  router.push(index)
+  if (userStore.isLoggedIn) {
+    router.push('/article/edit')
+  } else {
+    ElMessage.warning('请先登录')
+    router.push('/login')
+  }
 }
 
 // 格式化日期
 const formatDate = (dateStr) => {
   if (!dateStr) return '-'
   const date = new Date(dateStr)
+  const now = new Date()
+  const diff = now - date
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+
+  if (days === 0) return '今天'
+  if (days === 1) return '昨天'
+  if (days < 7) return `${days}天前`
+  if (days < 30) return `${Math.floor(days / 7)}周前`
   return date.toLocaleDateString('zh-CN')
 }
 
@@ -216,114 +221,167 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.article-list-container {
+<style scoped lang="scss">
+@use '@/styles/variables.scss' as *;
+
+.article-list-page {
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background-color: $bg-secondary;
+  padding-top: 64px;
 }
 
-.header {
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 0;
+.page-container {
+  max-width: $container-xxl;
+  margin: 0 auto;
+  padding: $spacing-xl $spacing-lg;
 }
 
-.header-content {
+.page-header {
+  margin-bottom: $spacing-xl;
+}
+
+.header-actions {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+  gap: $spacing-lg;
+
+  @include respond-to('sm') {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
-.logo {
-  margin-right: 40px;
-  cursor: pointer;
+.page-title {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $text-primary;
+  margin: $spacing-md 0 0 0;
 }
 
-.logo h2 {
-  margin: 0;
-  color: #409EFF;
+.filter-card {
+  margin-bottom: $spacing-lg;
+  border: none;
+  box-shadow: $shadow-sm;
+
+  :deep(.el-card__body) {
+    padding: $spacing-lg;
+  }
 }
 
-.menu {
-  flex: 1;
-  border-bottom: none;
+.filter-select {
+  width: 100%;
 }
 
-.filter-bar {
-  background: white;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.main-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+.article-list {
+  min-height: 400px;
+  margin-bottom: $spacing-xl;
 }
 
 .article-card {
+  margin-bottom: $spacing-md;
   cursor: pointer;
-  transition: all 0.3s;
-  margin-bottom: 20px;
+  transition: $transition-base;
   display: flex;
-  gap: 20px;
+  gap: $spacing-lg;
+
+  &:hover {
+    box-shadow: $shadow-md;
+    transform: translateY(-2px);
+  }
+
+  :deep(.el-card__body) {
+    padding: $spacing-lg;
+    display: flex;
+    gap: $spacing-lg;
+  }
 }
 
-.article-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.article-cover {
+  flex-shrink: 0;
+  width: 200px;
+  height: 150px;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+
+  .el-image {
+    width: 100%;
+    height: 100%;
+  }
+
+  @include respond-to('sm') {
+    width: 100px;
+    height: 100px;
+  }
 }
 
 .article-content {
   flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .article-title {
-  font-size: 20px;
-  font-weight: 500;
-  color: #303133;
-  margin: 0 0 10px 0;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
+  margin: 0 0 $spacing-sm 0;
+  @include text-ellipsis();
 }
 
 .article-summary {
-  font-size: 14px;
-  color: #606266;
-  line-height: 1.6;
-  margin: 0 0 15px 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  margin: 0 0 $spacing-md 0;
+  line-height: $line-height-lg;
+  @include text-ellipsis(2);
+  flex: 1;
 }
 
 .article-meta {
   display: flex;
-  gap: 20px;
-  font-size: 13px;
-  color: #909399;
-}
-
-.article-meta span {
-  display: flex;
   align-items: center;
-  gap: 4px;
-}
+  gap: $spacing-lg;
+  font-size: $font-size-sm;
+  color: $text-secondary;
 
-.article-cover {
-  width: 200px;
-  height: 120px;
-  border-radius: 8px;
-  overflow: hidden;
-  flex-shrink: 0;
+  .author,
+  .time,
+  .stats {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  @include respond-to('sm') {
+    gap: $spacing-sm;
+    font-size: $font-size-xs;
+  }
 }
 
 .pagination-wrapper {
   display: flex;
   justify-content: center;
-  margin-top: 40px;
+  padding: $spacing-xl 0;
+}
+
+// 移动端适配
+@include respond-to('sm') {
+  .page-container {
+    padding: $spacing-lg $spacing-md;
+  }
+
+  .article-card {
+    :deep(.el-card__body) {
+      flex-direction: column;
+      padding: $spacing-md;
+    }
+  }
+
+  .article-cover {
+    width: 100%;
+    height: 180px;
+  }
 }
 </style>

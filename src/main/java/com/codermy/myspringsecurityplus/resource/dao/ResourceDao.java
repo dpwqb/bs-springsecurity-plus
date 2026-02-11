@@ -80,4 +80,39 @@ public interface ResourceDao {
      * @return 资源列表
      */
     List<ResourceInfo> getResourcesByUploaderId(@Param("uploaderId") Integer uploaderId, @Param("params") Map<String, Object> params);
+
+    /**
+     * 管理员获取所有资源（包括所有状态）
+     * @param params 查询参数
+     * @return 资源列表
+     */
+    List<ResourceInfo> getAllResourcesForAdmin(@Param("params") Map<String, Object> params);
+
+    /**
+     * 更新资源状态
+     * @param resourceId 资源ID
+     * @param status 状态
+     * @return 影响行数
+     */
+    int updateStatus(@Param("resourceId") Integer resourceId, @Param("status") Integer status);
+
+    /**
+     * 批量更新资源状态
+     * @param resourceIds 资源ID列表
+     * @param status 状态
+     * @return 影响行数
+     */
+    int batchUpdateStatus(@Param("resourceIds") List<Integer> resourceIds, @Param("status") Integer status);
+
+    /**
+     * 获取资源统计
+     * @return 统计数据
+     */
+    Map<String, Object> getResourceStatistics();
+
+    /**
+     * 获取今日新增资源数
+     * @return 今日新增数量
+     */
+    int getTodayResourceCount();
 }

@@ -144,3 +144,24 @@ export function getHotTags(limit = 20) {
     params: { limit }
   })
 }
+
+/**
+ * 我的下载记录
+ */
+export function getMyDownloads(params) {
+  return request({
+    url: '/download/my',
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * 下载统计
+ */
+export function getDownloadStats() {
+  return request({
+    url: '/download/count',
+    method: 'get'
+  })
+}

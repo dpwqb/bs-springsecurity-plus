@@ -3,6 +3,7 @@ package com.codermy.myspringsecurityplus.resource.service.impl;
 import com.codermy.myspringsecurityplus.resource.config.FileUploadConfig;
 import com.codermy.myspringsecurityplus.resource.dao.ResourceDao;
 import com.codermy.myspringsecurityplus.resource.dao.TagDao;
+import com.codermy.myspringsecurityplus.resource.dto.ResourceStatisticsDto;
 import com.codermy.myspringsecurityplus.resource.entity.ResourceInfo;
 import com.codermy.myspringsecurityplus.resource.entity.ResourceTag;
 import com.codermy.myspringsecurityplus.resource.service.ResourceService;
@@ -125,6 +126,41 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public List<ResourceInfo> getResourcesByUploaderId(Integer uploaderId, Map<String, Object> params) {
         return resourceDao.getResourcesByUploaderId(uploaderId, params);
+    }
+
+    @Override
+    public List<ResourceInfo> getAllResources(Map<String, Object> params) {
+        return resourceDao.getAllResourcesForAdmin(params);
+    }
+
+    @Override
+    @Transactional
+    public boolean updateStatus(Integer resourceId, Integer status) {
+        return resourceDao.updateStatus(resourceId, status) > 0;
+    }
+
+    @Override
+    @Transactional
+    public boolean batchUpdateStatus(Integer[] resourceIds, Integer status) {
+        if (resourceIds == null || resourceIds.length == 0) {
+            return false;
+        }
+        List<Integer> resourceIdList = Arrays.asList(resourceIds);
+        return resourceDao.batchUpdateStatus(resourceIdList, status) > 0;
+    }
+
+    @Override
+    public ResourceStatisticsDto getResourceStatistics() {
+        Map<String, Object> stats = resourceDao.getResourceStatistics();
+        Integer todayCount = resourceDao.getTodayResourceCount();
+
+        ResourceStatisticsDto dto = new ResourceStatisticsDto();
+        dto.setTotal(((Number) stats.getOrDefault("total", 0)).longValue());
+        dto.setToday(todayCount);
+        dto.setTotalDownloads(((Number) stats.getOrDefault("totalDownloads", 0)).longValue());
+        dto.setTotalViews(((Number) stats.getOrDefault("totalViews", 0)).longValue());
+
+        return dto;
     }
 
     /**

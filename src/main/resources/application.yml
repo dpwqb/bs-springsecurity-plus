@@ -86,7 +86,7 @@ pagehelper:
 upload:
   path: ./uploads/                       # 相对路径：jar包运行目录下的uploads文件夹
   max-size: 52428800                     # 50MB
-  allowed-types: pdf,doc,docx,ppt,pptx,txt
+  allowed-types: pdf,doc,docx,ppt,pptx,txt,zip,7z,rar
 
 # AI服务配置（支持任意OpenAI兼容的API）
 ai:
