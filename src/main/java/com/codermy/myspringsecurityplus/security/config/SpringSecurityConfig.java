@@ -128,11 +128,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                     "/login",
                     "/api/resource",
                     "/api/resource/*",
-                    "/api/resource/**",
                     "/api/article/**",
                     "/api/article/category/**",
                     "/api/tag/**",
-                    "/api/resource/category/**"
+                    "/api/resource/category/**",
+                    "/api/download/**"
                 ).permitAll()
                 // AI 对话需要认证
                 .antMatchers("/api/ai/**").authenticated()

@@ -1,7 +1,7 @@
 package com.codermy.myspringsecurityplus.admin.dto;
 
 import lombok.Data;
-
+import lombok.Getter;
 import java.io.Serializable;
 
 /**
@@ -9,6 +9,7 @@ import java.io.Serializable;
  * @createTime 2025/7/12
  */
 @Data
+@Getter
 public class MenuDto implements Serializable {
 
     private Integer id;
@@ -18,4 +19,8 @@ public class MenuDto implements Serializable {
     private String checkArr = "0";
 
     private String title;
+
+    public Integer getParentId() {
+        return parentId;
+    }
 }

@@ -135,4 +135,52 @@
         ON DUPLICATE KEY UPDATE view_time = NOW()
     </insert>
 
+    <!-- 管理员获取所有文章（包括草稿和已下架） -->
+    <select id="getAllArticlesForAdmin" resultType="com.codermy.myspringsecurityplus.resource.entity.MyArticle">
+        SELECT a.*, c.category_name, u.nick_name as author_name
+        FROM my_article a
+        LEFT JOIN article_category c ON a.category_id = c.category_id
+        LEFT JOIN my_user u ON a.author_id = u.user_id
+        <where>
+            <if test="params.keyword != null and params.keyword != ''">
+                AND (a.title LIKE CONCAT('%', #{params.keyword}, '%')
+                OR a.summary LIKE CONCAT('%', #{params.keyword}, '%'))
+            </if>
+            <if test="params.categoryId != null and params.categoryId != ''">
+                AND a.category_id = #{params.categoryId}
+            </if>
+            <if test="params.status != null and params.status != ''">
+                AND a.status = #{params.status}
+            </if>
+        </where>
+        ORDER BY a.create_time DESC
+    </select>
+
+    <!-- 更新文章状态 -->
+    <update id="updateArticleStatus">
+        UPDATE my_article
+        SET status = #{status}, update_time = NOW()
+        WHERE article_id = #{articleId}
+    </update>
+
+    <!-- 批量更新文章状态 -->
+    <update id="batchUpdateArticleStatus">
+        UPDATE my_article
+        SET status = #{status}, update_time = NOW()
+        WHERE article_id IN
+        <foreach collection="articleIds" item="articleId" open="(" close=")" separator=",">
+            #{articleId}
+        </foreach>
+    </update>
+
+    <!-- 获取文章统计 -->
+    <select id="getArticleStatistics" resultType="map">
+        SELECT
+            COUNT(*) as totalArticles,
+            SUM(CASE DATE(create_time) = CURDATE() THEN 1 ELSE 0 END) as todayArticles,
+            COALESCE(SUM(view_count), 0) as totalViews,
+            COALESCE(SUM(like_count), 0) as totalLikes
+        FROM my_article
+    </select>
+
 </mapper>

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>资源分类管理</title>
+    <title>文章分类管理</title>
     <header th:replace="header::html"></header>
 </head>
 <body class="pear-container">
@@ -37,7 +37,7 @@
 
 <div class="layui-card">
     <div class="layui-card-body">
-        <table id="resource-category-table" lay-filter="resource-category-table"></table>
+        <table id="article-category-table" lay-filter="article-category-table"></table>
     </div>
 </div>
 
@@ -91,8 +91,8 @@
             skin: 'line',
             method: 'get',
             toolbar: '#category-toolbar',
-            elem: '#resource-category-table',
-            url: '/api/resource/category',
+            elem: '#article-category-table',
+            url: '/api/article/category',
             page: false,
             cols: [
                 [
@@ -108,7 +108,7 @@
         });
 
         // 监听行工具事件
-        table.on('tool(resource-category-table)', function (obj) {
+        table.on('tool(article-category-table)', function (obj) {
             if (obj.event === 'remove') {
                 window.remove(obj);
             } else if (obj.event === 'edit') {
@@ -117,13 +117,13 @@
         });
 
         // 监听工具栏事件
-        table.on('toolbar(resource-category-table)', function (obj) {
+        table.on('toolbar(article-category-table)', function (obj) {
             if (obj.event === 'add') {
                 window.add();
             } else if (obj.event === 'expandAll') {
-                treetable.expandAll("#resource-category-table");
+                treetable.expandAll("#article-category-table");
             } else if (obj.event === 'foldAll') {
-                treetable.foldAll("#resource-category-table");
+                treetable.foldAll("#article-category-table");
             }
         });
 
@@ -138,7 +138,7 @@
                 };
                 let loading = layer.load();
                 $.ajax({
-                    url: '/api/resource/category',
+                    url: '/api/article/category',
                     data: JSON.stringify(data),
                     dataType: 'json',
                     contentType: 'application/json',
@@ -147,11 +147,11 @@
                         layer.close(loading);
                         if (result.success) {
                             layer.msg(result.msg || '操作成功', {icon: 1, time: 1000}, function () {
-                                table.reload('resource-category-table');
+                                table.reload('article-category-table');
                             });
                         } else {
                             layer.msg(result.msg || '操作失败', {icon: 2});
-                            table.reload('resource-category-table');
+                            table.reload('article-category-table');
                         }
                     }
                 });
@@ -160,7 +160,7 @@
 
         // 提交查询表单
         form.on('submit(category-query)', function (data) {
-            treetable.reload('#resource-category-table', {
+            treetable.reload('#article-category-table', {
                 where: data.field,
                 page: {
                     curr: 1
@@ -171,7 +171,7 @@
 
         // 监听重置按钮
         $('.pear-btn[type="reset"]').on('click', function () {
-            treetable.reload('#resource-category-table', {
+            treetable.reload('#article-category-table', {
                 page: {
                     curr: 1
                 }
@@ -182,7 +182,7 @@
         window.add = function () {
             layer.open({
                 type: 1,
-                title: '新增资源分类',
+                title: '新增文章分类',
                 area: ['500px', '480px'],
                 content: `
                     <form class="layui-form" style="padding: 20px;" lay-filter="category-form">
@@ -244,7 +244,7 @@
                             method: 'get',
                             dataStyle: "layuiStyle",
                             response: {message: "msg", statusCode: 200},
-                            url: "/api/resource/category",
+                            url: "/api/article/category",
                             select: true,
                             selectTips: "不选默认是顶级分类"
                         });
@@ -252,7 +252,7 @@
                         // 监听表单提交
                         form.on('submit(category-save)', function (data) {
                             $.ajax({
-                                url: '/api/resource/category',
+                                url: '/api/article/category',
                                 method: 'POST',
                                 contentType: 'application/json',
                                 data: JSON.stringify(data.field),
@@ -260,7 +260,7 @@
                                     if (res.success) {
                                         layer.msg('新增成功', {icon: 1, time: 1000}, function () {
                                             layer.close(index);
-                                            table.reload('resource-category-table');
+                                            table.reload('article-category-table');
                                         });
                                     } else {
                                         layer.msg(res.msg || '新增失败', {icon: 2});
@@ -282,7 +282,7 @@
             var data = obj.data;
             layer.open({
                 type: 1,
-                title: '编辑资源分类',
+                title: '编辑文章分类',
                 area: ['500px', '480px'],
                 content: `
                     <form class="layui-form" style="padding: 20px;" lay-filter="category-form">
@@ -345,7 +345,7 @@
                             method: 'get',
                             dataStyle: "layuiStyle",
                             response: {message: "msg", statusCode: 200},
-                            url: "/api/resource/category",
+                            url: "/api/article/category",
                             select: true,
                             selectTips: "不选默认是顶级分类"
                         });
@@ -353,7 +353,7 @@
                         // 监听表单提交
                         form.on('submit(category-save)', function (formData) {
                             $.ajax({
-                                url: '/api/resource/category',
+                                url: '/api/article/category',
                                 method: 'PUT',
                                 contentType: 'application/json',
                                 data: JSON.stringify(formData.field),
@@ -361,7 +361,7 @@
                                     if (res.success) {
                                         layer.msg('修改成功', {icon: 1, time: 1000}, function () {
                                             layer.close(index);
-                                            table.reload('resource-category-table');
+                                            table.reload('article-category-table');
                                         });
                                     } else {
                                         layer.msg(res.msg || '修改失败', {icon: 2});
@@ -384,7 +384,7 @@
                 layer.close(index);
                 let loading = layer.load();
                 $.ajax({
-                    url: "/api/resource/category/" + obj.data.categoryId,
+                    url: "/api/article/category/" + obj.data.categoryId,
                     type: 'delete',
                     success: function (result) {
                         layer.close(loading);

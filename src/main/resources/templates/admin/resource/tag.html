@@ -1,20 +1,181 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="utf-8">
-	<title>资源标签管理</title>
-	<header th:replace="header::html"></header>
+    <meta charset="utf-8">
+    <title>资源标签管理</title>
+    <header th:replace="header::html"></header>
 </head>
 <body class="pear-container">
 <div class="layui-card">
-	<div class="layui-card-body">
-		<div class="layui-empty">
-			<div class="layui-empty-icon">
-				<i class="layui-icon layui-icon-note"></i>
-			</div>
-			<p class="layui-empty-description">资源标签管理功能开发中...</p>
-		</div>
-	</div>
+    <div class="layui-card-body">
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">标签名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="tagName" placeholder="请输入标签名称" class="layui-input">
+                </div>
+                <button class="pear-btn pear-btn-md pear-btn-primary" lay-submit="" lay-filter="tag-query">
+                    <i class="layui-icon layui-icon-search"></i>
+                    查询
+                </button>
+                <button type="reset" class="pear-btn pear-btn-md">
+                    <i class="layui-icon layui-icon-refresh"></i>
+                    重置
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
+
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table id="tag-table" lay-filter="tag-table"></table>
+    </div>
+</div>
+
+<!-- 工具栏模板 -->
+<script type="text/html" id="tag-toolbar">
+    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
+        <i class="layui-icon layui-icon-add-1"></i>
+        新增
+    </button>
+    <button class="pear-btn pear-btn-success pear-btn-md" lay-event="refresh">
+        <i class="layui-icon layui-icon-refresh"></i>
+        刷新
+    </button>
+</script>
+
+<!-- 行操作模板 -->
+<script type="text/html" id="tag-bar">
+    <button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>
+</script>
+
+<!-- 创建时间模板 -->
+<script type="text/html" id="tag-time">
+    {{layui.util.toDateString(d.createTime, 'yyyy-MM-dd HH:mm:ss')}}
+</script>
+
+<script>
+    layui.use(['table', 'form', 'jquery'], function () {
+        let table = layui.table;
+        let form = layui.form;
+        let $ = layui.jquery;
+
+        var tableIns = table.render({
+            elem: '#tag-table',
+            url: '/api/tag',
+            page: true,
+            skin: 'line',
+            toolbar: '#tag-toolbar',
+            defaultToolbar: ['filter', 'exports'],
+            cols: [
+                [
+                    {type: 'checkbox'},
+                    {field: 'tagId', width: 80, title: 'ID'},
+                    {field: 'tagName', minWidth: 150, title: '标签名称'},
+                    {field: 'useCount', width: 120, title: '使用次数', sort: true},
+                    {title: '创建时间', field: 'createTime', align: 'center', templet: '#tag-time'},
+                    {title: '操作', templet: '#tag-bar', width: 100, align: 'center', fixed: 'right'}
+                ]
+            ]
+        });
+
+        // 监听行工具事件
+        table.on('tool(tag-table)', function (obj) {
+            if (obj.event === 'remove') {
+                window.remove(obj);
+            }
+        });
+
+        // 监听工具栏事件
+        table.on('toolbar(tag-table)', function (obj) {
+            if (obj.event === 'add') {
+                window.add();
+            } else if (obj.event === 'refresh') {
+                table.reload('tag-table');
+            }
+        });
+
+        // 提交查询表单
+        form.on('submit(tag-query)', function (data) {
+            table.reload('tag-table', {
+                where: data.field,
+                page: {
+                    curr: 1
+                }
+            });
+            return false;
+        });
+
+        // 监听重置按钮
+        $('.pear-btn[type="reset"]').on('click', function () {
+            table.reload('tag-table', {
+                page: {
+                    curr: 1
+                }
+            });
+        });
+
+        // 新增标签
+        window.add = function () {
+            layer.prompt({
+                title: '新增标签',
+                formType: 0,
+                value: ''
+            }, function (value, index, elem) {
+                if (!value || value.trim() === '') {
+                    layer.msg('请输入标签名称', {icon: 2});
+                    return;
+                }
+
+                $.ajax({
+                    url: '/api/tag',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({tagName: value.trim()}),
+                    success: function (res) {
+                        if (res.success) {
+                            layer.msg('新增成功', {icon: 1, time: 1000}, function () {
+                                table.reload('tag-table');
+                            });
+                        } else {
+                            layer.msg(res.msg || '新增失败', {icon: 2});
+                        }
+                    },
+                    error: function () {
+                        layer.msg('网络错误，请重试', {icon: 2});
+                    }
+                });
+                layer.close(index);
+            });
+        };
+
+        // 删除标签
+        window.remove = function (obj) {
+            layer.confirm('确定要删除该标签吗？删除后无法恢复！', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: "/api/tag/" + obj.data.tagId,
+                    type: 'delete',
+                    success: function (result) {
+                        layer.close(loading);
+                        if (result.success) {
+                            layer.msg('删除成功', {icon: 1, time: 1000}, function () {
+                                obj.del();
+                            });
+                        } else {
+                            layer.msg(result.msg || '删除失败', {icon: 2});
+                        }
+                    },
+                    error: function () {
+                        layer.close(loading);
+                        layer.msg('网络错误，请重试', {icon: 2});
+                    }
+                });
+            });
+        };
+    });
+</script>
 </body>
 </html>

@@ -86,4 +86,33 @@ public interface ArticleDao {
      * @return 影响行数
      */
     int saveViewRecord(@Param("articleId") Integer articleId, @Param("userId") Integer userId);
+
+    /**
+     * 管理员获取所有文章（包括草稿和已下架）
+     * @param params 查询参数
+     * @return 文章列表
+     */
+    List<MyArticle> getAllArticlesForAdmin(@Param("params") Map<String, Object> params);
+
+    /**
+     * 更新文章状态
+     * @param articleId 文章ID
+     * @param status 状态（0:草稿 1:已发布 2:已下架）
+     * @return 影响行数
+     */
+    int updateArticleStatus(@Param("articleId") Integer articleId, @Param("status") Integer status);
+
+    /**
+     * 批量更新文章状态
+     * @param articleIds 文章ID数组
+     * @param status 状态（0:草稿 1:已发布 2:已下架）
+     * @return 影响行数
+     */
+    int batchUpdateArticleStatus(@Param("articleIds") List<Integer> articleIds, @Param("status") Integer status);
+
+    /**
+     * 获取文章统计
+     * @return 统计数据
+     */
+    Map<String, Object> getArticleStatistics();
 }

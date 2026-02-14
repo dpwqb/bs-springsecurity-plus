@@ -2,8 +2,10 @@ package com.codermy.myspringsecurityplus.resource.service;
 
 import com.codermy.myspringsecurityplus.resource.dto.ArticlePublishDto;
 import com.codermy.myspringsecurityplus.resource.entity.MyArticle;
+import com.codermy.myspringsecurityplus.resource.dto.ArticleStatisticsDto;
 
 import java.util.Map;
+import java.util.List;
 
 /**
  * 文章服务接口
@@ -17,7 +19,7 @@ public interface ArticleService {
      * @param params 查询参数（keyword, categoryId, status等）
      * @return 文章列表
      */
-    java.util.List<MyArticle> getArticlesByPage(Map<String, Object> params);
+    List<MyArticle> getArticlesByPage(Map<String, Object> params);
 
     /**
      * 根据ID查询文章详情
@@ -75,12 +77,42 @@ public interface ArticleService {
      * @param params 查询参数
      * @return 文章列表
      */
-    java.util.List<MyArticle> getArticlesByAuthorId(Integer authorId, Map<String, Object> params);
+    List<MyArticle> getArticlesByAuthorId(Integer authorId, Map<String, Object> params);
 
     /**
      * 保存文章浏览记录
      * @param articleId 文章ID
      * @param userId 用户ID
+     * @return 影响行数
      */
     void saveViewRecord(Integer articleId, Integer userId);
+
+    /**
+     * 管理员获取所有文章（包括草稿和已下架）
+     * @param params 查询参数
+     * @return 文章列表
+     */
+    List<MyArticle> getAllArticlesForAdmin(Map<String, Object> params);
+
+    /**
+     * 更新文章状态
+     * @param articleId 文章ID
+     * @param status 状态（0:草稿 1:已发布 2:已下架）
+     * @return 影响行数
+     */
+    boolean updateArticleStatus(Integer articleId, Integer status);
+
+    /**
+     * 批量更新文章状态
+     * @param articleIds 文章ID数组
+     * @param status 状态（0:草稿 1:已发布 2:已下架）
+     * @return 影响行数
+     */
+    boolean batchUpdateArticleStatus(Integer[] articleIds, Integer status);
+
+    /**
+     * 获取文章统计
+     * @return 统计数据
+     */
+    ArticleStatisticsDto getArticleStatistics();
 }

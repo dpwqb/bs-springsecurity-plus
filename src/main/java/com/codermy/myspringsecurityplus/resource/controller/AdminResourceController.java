@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Slf4j
 @Controller
-@RequestMapping("/admin/resource")
+@RequestMapping("/api/admin/resource")
 @Api(tags = "后台资源管理")
 public class AdminResourceController {
 
@@ -36,7 +36,7 @@ public class AdminResourceController {
      */
     @GetMapping("/list")
     @PreAuthorize("hasAnyAuthority('resource:list')")
-    public String list() {
+    public String listPage() {
         return "admin/resource/list";
     }
 
@@ -76,7 +76,7 @@ public class AdminResourceController {
     @ApiOperation(value = "获取资源列表")
     public Result getResourceList(@RequestParam java.util.Map<String, Object> params) {
         List<ResourceInfo> resources = resourceService.getAllResources(params);
-        return Result.ok().data(resources).code(ResultCode.SUCCESS);
+        return Result.ok().data(resources).code(ResultCode.TABLE_SUCCESS);
     }
 
     /**
@@ -120,7 +120,7 @@ public class AdminResourceController {
     /**
      * 批量下架
      */
-    @PutMapping("/batch/offline")
+    @PutMapping("/batchOffline")
     @ResponseBody
     @PreAuthorize("hasAnyAuthority('resource:offline')")
     @MyLog("批量下架资源")

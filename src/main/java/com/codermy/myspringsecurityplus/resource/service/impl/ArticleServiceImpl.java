@@ -3,6 +3,7 @@ package com.codermy.myspringsecurityplus.resource.service.impl;
 import com.codermy.myspringsecurityplus.resource.dao.ArticleDao;
 import com.codermy.myspringsecurityplus.resource.dao.TagDao;
 import com.codermy.myspringsecurityplus.resource.dto.ArticlePublishDto;
+import com.codermy.myspringsecurityplus.resource.dto.ArticleStatisticsDto;
 import com.codermy.myspringsecurityplus.resource.entity.MyArticle;
 import com.codermy.myspringsecurityplus.resource.entity.ResourceTag;
 import com.codermy.myspringsecurityplus.resource.service.ArticleService;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -196,5 +198,54 @@ public class ArticleServiceImpl implements ArticleService {
             tagDao.saveArticleTagRelation(articleId, tag.getTagId());
             tagDao.increaseUseCount(tag.getTagId());
         }
+    }
+
+    /**
+     * 管理员获取所有文章（包括草稿和已下架）
+     * @param params 查询参数
+     * @return 文章列表
+     */
+    @Override
+    public List<MyArticle> getAllArticlesForAdmin(Map<String, Object> params) {
+        return articleDao.getAllArticlesForAdmin(params);
+    }
+
+    /**
+     * 更新文章状态
+     * @param articleId 文章ID
+     * @param status 状态（0:草稿 1:已发布 2:已下架）
+     * @return 影响行数
+     */
+    @Override
+    @Transactional
+    public boolean updateArticleStatus(Integer articleId, Integer status) {
+        return articleDao.updateArticleStatus(articleId, status) > 0;
+    }
+
+    /**
+     * 批量更新文章状态
+     * @param articleIds 文章ID数组
+     * @param status 状态（0:草稿 1:已发布 2:已下架）
+     * @return 影响行数
+     */
+    @Override
+    @Transactional
+    public boolean batchUpdateArticleStatus(Integer[] articleIds, Integer status) {
+        return articleDao.batchUpdateArticleStatus(Arrays.asList(articleIds), status) > 0;
+    }
+
+    /**
+     * 获取文章统计
+     * @return 统计数据
+     */
+    @Override
+    public ArticleStatisticsDto getArticleStatistics() {
+        Map<String, Object> map = articleDao.getArticleStatistics();
+        ArticleStatisticsDto dto = new ArticleStatisticsDto();
+        dto.setTotalArticles(((Number) map.getOrDefault("totalArticles", 0)).longValue());
+        dto.setTodayArticles(((Number) map.getOrDefault("todayArticles", 0)).intValue());
+        dto.setTotalViews(((Number) map.getOrDefault("totalViews", 0)).longValue());
+        dto.setTotalLikes(((Number) map.getOrDefault("totalLikes", 0)).longValue());
+        return dto;
     }
 }

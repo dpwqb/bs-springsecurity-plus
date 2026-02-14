@@ -35,6 +35,7 @@ public class TagController {
         List<ResourceTag> tags = tagService.getAllTags();
         return Result.ok()
                 .data(tags)
+                .code(com.codermy.myspringsecurityplus.common.utils.ResultCode.TABLE_SUCCESS)
                 .message("查询成功");
     }
 
