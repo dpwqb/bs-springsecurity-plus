@@ -213,7 +213,7 @@ const handleRegister = async () => {
 
       const result = await response.json()
 
-      if (result.code === 200) {
+      if (result.code === 0) {
         ElMessage.success('注册成功，请登录')
         router.push('/login')
       } else {

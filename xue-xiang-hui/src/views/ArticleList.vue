@@ -142,7 +142,7 @@ const fetchArticles = async () => {
   loading.value = true
   try {
     const res = await getArticleList(queryParams.value)
-    if (res.code === 200) {
+    if (res.code === 0) {
       articles.value = res.data || []
       total.value = res.total || res.data?.length || 0
     }
@@ -157,7 +157,7 @@ const fetchArticles = async () => {
 const fetchCategories = async () => {
   try {
     const res = await getArticleCategories()
-    if (res.code === 200) {
+    if (res.code === 0) {
       categories.value = res.data || []
     }
   } catch (error) {

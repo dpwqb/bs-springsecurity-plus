@@ -142,7 +142,7 @@ const fetchArticleDetail = async () => {
   loading.value = true
   try {
     const res = await getArticleDetail(articleId.value)
-    if (res.code === 200) {
+    if (res.code === 0) {
       article.value = res.data?.[0] || {}
     }
   } catch (error) {
@@ -157,7 +157,7 @@ const handleLike = async () => {
   likeLoading.value = true
   try {
     const res = await likeArticle(articleId.value)
-    if (res.code === 200) {
+    if (res.code === 0) {
       article.value.likeCount = (article.value.likeCount || 0) + 1
     }
   } catch (error) {

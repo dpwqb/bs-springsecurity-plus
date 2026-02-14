@@ -204,7 +204,7 @@ const fetchResourceDetail = async () => {
   loading.value = true
   try {
     const res = await getResourceDetail(resourceId.value)
-    if (res.code === 200) {
+    if (res.code === 0) {
       resource.value = res.data?.[0] || {}
       // 检查收藏状态
       checkFavoriteStatus()
@@ -220,7 +220,7 @@ const fetchResourceDetail = async () => {
 const checkFavoriteStatus = async () => {
   try {
     const res = await checkFavorited(resourceId.value)
-    if (res.code === 200) {
+    if (res.code === 0) {
       isFavorited.value = res.data?.[0] || false
     }
   } catch (error) {
@@ -239,7 +239,7 @@ const handleToggleFavorite = async () => {
   favoriteLoading.value = true
   try {
     const res = await toggleFavorite(resourceId.value)
-    if (res.code === 200) {
+    if (res.code === 0) {
       isFavorited.value = res.data?.[0] || false
     }
   } catch (error) {

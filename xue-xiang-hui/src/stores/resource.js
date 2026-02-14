@@ -28,7 +28,7 @@ export const useResourceStore = defineStore('resource', () => {
     loading.value = true
     try {
       const res = await getResourceCategories()
-      if (res.code === 200) {
+      if (res.code === 0) {
         categories.value = res.data || []
         return { success: true, data: categories.value }
       }
@@ -54,7 +54,7 @@ export const useResourceStore = defineStore('resource', () => {
     loading.value = true
     try {
       const res = await getTags()
-      if (res.code === 200) {
+      if (res.code === 0) {
         tags.value = res.data || []
         return { success: true, data: tags.value }
       }
@@ -81,7 +81,7 @@ export const useResourceStore = defineStore('resource', () => {
     loading.value = true
     try {
       const res = await getHotTags(limit)
-      if (res.code === 200) {
+      if (res.code === 0) {
         hotTags.value = res.data || []
         return { success: true, data: hotTags.value }
       }

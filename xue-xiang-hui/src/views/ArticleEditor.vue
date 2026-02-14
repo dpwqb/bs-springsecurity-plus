@@ -177,7 +177,7 @@ const handleSaveDraft = async () => {
   saving.value = true
   try {
     const res = await saveDraft(articleForm.value)
-    if (res.code === 200) {
+    if (res.code === 0) {
       ElMessage.success('草稿保存成功')
     }
   } catch (error) {
@@ -200,7 +200,7 @@ const publish = async () => {
   publishing.value = true
   try {
     const res = await publishArticle(articleForm.value)
-    if (res.code === 200) {
+    if (res.code === 0) {
       ElMessage.success('发布成功')
       router.push('/article/' + res.data.id)
     }
@@ -216,7 +216,7 @@ const loadArticle = async () => {
 
   try {
     const res = await getArticleDetail(articleId.value)
-    if (res.code === 200) {
+    if (res.code === 0) {
       const article = res.data
       articleForm.value = {
         title: article.title,
@@ -239,7 +239,7 @@ const loadArticle = async () => {
 const loadCategories = async () => {
   try {
     const res = await getArticleCategories()
-    if (res.code === 200) {
+    if (res.code === 0) {
       categories.value = res.data || []
     }
   } catch (error) {

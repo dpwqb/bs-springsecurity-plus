@@ -184,7 +184,7 @@ const queryParams = ref({
 const fetchDownloadStats = async () => {
   try {
     const res = await getDownloadStats()
-    if (res.code === 200) {
+    if (res.code === 0) {
       const stats = res.data?.[0] || {}
       downloadStats.value = {
         total: stats.total || 0,
@@ -201,7 +201,7 @@ const fetchDownloads = async () => {
   loading.value = true
   try {
     const res = await getMyDownloads(queryParams.value)
-    if (res.code === 200) {
+    if (res.code === 0) {
       downloads.value = res.data || []
       total.value = res.data?.length || 0
     }

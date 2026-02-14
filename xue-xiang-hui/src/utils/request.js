@@ -28,8 +28,8 @@ request.interceptors.response.use(
   response => {
     const res = response.data
 
-    // 如果返回的状态码不是200，判断为错误
-    if (res.code !== 200) {
+    // 如果返回的状态码不是0，判断为错误
+    if (res.code !== 0) {
       ElMessage.error(res.message || '请求失败')
 
       // 401: 未登录

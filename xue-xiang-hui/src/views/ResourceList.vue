@@ -240,7 +240,7 @@ const fetchResources = async () => {
   loading.value = true
   try {
     const res = await getResourceList(queryParams.value)
-    if (res.code === 200) {
+    if (res.code === 0) {
       resources.value = res.data || []
       total.value = res.total || res.data?.length || 0
     }
@@ -307,7 +307,7 @@ const handleFavorite = async (resource) => {
   try {
     const { toggleFavorite } = await import('@/api/resource')
     const res = await toggleFavorite(resource.id)
-    if (res.code === 200) {
+    if (res.code === 0) {
       ElMessage.success(res.message || '操作成功')
       fetchResources()
     }

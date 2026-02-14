@@ -7,9 +7,9 @@ package com.codermy.myspringsecurityplus.common.utils;
  */
 public interface ResultCode {
     /**
-     * 请求t成功
+     * 请求成功
      */
-    public static final Integer SUCCESS = 200;
+    public static final Integer SUCCESS = 0;
     /**
      * 请求table成功
      */

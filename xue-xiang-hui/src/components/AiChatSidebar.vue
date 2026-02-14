@@ -123,7 +123,7 @@ const handleSend = async () => {
       context: '' // 可以传入页面上下文
     })
 
-    if (res.code === 200) {
+    if (res.code === 0) {
       const answer = res.data?.[0]?.answer || '抱歉，我无法回答这个问题。'
       messages.value.push({
         role: 'assistant',

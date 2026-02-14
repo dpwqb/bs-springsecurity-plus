@@ -99,7 +99,7 @@ export const useUserStore = defineStore('user', () => {
 
       const data = await response.json()
 
-      if (data.code === 200) {
+      if (data.code === 0) {
         // 后端返回格式: {code: 200, jwt: "token", data: [userDetails], message: "登录成功"}
         setToken(data.jwt)
         // data是数组，取第一个元素

@@ -186,7 +186,7 @@ const fetchFavorites = async () => {
   loading.value = true
   try {
     const res = await getMyFavorites(queryParams.value)
-    if (res.code === 200) {
+    if (res.code === 0) {
       let list = res.data || []
       total.value = list.length
 
@@ -248,7 +248,7 @@ const handleRemoveFavorite = (item) => {
   ).then(async () => {
     try {
       const res = await removeFavorite(item.resourceId)
-      if (res.code === 200) {
+      if (res.code === 0) {
         ElMessage.success('已取消收藏')
         fetchFavorites()
       } else {

@@ -96,9 +96,9 @@
               >
                 <el-option
                   v-for="category in categories"
-                  :key="category.id"
-                  :label="category.name"
-                  :value="category.id"
+                  :key="category.categoryId"
+                  :label="category.categoryName"
+                  :value="category.categoryId"
                 />
               </el-select>
             </el-form-item>
@@ -127,9 +127,9 @@
               >
                 <el-option
                   v-for="tag in tags"
-                  :key="tag.id"
-                  :label="tag.name"
-                  :value="tag.id"
+                  :key="tag.tagId"
+                  :label="tag.tagName"
+                  :value="tag.tagId"
                 />
               </el-select>
             </el-form-item>
@@ -209,7 +209,7 @@ const formRules = {
 const fetchCategories = async () => {
   try {
     const res = await getResourceCategories()
-    if (res.code === 200) {
+    if (res.code === 0) {
       categories.value = res.data || []
     }
   } catch (error) {
@@ -221,7 +221,7 @@ const fetchCategories = async () => {
 const fetchTags = async () => {
   try {
     const res = await getTags()
-    if (res.code === 200) {
+    if (res.code === 0) {
       tags.value = res.data || []
     }
   } catch (error) {
@@ -340,7 +340,7 @@ const handleSubmit = async () => {
       loadingText.value = `正在上传... ${percent}%`
     })
 
-    if (res.code === 200) {
+    if (res.code === 0) {
       uploadProgress.value = 100
       uploadStatus.value = 'success'
       loadingText.value = '上传成功！'

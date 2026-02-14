@@ -254,7 +254,7 @@ const fetchResources = async () => {
   try {
     const { getResourceList } = await import('@/api/resource')
     const res = await getResourceList({ page: 1, limit: 12, status: 1 })
-    if (res.code === 200) {
+    if (res.code === 0) {
       resources.value = res.data || []
       // 下载排行榜取前5名
       topDownloads.value = [...res.data]

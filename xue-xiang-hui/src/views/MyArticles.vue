@@ -142,7 +142,7 @@ const fetchArticles = async () => {
   loading.value = true
   try {
     const res = await getMyArticles({ page: 1, limit: 100 })
-    if (res.code === 200) {
+    if (res.code === 0) {
       articles.value = res.data || []
       updateStats()
     }
@@ -171,7 +171,7 @@ const viewArticle = (id) => {
 const deleteArticle = async (id) => {
   try {
     const res = await deleteArticleApi(id)
-    if (res.code === 200) {
+    if (res.code === 0) {
       ElMessage.success('删除成功')
       fetchArticles()
     }

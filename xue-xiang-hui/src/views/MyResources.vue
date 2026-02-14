@@ -327,7 +327,7 @@ const fetchResources = async () => {
     }
 
     const res = await getMyResources(params)
-    if (res.code === 200) {
+    if (res.code === 0) {
       resources.value = res.data || []
       total.value = res.data?.length || 0
     }
@@ -342,7 +342,7 @@ const fetchResources = async () => {
 const fetchCategories = async () => {
   try {
     const res = await getResourceCategories()
-    if (res.code === 200) {
+    if (res.code === 0) {
       categories.value = res.data || []
     }
   } catch (error) {
@@ -442,7 +442,7 @@ const handleDelete = (resource) => {
   ).then(async () => {
     try {
       const res = await deleteResource(resource.id)
-      if (res.code === 200) {
+      if (res.code === 0) {
         ElMessage.success('删除成功')
         fetchResources()
       } else {
