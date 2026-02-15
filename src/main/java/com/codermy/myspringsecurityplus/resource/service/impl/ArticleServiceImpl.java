@@ -71,9 +71,9 @@ public class ArticleServiceImpl implements ArticleService {
 
         articleDao.save(article);
 
-        // 处理标签
-        if (dto.getTags() != null && !dto.getTags().trim().isEmpty()) {
-            saveTags(article.getArticleId(), dto.getTags());
+        // 处理标签 - 使用标签ID列表
+        if (dto.getTags() != null && !dto.getTags().isEmpty()) {
+            saveArticleTags(article.getArticleId(), dto.getTags());
         }
 
         log.info("文章发布成功：articleId={}, title={}", article.getArticleId(), dto.getTitle());
@@ -109,9 +109,9 @@ public class ArticleServiceImpl implements ArticleService {
 
         articleDao.save(article);
 
-        // 处理标签
-        if (dto.getTags() != null && !dto.getTags().trim().isEmpty()) {
-            saveTags(article.getArticleId(), dto.getTags());
+        // 处理标签 - 使用标签ID列表
+        if (dto.getTags() != null && !dto.getTags().isEmpty()) {
+            saveArticleTags(article.getArticleId(), dto.getTags());
         }
 
         log.info("草稿保存成功：articleId={}, title={}", article.getArticleId(), dto.getTitle());
@@ -175,28 +175,34 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     /**
-     * 保存标签
+     * 保存文章标签关联（使用标签ID列表）
+     * @param articleId 文章ID
+     * @param tagIds 标签ID列表
      */
-    private void saveTags(Integer articleId, String tags) {
-        String[] tagArray = tags.split(",");
-        for (String tagName : tagArray) {
-            tagName = tagName.trim();
-            if (tagName.isEmpty()) {
+    private void saveArticleTags(Integer articleId, List<Integer> tagIds) {
+        if (tagIds == null || tagIds.isEmpty()) {
+            return;
+        }
+
+        // 1. 先删除该文章的所有旧标签关联
+        tagDao.deleteArticleTagRelation(articleId);
+
+        // 2. 验证并插入新的标签关联
+        for (Integer tagId : tagIds) {
+            if (tagId == null) {
                 continue;
             }
 
-            // 查询或创建标签
-            ResourceTag tag = tagDao.getTagByName(tagName);
-            if (tag == null) {
-                tag = new ResourceTag();
-                tag.setTagName(tagName);
-                tag.setUseCount(0);
-                tagDao.save(tag);
+            // 验证标签是否存在
+            ResourceTag tag = tagDao.getTagById(tagId);
+            if (tag != null) {
+                // 保存关联关系
+                tagDao.saveArticleTagRelation(articleId, tagId);
+                // 增加标签使用次数
+                tagDao.increaseUseCount(tagId);
+            } else {
+                log.warn("标签ID不存在: {}", tagId);
             }
-
-            // 保存关联关系
-            tagDao.saveArticleTagRelation(articleId, tag.getTagId());
-            tagDao.increaseUseCount(tag.getTagId());
         }
     }
 

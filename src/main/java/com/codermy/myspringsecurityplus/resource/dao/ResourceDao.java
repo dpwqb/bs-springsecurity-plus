@@ -74,6 +74,13 @@ public interface ResourceDao {
     int increaseCollectCount(Integer resourceId);
 
     /**
+     * 减少收藏量
+     * @param resourceId 资源ID
+     * @return 影响行数
+     */
+    int decreaseCollectCount(Integer resourceId);
+
+    /**
      * 查询用户的资源列表
      * @param uploaderId 上传者ID
      * @param params 查询参数

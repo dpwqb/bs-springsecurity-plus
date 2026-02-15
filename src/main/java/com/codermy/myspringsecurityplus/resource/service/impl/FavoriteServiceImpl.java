@@ -58,8 +58,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 
         // 减少资源收藏量
         if (result > 0) {
-            // TODO: 需要在ResourceDao中添加decreaseCollectCount方法
-            // resourceDao.decreaseCollectCount(resourceId);
+            resourceDao.decreaseCollectCount(resourceId);
         }
 
         log.info("取消收藏：resourceId={}, userId={}", resourceId, userId);

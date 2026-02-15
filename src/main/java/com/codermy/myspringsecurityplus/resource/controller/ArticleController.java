@@ -4,7 +4,9 @@ import com.codermy.myspringsecurityplus.common.utils.Result;
 import com.codermy.myspringsecurityplus.log.aop.MyLog;
 import com.codermy.myspringsecurityplus.resource.dto.ArticlePublishDto;
 import com.codermy.myspringsecurityplus.resource.entity.MyArticle;
+import com.codermy.myspringsecurityplus.resource.entity.ResourceTag;
 import com.codermy.myspringsecurityplus.resource.service.ArticleService;
+import com.codermy.myspringsecurityplus.resource.service.TagService;
 import com.codermy.myspringsecurityplus.common.utils.SecurityUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,6 +32,9 @@ public class ArticleController {
 
     @Autowired
     private ArticleService articleService;
+
+    @Autowired
+    private TagService tagService;
 
     @GetMapping
     @ResponseBody
@@ -72,8 +78,16 @@ public class ArticleController {
         // 增加浏览量
         articleService.increaseViewCount(articleId);
 
+        // 获取文章标签
+        List<ResourceTag> tags = tagService.getTagsByArticleId(articleId);
+
+        // 构造返回数据（包含标签）
+        Map<String, Object> data = new HashMap<>();
+        data.put("article", article);
+        data.put("tags", tags);
+
         return Result.ok()
-                .data(java.util.Collections.singletonList(article))
+                .data(java.util.Collections.singletonList(data))
                 .message("查询成功");
     }
 

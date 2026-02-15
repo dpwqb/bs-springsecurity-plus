@@ -59,7 +59,12 @@ public class MyLogServiceImpl implements MyLogService {
         String[] argNames = ((MethodSignature)joinPoint.getSignature()).getParameterNames();
         if(argValues != null){
             for (int i = 0; i < argValues.length; i++) {
-                params.append(" ").append(argNames[i]).append(": ").append(argValues[i]);
+                // 防止超长参数导致日志记录失败
+                String paramValue = String.valueOf(argValues[i]);
+                if (paramValue.length() > 1000) {
+                    paramValue = paramValue.substring(0, 1000) + "...[truncated, total=" + paramValue.length() + "]";
+                }
+                params.append(" ").append(argNames[i]).append(": ").append(paramValue);
             }
         }
         // 描述

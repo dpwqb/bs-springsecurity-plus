@@ -84,12 +84,12 @@
         <div v-loading="loading" class="resource-list">
           <el-card
             v-for="resource in resources"
-            :key="resource.id"
+            :key="resource.resourceId"
             class="resource-card"
           >
             <div class="resource-content">
               <div class="resource-header">
-                <h3 class="resource-title" @click="viewResource(resource.id)">
+                <h3 class="resource-title" @click="viewResource(resource.resourceId)">
                   {{ resource.title }}
                 </h3>
                 <el-tag :type="getStatusType(resource.status)">
@@ -214,9 +214,9 @@
           >
             <el-option
               v-for="category in categories"
-              :key="category.id"
-              :label="category.name"
-              :value="category.id"
+              :key="category.categoryId"
+              :label="category.categoryName"
+              :value="category.categoryId"
             />
           </el-select>
         </el-form-item>
@@ -377,7 +377,7 @@ const viewResource = (id) => {
 // 编辑资源
 const editResource = (resource) => {
   editForm.value = {
-    id: resource.id,
+    id: resource.resourceId,
     title: resource.title,
     categoryId: resource.categoryId,
     description: resource.description
@@ -441,7 +441,7 @@ const handleDelete = (resource) => {
     }
   ).then(async () => {
     try {
-      const res = await deleteResource(resource.id)
+      const res = await deleteResource(resource.resourceId)
       if (res.code === 0) {
         ElMessage.success('删除成功')
         fetchResources()

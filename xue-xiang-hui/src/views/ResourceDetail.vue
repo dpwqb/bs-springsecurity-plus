@@ -179,11 +179,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { Download, Star, StarFilled, View, ChatDotRound } from '@element-plus/icons-vue'
 import { getResourceDetail, downloadResource, toggleFavorite, checkFavorited } from '@/api/resource'
 import AiChatSidebar from '@/components/AiChatSidebar.vue'
+import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 const route = useRoute()
@@ -197,31 +198,87 @@ const selectedText = ref('')
 const aiDrawerVisible = ref(false)
 const contentRef = ref(null)
 
-const resourceId = computed(() => parseInt(route.params.id))
+const resourceId = computed(() => {
+  const id = Number(route.params.id)
+  return isNaN(id) ? null : id
+})
+
+// 监听路由参数变化，验证 ID 有效性
+watch(() => route.params.id, (newId) => {
+  const id = Number(newId)
+  // 只在 ID 真正存在且无效时才报错
+  if (newId !== undefined && (isNaN(id) || id <= 0)) {
+    ElMessage.error('资源ID无效')
+    router.push('/resources')
+  }
+})
 
 // 获取资源详情
 const fetchResourceDetail = async () => {
+  console.log('===== 开始获取资源详情 =====')
+  console.log('1. resourceId.value:', resourceId.value)
+  console.log('2. resourceId类型:', typeof resourceId.value)
+
+  if (!resourceId.value) {
+    console.log('❌ resourceId为空，终止请求')
+    return
+  }
+
   loading.value = true
   try {
+    console.log('3. 发起API请求，URL:', `/api/resource/${resourceId.value}`)
     const res = await getResourceDetail(resourceId.value)
+    console.log('4. API完整响应:', res)
+    console.log('5. res.code:', res.code)
+    console.log('6. res.data:', res.data)
+    console.log('7. res.data类型:', Array.isArray(res.data) ? '数组，长度:' + res.data.length : typeof res.data)
+
     if (res.code === 0) {
-      resource.value = res.data?.[0] || {}
+      // 兼容处理：后端可能返回数组或对象
+      if (Array.isArray(res.data)) {
+        console.log('8. 数据是数组，取第一个元素')
+        console.log('9. 数组第一个元素:', res.data[0])
+        resource.value = res.data[0] || {}
+      } else {
+        console.log('8. 数据是对象')
+        console.log('9. 对象内容:', res.data)
+        resource.value = res.data || {}
+      }
+      console.log('10. 最终resource.value:', resource.value)
+      console.log('11. resource.value的keys:', Object.keys(resource.value))
+      console.log('12. resource.title:', resource.value.title)
+      console.log('13. resource.fileName:', resource.value.fileName)
       // 检查收藏状态
       checkFavoriteStatus()
+    } else {
+      console.log('❌ API返回错误码:', res.code, '消息:', res.message)
+      ElMessage.error(res.message || '获取资源详情失败')
     }
   } catch (error) {
-    console.error('获取资源详情失败:', error)
+    console.error('❌ 获取资源详情异常:', error)
+    console.error('错误堆栈:', error.stack)
+    ElMessage.error('获取资源详情失败，请稍后重试')
   } finally {
     loading.value = false
+    console.log('===== 获取资源详情结束 =====')
   }
 }
 
 // 检查收藏状态
 const checkFavoriteStatus = async () => {
+  if (!resourceId.value) {
+    return
+  }
+
   try {
     const res = await checkFavorited(resourceId.value)
     if (res.code === 0) {
-      isFavorited.value = res.data?.[0] || false
+      // 兼容处理：后端可能返回数组或对象
+      if (Array.isArray(res.data)) {
+        isFavorited.value = res.data[0] || false
+      } else {
+        isFavorited.value = res.data || false
+      }
     }
   } catch (error) {
     console.error('检查收藏状态失败:', error)
@@ -230,17 +287,30 @@ const checkFavoriteStatus = async () => {
 
 // 下载资源
 const handleDownload = () => {
+  if (!resourceId.value) {
+    return
+  }
+
   const url = downloadResource(resourceId.value)
   window.open(url, '_blank')
 }
 
 // 切换收藏状态
 const handleToggleFavorite = async () => {
+  if (!resourceId.value) {
+    return
+  }
+
   favoriteLoading.value = true
   try {
     const res = await toggleFavorite(resourceId.value)
     if (res.code === 0) {
-      isFavorited.value = res.data?.[0] || false
+      // 兼容处理：后端可能返回数组或对象
+      if (Array.isArray(res.data)) {
+        isFavorited.value = res.data[0] || false
+      } else {
+        isFavorited.value = res.data || false
+      }
     }
   } catch (error) {
     console.error('切换收藏状态失败:', error)

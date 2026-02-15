@@ -83,11 +83,11 @@
           </el-table-column>
           <el-table-column label="操作" width="180" fixed="right">
             <template #default="{ row }">
-              <el-button link type="primary" @click="editArticle(row.id)">
+              <el-button link type="primary" @click="editArticle(row.articleId)">
                 <el-icon><Edit /></el-icon>
                 编辑
               </el-button>
-              <el-button link type="primary" @click="viewArticle(row.id)">
+              <el-button link type="primary" @click="viewArticle(row.articleId)">
                 <el-icon><View /></el-icon>
                 查看
               </el-button>
@@ -95,7 +95,7 @@
                 title="确定删除这篇文章吗？"
                 confirm-button-text="确定"
                 cancel-button-text="取消"
-                @confirm="deleteArticle(row.id)"
+                @confirm="deleteArticle(row.articleId)"
               >
                 <template #reference>
                   <el-button link type="danger">

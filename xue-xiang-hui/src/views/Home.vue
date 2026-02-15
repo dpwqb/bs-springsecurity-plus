@@ -58,17 +58,17 @@
         <div class="category-list">
           <div
             v-for="category in categories"
-            :key="category.id"
+            :key="category.categoryId"
             class="category-card"
             @click="handleCategoryClick(category)"
           >
             <div class="category-icon">
-              <el-icon :size="32" :color="getCategoryColor(category.id)">
+              <el-icon :size="32" :color="getCategoryColor(category.categoryId)">
                 <Folder />
               </el-icon>
             </div>
             <div class="category-info">
-              <div class="category-name">{{ category.name }}</div>
+              <div class="category-name">{{ category.categoryName }}</div>
               <div class="category-count">{{ category.resourceCount || 0 }} 个资源</div>
             </div>
           </div>
@@ -97,7 +97,7 @@
             <el-row v-else :gutter="20">
               <el-col
                 v-for="resource in resources.slice(0, 8)"
-                :key="resource.id"
+                :key="resource.resourceId"
                 :xs="24"
                 :sm="12"
                 :md="12"
@@ -317,7 +317,7 @@ const handleUpload = () => {
 const handleCategoryClick = (category) => {
   router.push({
     path: '/resources',
-    query: { categoryId: category.id }
+    query: { categoryId: category.categoryId }
   })
 }
 
@@ -331,7 +331,7 @@ const handleTagClick = (tag) => {
 
 // 资源点击
 const handleResourceClick = (resource) => {
-  router.push(`/resource/${resource.id}`)
+  router.push(`/resource/${resource.resourceId}`)
 }
 
 onMounted(async () => {

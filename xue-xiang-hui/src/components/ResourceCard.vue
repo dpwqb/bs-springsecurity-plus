@@ -209,7 +209,7 @@ const formatDate = (dateStr) => {
 // 点击卡片
 const handleClick = () => {
   emit('click', props.resource)
-  router.push(`/resource/${props.resource.id}`)
+  router.push(`/resource/${props.resource.resourceId}`)
 }
 
 // 处理操作

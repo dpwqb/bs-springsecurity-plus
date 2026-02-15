@@ -28,9 +28,9 @@
           <el-select v-model="articleForm.categoryId" placeholder="选择分类">
             <el-option
               v-for="category in categories"
-              :key="category.id"
-              :label="category.name"
-              :value="category.id"
+              :key="category.categoryId"
+              :label="category.categoryName"
+              :value="category.categoryId"
             />
           </el-select>
         </el-form-item>
@@ -70,7 +70,7 @@
             :show-file-list="false"
             :before-upload="beforeCoverUpload"
           >
-            <img v-if="articleForm.cover" :src="articleForm.cover" class="cover-img" />
+            <img v-if="articleForm.coverImage" :src="articleForm.coverImage" class="cover-img" />
             <el-icon v-else class="cover-uploader-icon"><Plus /></el-icon>
           </el-upload>
         </el-form-item>
@@ -125,7 +125,7 @@ const articleForm = ref({
   categoryId: null,
   summary: '',
   content: '',
-  cover: '',
+  coverImage: '',
   tags: []
 })
 
@@ -162,7 +162,7 @@ const beforeCoverUpload = (file) => {
   const reader = new FileReader()
   reader.readAsDataURL(file)
   reader.onload = () => {
-    articleForm.value.cover = reader.result
+    articleForm.value.coverImage = reader.result
   }
 
   return false
@@ -217,13 +217,13 @@ const loadArticle = async () => {
   try {
     const res = await getArticleDetail(articleId.value)
     if (res.code === 0) {
-      const article = res.data
+      const article = res.data[0].article
       articleForm.value = {
         title: article.title,
         categoryId: article.categoryId,
         summary: article.summary,
         content: article.content,
-        cover: article.coverImage,
+        coverImage: article.coverImage,
         tags: article.tags?.map(t => t.id) || []
       }
       // 更新编辑器内容
@@ -232,6 +232,7 @@ const loadArticle = async () => {
       }
     }
   } catch (error) {
+    console.error('加载文章失败:', error)
     ElMessage.error('加载文章失败')
   }
 }

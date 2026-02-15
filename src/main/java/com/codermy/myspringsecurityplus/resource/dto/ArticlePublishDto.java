@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 文章发布请求DTO
  * @author codermy
@@ -28,8 +30,8 @@ public class ArticlePublishDto {
     @ApiModelProperty(value = "封面图片URL")
     private String coverImage;
 
-    @ApiModelProperty(value = "标签（逗号分隔）")
-    private String tags;
+    @ApiModelProperty(value = "标签ID列表")
+    private List<Integer> tags;
 
     @ApiModelProperty(value = "关联资源ID")
     private Integer relatedResourceId;

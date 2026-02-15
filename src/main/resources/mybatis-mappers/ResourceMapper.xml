@@ -87,6 +87,11 @@
         UPDATE resource_info SET collect_count = collect_count + 1 WHERE resource_id = #{resourceId}
     </update>
 
+    <!-- 减少收藏量 -->
+    <update id="decreaseCollectCount">
+        UPDATE resource_info SET collect_count = GREATEST(collect_count - 1, 0) WHERE resource_id = #{resourceId}
+    </update>
+
     <!-- 查询用户的资源列表 -->
     <select id="getResourcesByUploaderId" resultType="com.codermy.myspringsecurityplus.resource.entity.ResourceInfo">
         SELECT * FROM resource_info

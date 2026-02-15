@@ -15,6 +15,33 @@ request.interceptors.request.use(
     if (token) {
       config.headers['Authorization'] = 'Bearer ' + token
     }
+
+    // 清洗参数，移除 NaN、undefined、null 等无效值
+    if (config.params) {
+      Object.keys(config.params).forEach(key => {
+        const value = config.params[key]
+        if (value === undefined ||
+            value === null ||
+            (typeof value === 'number' && isNaN(value)) ||
+            (typeof value === 'string' && value === 'NaN')) {
+          delete config.params[key]
+        }
+      })
+    }
+
+    // 同样处理 data 中的参数（用于 POST/PUT 请求）
+    if (config.data && typeof config.data === 'object') {
+      Object.keys(config.data).forEach(key => {
+        const value = config.data[key]
+        if (value === undefined ||
+            value === null ||
+            (typeof value === 'number' && isNaN(value)) ||
+            (typeof value === 'string' && value === 'NaN')) {
+          delete config.data[key]
+        }
+      })
+    }
+
     return config
   },
   error => {

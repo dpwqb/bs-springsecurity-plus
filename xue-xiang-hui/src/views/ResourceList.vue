@@ -26,9 +26,9 @@
             >
               <el-option
                 v-for="category in categories"
-                :key="category.id"
-                :label="category.name"
-                :value="category.id"
+                :key="category.categoryId"
+                :label="category.categoryName"
+                :value="category.categoryId"
               />
             </el-select>
           </el-col>
@@ -120,7 +120,7 @@
           <el-row :gutter="20">
             <el-col
               v-for="resource in resources"
-              :key="resource.id"
+              :key="resource.resourceId"
               :xs="24"
               :sm="12"
               :md="8"
@@ -141,7 +141,7 @@
         <template v-else>
           <el-card
             v-for="resource in resources"
-            :key="resource.id"
+            :key="resource.resourceId"
             class="list-item-card"
             shadow="hover"
           >
@@ -306,7 +306,7 @@ const handleFavorite = async (resource) => {
 
   try {
     const { toggleFavorite } = await import('@/api/resource')
-    const res = await toggleFavorite(resource.id)
+    const res = await toggleFavorite(resource.resourceId)
     if (res.code === 0) {
       ElMessage.success(res.message || '操作成功')
       fetchResources()
@@ -318,7 +318,7 @@ const handleFavorite = async (resource) => {
 
 // 分享
 const handleShare = (resource) => {
-  const url = `${window.location.origin}/resource/${resource.id}`
+  const url = `${window.location.origin}/resource/${resource.resourceId}`
   navigator.clipboard.writeText(url).then(() => {
     ElMessage.success('链接已复制到剪贴板')
   }).catch(() => {
@@ -335,7 +335,7 @@ const handleDownload = (resource) => {
   }
 
   const { downloadResource } = require('@/api/resource')
-  const url = downloadResource(resource.id)
+  const url = downloadResource(resource.resourceId)
   window.open(url, '_blank')
 }
 

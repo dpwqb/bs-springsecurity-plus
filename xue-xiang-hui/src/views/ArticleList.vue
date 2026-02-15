@@ -29,9 +29,9 @@
             >
               <el-option
                 v-for="category in categories"
-                :key="category.id"
-                :label="category.name"
-                :value="category.id"
+                :key="category.categoryId"
+                :label="category.categoryName"
+                :value="category.categoryId"
               />
             </el-select>
           </el-col>
@@ -57,10 +57,10 @@
       <div v-loading="loading" class="article-list">
         <el-card
           v-for="article in articles"
-          :key="article.id"
+          :key="article.articleId"
           class="article-card"
           shadow="hover"
-          @click="viewArticle(article.id)"
+          @click="viewArticle(article.articleId)"
         >
           <div class="article-cover" v-if="article.coverImage">
             <el-image :src="article.coverImage" fit="cover" />

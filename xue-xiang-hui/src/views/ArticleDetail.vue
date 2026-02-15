@@ -116,13 +116,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import {
   User, Calendar, View, StarFilled, ChatDotRound, Back
 } from '@element-plus/icons-vue'
 import { getArticleDetail, likeArticle } from '@/api/article'
 import AiChatSidebar from '@/components/AiChatSidebar.vue'
+import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 const route = useRoute()
@@ -135,18 +136,44 @@ const selectedText = ref('')
 const aiDrawerVisible = ref(false)
 const contentRef = ref(null)
 
-const articleId = computed(() => parseInt(route.params.id))
+const articleId = computed(() => {
+  const id = Number(route.params.id)
+  return isNaN(id) ? null : id
+})
+
+// 监听路由参数变化，验证 ID 有效性
+watch(() => route.params.id, (newId) => {
+  const id = Number(newId)
+  // 只在 ID 真正存在且无效时才报错
+  if (newId !== undefined && (isNaN(id) || id <= 0)) {
+    ElMessage.error('文章ID无效')
+    router.push('/articles')
+  }
+})
 
 // 获取文章详情
 const fetchArticleDetail = async () => {
+  if (!articleId.value) {
+    return
+  }
+
   loading.value = true
   try {
     const res = await getArticleDetail(articleId.value)
     if (res.code === 0) {
-      article.value = res.data?.[0] || {}
+      // 兼容处理：后端返回的数据结构是 [{ article: {...}, tags: [] }]
+      if (Array.isArray(res.data)) {
+        article.value = res.data[0].article || {}
+      } else {
+        article.value = res.data || {}
+      }
+      console.log('文章详情数据:', article.value)
+    } else {
+      ElMessage.error(res.message || '获取文章详情失败')
     }
   } catch (error) {
     console.error('获取文章详情失败:', error)
+    ElMessage.error('获取文章详情失败，请稍后重试')
   } finally {
     loading.value = false
   }
