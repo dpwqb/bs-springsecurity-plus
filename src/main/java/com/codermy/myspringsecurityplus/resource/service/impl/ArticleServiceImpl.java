@@ -1,5 +1,6 @@
 package com.codermy.myspringsecurityplus.resource.service.impl;
 
+import com.codermy.myspringsecurityplus.resource.config.FileUploadConfig;
 import com.codermy.myspringsecurityplus.resource.dao.ArticleDao;
 import com.codermy.myspringsecurityplus.resource.dao.TagDao;
 import com.codermy.myspringsecurityplus.resource.dto.ArticlePublishDto;
@@ -11,11 +12,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 文章服务实现类
@@ -31,6 +36,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private TagDao tagDao;
+
+    @Autowired
+    private FileUploadConfig fileUploadConfig;
 
     @Override
     public List<MyArticle> getArticlesByPage(Map<String, Object> params) {
@@ -81,6 +89,42 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public String saveCoverImage(MultipartFile file, Integer userId, String userName) {
+        // 1. 生成唯一文件名
+        String originalName = file.getOriginalFilename();
+        String extension = getFileExtension(originalName);
+        String newFileName = UUID.randomUUID().toString().replace("-", "") + "." + extension;
+
+        // 2. 按日期创建目录: uploads/article/2024/02/
+        String datePath = new SimpleDateFormat("yyyy/MM").format(new Date());
+        String relativePath = "article/" + datePath + "/" + newFileName;
+        String fullPath = fileUploadConfig.getPath() + relativePath;
+
+        // 3. 保存文件
+        try {
+            File destFile = new File(fullPath);
+            if (!destFile.getParentFile().exists()) {
+                destFile.getParentFile().mkdirs();
+            }
+            file.transferTo(destFile);
+            log.info("文章封面保存成功：userId={}, path={}", userId, relativePath);
+        } catch (Exception e) {
+            log.error("文章封面保存失败", e);
+            throw new RuntimeException("图片保存失败：" + e.getMessage());
+        }
+
+        return relativePath;
+    }
+
+    private String getFileExtension(String filename) {
+        if (filename == null || filename.isEmpty()) {
+            return "";
+        }
+        int lastDot = filename.lastIndexOf(".");
+        return lastDot > 0 ? filename.substring(lastDot + 1).toLowerCase() : "";
+    }
+
+    @Override
     @Transactional
     public MyArticle saveDraft(ArticlePublishDto dto, Integer userId, String userName) {
         MyArticle article = new MyArticle();
@@ -96,6 +140,7 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         article.setCategoryId(dto.getCategoryId());
+        article.setCoverImage(dto.getCoverImage());
         article.setAuthorId(userId);
         article.setAuthorName(userName);
         article.setRelatedResourceId(dto.getRelatedResourceId());

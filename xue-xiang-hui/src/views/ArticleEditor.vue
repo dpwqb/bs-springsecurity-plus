@@ -70,7 +70,7 @@
             :show-file-list="false"
             :before-upload="beforeCoverUpload"
           >
-            <img v-if="articleForm.coverImage" :src="articleForm.coverImage" class="cover-img" />
+            <img v-if="articleForm.coverImage" :src="getCoverImageUrl(articleForm.coverImage)" class="cover-img" />
             <el-icon v-else class="cover-uploader-icon"><Plus /></el-icon>
           </el-upload>
         </el-form-item>
@@ -106,7 +106,7 @@ import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import { ElMessage } from 'element-plus'
 import AppHeader from '@/components/AppHeader.vue'
 import { Back, Plus } from '@element-plus/icons-vue'
-import { getArticleCategories, getArticleDetail, publishArticle, saveDraft } from '@/api/article'
+import { getArticleCategories, getArticleDetail, publishArticle, saveDraft, uploadArticleCover } from '@/api/article'
 
 const router = useRouter()
 const route = useRoute()
@@ -145,7 +145,7 @@ const handleCreated = (editor) => {
   editorRef.value = editor
 }
 
-const beforeCoverUpload = (file) => {
+const beforeCoverUpload = async (file) => {
   const isImage = file.type.startsWith('image/')
   const isLt2M = file.size / 1024 / 1024 < 2
 
@@ -158,15 +158,39 @@ const beforeCoverUpload = (file) => {
     return false
   }
 
-  // TODO: 上传图片到服务器
-  const reader = new FileReader()
-  reader.readAsDataURL(file)
-  reader.onload = () => {
-    articleForm.value.coverImage = reader.result
+  // 上传图片到服务器
+  try {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const response = await uploadArticleCover(formData)
+
+    if (response.code === 0) {
+      // 保存返回的文件路径
+      articleForm.value.coverImage = response.data[0]
+      ElMessage.success('封面上传成功')
+    } else {
+      ElMessage.error(response.message || '封面上传失败')
+    }
+  } catch (error) {
+    console.error('封面上传失败:', error)
+    ElMessage.error('封面上传失败')
   }
 
-  return false
+  return false // 防止 el-upload 的默认上传行为
 }
+
+// 获取封面图片完整URL
+const getCoverImageUrl = (path) => {
+  if (!path) return ''
+  // 如果已经是完整URL，直接返回
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:image')) {
+    return path
+  }
+  // 使用相对路径，通过静态资源映射访问
+  return '/uploads/' + path
+}
+
 
 const handleSaveDraft = async () => {
   if (!articleForm.value.title) {

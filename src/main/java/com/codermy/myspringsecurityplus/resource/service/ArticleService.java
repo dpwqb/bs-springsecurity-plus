@@ -3,6 +3,7 @@ package com.codermy.myspringsecurityplus.resource.service;
 import com.codermy.myspringsecurityplus.resource.dto.ArticlePublishDto;
 import com.codermy.myspringsecurityplus.resource.entity.MyArticle;
 import com.codermy.myspringsecurityplus.resource.dto.ArticleStatisticsDto;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 import java.util.List;
@@ -115,4 +116,13 @@ public interface ArticleService {
      * @return 统计数据
      */
     ArticleStatisticsDto getArticleStatistics();
+
+    /**
+     * 保存文章封面图片
+     * @param file 图片文件
+     * @param userId 用户ID
+     * @param userName 用户名
+     * @return 文件相对路径（如：2024/02/uuid.jpg）
+     */
+    String saveCoverImage(MultipartFile file, Integer userId, String userName);
 }

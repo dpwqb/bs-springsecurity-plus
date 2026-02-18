@@ -83,3 +83,17 @@ export function getArticleCategories() {
     method: 'get'
   })
 }
+
+/**
+ * 上传文章封面图片
+ */
+export function uploadArticleCover(formData) {
+  return request({
+    url: '/article/upload-cover',
+    method: 'post',
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+}

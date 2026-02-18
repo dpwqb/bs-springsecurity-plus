@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -183,5 +184,60 @@ public class ArticleController {
             log.error("点赞失败", e);
             return Result.error().message("点赞失败：" + e.getMessage());
         }
+    }
+
+    @PostMapping("/upload-cover")
+    @ResponseBody
+    @ApiOperation(value = "上传文章封面图片")
+    @MyLog("上传文章封面")
+    public Result uploadCover(@RequestParam("file") MultipartFile file) {
+        try {
+            // 1. 文件校验
+            if (file == null || file.isEmpty()) {
+                return Result.error().message("请选择要上传的图片");
+            }
+
+            // 2. 校验文件类型（只允许图片）
+            String originalName = file.getOriginalFilename();
+            String extension = getFileExtension(originalName);
+            if (!isImageFile(extension)) {
+                return Result.error().message("只支持上传图片文件（jpg, jpeg, png, gif）");
+            }
+
+            // 3. 校验文件大小（最大2MB）
+            if (file.getSize() > 2 * 1024 * 1024) {
+                return Result.error().message("图片大小不能超过2MB");
+            }
+
+            // 4. 保存文件
+            Integer userId = SecurityUtils.getCurrentUser().getMyUser().getUserId();
+            String userName = SecurityUtils.getCurrentUser().getMyUser().getNickName();
+
+            String relativePath = articleService.saveCoverImage(file, userId, userName);
+
+            // 5. 返回文件相对路径
+            return Result.ok()
+                    .data(java.util.Collections.singletonList(relativePath))
+                    .message("图片上传成功");
+
+        } catch (Exception e) {
+            log.error("封面图片上传失败", e);
+            return Result.error().message("上传失败：" + e.getMessage());
+        }
+    }
+
+    private String getFileExtension(String filename) {
+        if (filename == null || filename.isEmpty()) {
+            return "";
+        }
+        int lastDot = filename.lastIndexOf(".");
+        return lastDot > 0 ? filename.substring(lastDot + 1).toLowerCase() : "";
+    }
+
+    private boolean isImageFile(String extension) {
+        return extension.equals("jpg") ||
+                extension.equals("jpeg") ||
+                extension.equals("png") ||
+                extension.equals("gif");
     }
 }
