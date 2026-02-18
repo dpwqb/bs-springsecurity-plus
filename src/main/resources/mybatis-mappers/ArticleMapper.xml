@@ -177,7 +177,7 @@
     <select id="getArticleStatistics" resultType="map">
         SELECT
             COUNT(*) as totalArticles,
-            SUM(CASE DATE(create_time) = CURDATE() THEN 1 ELSE 0 END) as todayArticles,
+            SUM(CASE WHEN DATE(create_time) = CURDATE() THEN 1 ELSE 0 END) as todayArticles,
             COALESCE(SUM(view_count), 0) as totalViews,
             COALESCE(SUM(like_count), 0) as totalLikes
         FROM my_article

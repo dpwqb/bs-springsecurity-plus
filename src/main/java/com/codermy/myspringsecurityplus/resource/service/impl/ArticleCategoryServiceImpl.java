@@ -1,6 +1,7 @@
 package com.codermy.myspringsecurityplus.resource.service.impl;
 
 import com.codermy.myspringsecurityplus.resource.dao.ArticleCategoryDao;
+import com.codermy.myspringsecurityplus.resource.dto.CategoryDto;
 import com.codermy.myspringsecurityplus.resource.entity.ArticleCategory;
 import com.codermy.myspringsecurityplus.resource.service.ArticleCategoryService;
 import lombok.extern.slf4j.Slf4j;
@@ -72,5 +73,19 @@ public class ArticleCategoryServiceImpl implements ArticleCategoryService {
     public boolean checkCategoryNameUnique(String categoryName, Integer categoryId) {
         ArticleCategory category = articleCategoryDao.checkCategoryNameUnique(categoryName, categoryId);
         return category == null;
+    }
+
+    @Override
+    public List<CategoryDto> buildCategoryTree() {
+        return articleCategoryDao.buildCategoryTree();
+    }
+
+    @Override
+    public List<CategoryDto> buildCategoryTreeExcluding(Integer excludeId) {
+        if (excludeId == null || excludeId == 0) {
+            // 如果没有指定排除ID或为顶级分类，返回全部
+            return buildCategoryTree();
+        }
+        return articleCategoryDao.buildCategoryTreeExcluding(excludeId);
     }
 }

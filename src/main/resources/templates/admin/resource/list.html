@@ -168,7 +168,7 @@
 
 		var tableIns = table.render({
 			elem: '#resource-table',
-			url: '/api/admin/resource/list',
+			url: '/api/admin/resource',
 			page: true,
 			cols: cols,
 			skin: 'line',
@@ -177,6 +177,9 @@
 				layEvent: 'refresh',
 				icon: 'layui-icon-refresh',
 			}, 'filter', 'exports'],
+			response: {
+				statusCode: 0  // 指定成功的状态码为 0
+			},
 			done: function(res) {
 				// 加载统计数据
 				loadStatistics();
@@ -186,11 +189,12 @@
 		// 加载统计数据
 		function loadStatistics() {
 			$.get('/api/admin/resource/statistics', function(result) {
-				if(result.code == 200) {
-					$('#total-count').text(result.data.total || 0);
-					$('#today-count').text(result.data.today || 0);
-					$('#total-downloads').text(result.data.totalDownloads || 0);
-					$('#total-views').text(result.data.totalViews || 0);
+				if(result.code == 0 && result.data && result.data.length > 0) {
+					var stats = result.data[0];
+					$('#total-count').text(stats.total || 0);
+					$('#today-count').text(stats.today || 0);
+					$('#total-downloads').text(stats.totalDownloads || 0);
+					$('#total-views').text(stats.totalViews || 0);
 				}
 			});
 		}
@@ -212,7 +216,7 @@
 						contentType: 'application/json',
 						data: JSON.stringify(resourceIds),
 						success: function(res) {
-							if(res.code == 200) {
+							if(res.code == 0) {
 								layer.msg('下架成功', {icon: 1});
 								tableIns.reload();
 							} else {
@@ -257,7 +261,7 @@
 						url: '/api/admin/resource/publish/' + data.resourceId,
 						method: 'put',
 						success: function(res) {
-							if(res.code == 200) {
+							if(res.code == 0) {
 								layer.msg('发布成功', {icon: 1});
 								tableIns.reload();
 							} else {
@@ -277,7 +281,7 @@
 						url: '/api/admin/resource/offline/' + data.resourceId,
 						method: 'put',
 						success: function(res) {
-							if(res.code == 200) {
+							if(res.code == 0) {
 								layer.msg('下架成功', {icon: 1});
 								tableIns.reload();
 							} else {
@@ -293,7 +297,7 @@
 						url: '/api/resource/' + data.resourceId,
 						method: 'delete',
 						success: function(res) {
-							if(res.code == 200) {
+							if(res.code == 0) {
 								layer.msg('删除成功', {icon: 1});
 								tableIns.reload();
 							} else {
@@ -322,7 +326,7 @@
 			url: '/api/resource/category',
 			method: 'get',
 			success: function(res) {
-				if(res.code == 200 && res.data) {
+				if(res.code == 0 && res.data) {
 					var options = '<option value="">全部分类</option>';
 					res.data.forEach(function(item) {
 						options += '<option value="' + item.id + '">' + item.name + '</option>';

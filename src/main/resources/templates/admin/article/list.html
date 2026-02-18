@@ -153,17 +153,19 @@
         let popup = layui.popup;
 
         let cols = [
-            {type:'checkbox'},
-            {title: 'ID', field: 'articleId', width: 80},
-            {title: '标题', field: 'title', width: 250},
-            {title: '分类', field: 'categoryName', width: 120},
-            {title: '作者', field: 'authorName', width: 120},
-            {title: '状态', field: 'status', width: 100, templet: '#article-status'},
-            {title: '浏览', field: 'viewCount', width: 80},
-            {title: '点赞', field: 'likeCount', width: 80},
-            {title: '收藏', field: 'collectCount', width: 80},
-            {title: '创建时间', field: 'createTime', width: 160, templet: '#article-createTime'},
-            {title: '操作', toolbar: '#article-bar', fixed: 'right', width: 200}
+            [
+                {type:'checkbox'},
+                {title: 'ID', field: 'articleId', width: 80},
+                {title: '标题', field: 'title', width: 250},
+                {title: '分类', field: 'categoryName', width: 120},
+                {title: '作者', field: 'authorName', width: 120},
+                {title: '状态', field: 'status', width: 100, templet: '#article-status'},
+                {title: '浏览', field: 'viewCount', width: 80},
+                {title: '点赞', field: 'likeCount', width: 80},
+                {title: '收藏', field: 'collectCount', width: 80},
+                {title: '创建时间', field: 'createTime', width: 160, templet: '#article-createTime'},
+                {title: '操作', toolbar: '#article-bar', fixed: 'right', width: 200}
+            ]
         ];
 
         var tableIns = table.render({
@@ -177,6 +179,9 @@
                 layEvent: 'refresh',
                 icon: 'layui-icon-refresh',
             }, 'filter', 'exports'],
+            response: {
+                statusCode: 0  // 指定成功的状态码为 0
+            },
             done: function(res) {
                 loadStatistics();
             }
@@ -207,7 +212,7 @@
                         contentType: 'application/json',
                         data: JSON.stringify(ids),
                         success:function(result){
-                            if(result.code == 200){
+                            if(result.code == 0){
                                 layer.msg('下架成功', {icon:1,time:1000},function(){
                                     table.reload('article-table');
                                 });
@@ -227,7 +232,7 @@
                     url: "/api/admin/article/publish/" + obj.data['articleId'],
                     type: 'put',
                     success:function(result){
-                        if(result.code == 200){
+                        if(result.code == 0){
                             layer.msg('发布成功', {icon:1,time:1000});
                             obj.update();
                             table.reload('article-table');
@@ -241,7 +246,7 @@
                     url: "/api/admin/article/top/" + obj.data['articleId'],
                     type: 'put',
                     success:function(result){
-                        if(result.code == 200){
+                        if(result.code == 0){
                             layer.msg('置顶成功', {icon:1,time:1000});
                             obj.update();
                             table.reload('article-table');
@@ -255,7 +260,7 @@
                     url: "/api/admin/article/recommend/" + obj.data['articleId'],
                     type: 'put',
                     success:function(result){
-                        if(result.code == 200){
+                        if(result.code == 0){
                             layer.msg('推荐成功', {icon:1,time:1000});
                             obj.update();
                             table.reload('article-table');
@@ -271,7 +276,7 @@
                         url: "/api/admin/article/" + obj.data['articleId'],
                         type:'delete',
                         success:function(result){
-                            if(result.code == 200){
+                            if(result.code == 0){
                                 layer.msg('删除成功', {icon:1,time:1000},function(){
                                     obj.del();
                                     table.reload('article-table');
@@ -307,11 +312,12 @@
         // 加载统计数据
         function loadStatistics() {
             $.get('/api/admin/article/statistics', function(result){
-                if(result.code == 200){
-                    $('#total-articles').text(result.data.totalArticles || 0);
-                    $('#today-articles').text(result.data.todayArticles || 0);
-                    $('#total-views').text(result.data.totalViews || 0);
-                    $('#total-likes').text(result.data.totalLikes || 0);
+                if(result.code == 0 && result.data && result.data.length > 0){
+                    var stats = result.data[0];
+                    $('#total-articles').text(stats.totalArticles || 0);
+                    $('#today-articles').text(stats.todayArticles || 0);
+                    $('#total-views').text(stats.totalViews || 0);
+                    $('#total-likes').text(stats.totalLikes || 0);
                 }
             });
         }

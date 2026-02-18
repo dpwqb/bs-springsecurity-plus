@@ -244,9 +244,11 @@
                             method: 'get',
                             dataStyle: "layuiStyle",
                             response: {message: "msg", statusCode: 200},
-                            url: "/api/article/category",
+                            url: "/api/article/category/tree",  // 使用新的tree接口
+                            dataFormat: "list",                  // 关键参数：让dtree自动构建树形结构
                             select: true,
-                            selectTips: "不选默认是顶级分类"
+                            selectTips: "不选默认是顶级分类",
+                            selectCardHeight: "150"              // 设置下拉高度
                         });
 
                         // 监听表单提交
@@ -344,10 +346,18 @@
                             width: "100%",
                             method: 'get',
                             dataStyle: "layuiStyle",
-                            response: {message: "msg", statusCode: 200},
-                            url: "/api/article/category",
+                            response: {message: "msg", statusCode: 0},
+                            url: "/api/article/category/tree?excludeId=" + data.categoryId,  // 排除当前分类
+                            dataFormat: "list",                  // 关键参数
                             select: true,
-                            selectTips: "不选默认是顶级分类"
+                            selectTips: "不选默认是顶级分类",
+                            selectCardHeight: "150",
+                            initValue: "" + data.parentId    // 设置默认选中当前父分类
+                        });
+
+                        // 监听节点选择，同步到隐藏域
+                        dtree.on("node('editParentTree')", function(obj){
+                            $("#editParentId").val(obj.param.nodeId);
                         });
 
                         // 监听表单提交

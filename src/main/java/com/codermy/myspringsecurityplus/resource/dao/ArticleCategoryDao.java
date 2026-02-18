@@ -1,7 +1,9 @@
 package com.codermy.myspringsecurityplus.resource.dao;
 
+import com.codermy.myspringsecurityplus.resource.dto.CategoryDto;
 import com.codermy.myspringsecurityplus.resource.entity.ArticleCategory;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -61,4 +63,17 @@ public interface ArticleCategoryDao {
      * @return 分类信息
      */
     ArticleCategory checkCategoryNameUnique(String categoryName, Integer categoryId);
+
+    /**
+     * 构建分类树（返回DTO格式，用于dtree组件）
+     * @return 分类树扁平列表
+     */
+    List<CategoryDto> buildCategoryTree();
+
+    /**
+     * 构建分类树，排除指定分类及其子节点（用于编辑时防止循环引用）
+     * @param excludeId 要排除的分类ID
+     * @return 分类树扁平列表
+     */
+    List<CategoryDto> buildCategoryTreeExcluding(@Param("excludeId") Integer excludeId);
 }

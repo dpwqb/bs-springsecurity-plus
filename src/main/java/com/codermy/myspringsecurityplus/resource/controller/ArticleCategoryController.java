@@ -2,6 +2,7 @@ package com.codermy.myspringsecurityplus.resource.controller;
 
 import com.codermy.myspringsecurityplus.common.utils.Result;
 import com.codermy.myspringsecurityplus.log.aop.MyLog;
+import com.codermy.myspringsecurityplus.resource.dto.CategoryDto;
 import com.codermy.myspringsecurityplus.resource.entity.ArticleCategory;
 import com.codermy.myspringsecurityplus.resource.service.ArticleCategoryService;
 import io.swagger.annotations.Api;
@@ -40,12 +41,21 @@ public class ArticleCategoryController {
 
     @GetMapping("/tree")
     @ResponseBody
-    @ApiOperation(value = "查询分类树")
-    public Result<ArticleCategory> tree() {
-        // TODO: 构建树形结构
-        List<ArticleCategory> categories = articleCategoryService.getAllCategories();
+    @ApiOperation(value = "查询分类树（用于dtree组件）")
+    public Result buildTree(@RequestParam(required = false) Integer excludeId) {
+        List<CategoryDto> tree;
+
+        if (excludeId != null && excludeId > 0) {
+            // 编辑模式：排除当前分类及其子分类
+            tree = articleCategoryService.buildCategoryTreeExcluding(excludeId);
+        } else {
+            // 新增模式：返回所有分类
+            tree = articleCategoryService.buildCategoryTree();
+        }
+
         return Result.ok()
-                .data(categories)
+                .code(200)  // 确保 dtree 能正确识别成功状态
+                .data(tree)
                 .message("查询成功");
     }
 

@@ -1,5 +1,6 @@
 package com.codermy.myspringsecurityplus.resource.service;
 
+import com.codermy.myspringsecurityplus.resource.dto.CategoryDto;
 import com.codermy.myspringsecurityplus.resource.entity.ArticleCategory;
 
 import java.util.List;
@@ -59,4 +60,17 @@ public interface ArticleCategoryService {
      * @return true: 唯一, false: 不唯一
      */
     boolean checkCategoryNameUnique(String categoryName, Integer categoryId);
+
+    /**
+     * 构建分类树（用于dtree组件）
+     * @return 分类树列表
+     */
+    List<CategoryDto> buildCategoryTree();
+
+    /**
+     * 构建分类树，排除指定分类（用于编辑时防止选择自己或子分类作为父分类）
+     * @param excludeId 要排除的分类ID
+     * @return 分类树列表
+     */
+    List<CategoryDto> buildCategoryTreeExcluding(Integer excludeId);
 }

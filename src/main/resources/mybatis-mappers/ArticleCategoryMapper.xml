@@ -68,4 +68,35 @@
         LIMIT 1
     </select>
 
+    <!-- 构建分类树 - 基础查询 -->
+    <select id="buildCategoryTree" resultType="com.codermy.myspringsecurityplus.resource.dto.CategoryDto">
+        SELECT
+            category_id as id,
+            parent_id as parentId,
+            category_name as title
+        FROM article_category
+        ORDER BY sort_order ASC
+    </select>
+
+    <!-- 构建分类树 - 排除指定分类及其所有子分类 -->
+    <select id="buildCategoryTreeExcluding" resultType="com.codermy.myspringsecurityplus.resource.dto.CategoryDto">
+        SELECT
+            category_id as id,
+            parent_id as parentId,
+            category_name as title
+        FROM article_category
+        WHERE category_id != #{excludeId}
+          AND category_id NOT IN (
+              -- 排除直接子分类
+              SELECT category_id FROM article_category WHERE parent_id = #{excludeId}
+              UNION
+              -- 递归查找所有子分类（最多支持3级）
+              SELECT c1.category_id
+              FROM article_category c1
+              INNER JOIN article_category c2 ON c1.parent_id = c2.category_id
+              WHERE c2.parent_id = #{excludeId}
+          )
+        ORDER BY sort_order ASC
+    </select>
+
 </mapper>
