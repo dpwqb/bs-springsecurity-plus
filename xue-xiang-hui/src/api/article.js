@@ -107,3 +107,13 @@ export function getTags() {
     method: 'get'
   })
 }
+
+/**
+ * 获取文章点赞状态
+ */
+export function getArticleLikeStatus(id) {
+  return request({
+    url: `/article/${id}/like-status`,
+    method: 'get'
+  })
+}

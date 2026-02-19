@@ -125,4 +125,21 @@ public interface ArticleService {
      * @return 文件相对路径（如：2024/02/uuid.jpg）
      */
     String saveCoverImage(MultipartFile file, Integer userId, String userName);
+
+    /**
+     * 点赞/取消点赞文章（切换操作）
+     * @param articleId 文章ID
+     * @param userId 用户ID
+     * @param userName 用户名
+     * @return true表示已点赞，false表示已取消点赞
+     */
+    boolean toggleLike(Integer articleId, Integer userId, String userName);
+
+    /**
+     * 检查用户是否已点赞文章
+     * @param articleId 文章ID
+     * @param userId 用户ID
+     * @return true表示已点赞，false表示未点赞
+     */
+    boolean checkUserLiked(Integer articleId, Integer userId);
 }

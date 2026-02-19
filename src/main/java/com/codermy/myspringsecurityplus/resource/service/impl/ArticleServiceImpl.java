@@ -53,38 +53,81 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public MyArticle publish(ArticlePublishDto dto, Integer userId, String userName) {
-        MyArticle article = new MyArticle();
-        article.setTitle(dto.getTitle());
-        article.setContent(dto.getContent());
+        MyArticle article;
 
-        // 如果没有摘要，自动生成（截取前200字）
-        if (dto.getSummary() == null || dto.getSummary().trim().isEmpty()) {
-            String summary = generateSummary(dto.getContent());
-            article.setSummary(summary);
+        // 判断是新建还是更新
+        if (dto.getArticleId() != null && dto.getArticleId() > 0) {
+            // 更新模式：从草稿发布
+            article = articleDao.getArticleById(dto.getArticleId());
+            if (article == null) {
+                throw new RuntimeException("文章不存在");
+            }
+
+            // 验证权限：只能发布自己的文章
+            if (!article.getAuthorId().equals(userId)) {
+                throw new RuntimeException("无权发布他人文章");
+            }
+
+            // 更新字段
+            article.setTitle(dto.getTitle());
+            article.setContent(dto.getContent());
+            article.setSummary(dto.getSummary() != null ? dto.getSummary() : generateSummary(dto.getContent()));
+            article.setCategoryId(dto.getCategoryId());
+
+            // 保留已有封面，如果DTO中有新封面则更新
+            if (dto.getCoverImage() != null && !dto.getCoverImage().isEmpty()) {
+                article.setCoverImage(dto.getCoverImage());
+            }
+            // 如果草稿有封面但DTO为空，保留草稿的封面
+            else if (article.getCoverImage() == null || article.getCoverImage().isEmpty()) {
+                article.setCoverImage(dto.getCoverImage());
+            }
+
+            article.setRelatedResourceId(dto.getRelatedResourceId());
+            article.setIsOriginal(dto.getIsOriginal() != null ? dto.getIsOriginal() : 1);
+            article.setStatus(1); // 已发布
+            article.setPublishTime(new Date()); // 设置发布时间
+            article.setUpdateTime(new Date());
+
+            articleDao.update(article);
+
+            // 删除旧标签关联，插入新标签
+            if (dto.getTags() != null) {
+                saveArticleTags(article.getArticleId(), dto.getTags());
+            }
+
+            log.info("文章从草稿发布成功：articleId={}, title={}", article.getArticleId(), dto.getTitle());
+
         } else {
-            article.setSummary(dto.getSummary());
+            // 新建模式：直接发布
+            article = new MyArticle();
+            article.setTitle(dto.getTitle());
+            article.setContent(dto.getContent());
+            article.setSummary(dto.getSummary() != null ? dto.getSummary() : generateSummary(dto.getContent()));
+            article.setCategoryId(dto.getCategoryId());
+            article.setCoverImage(dto.getCoverImage()); // 直接使用封面
+            article.setAuthorId(userId);
+            article.setAuthorName(userName);
+            article.setRelatedResourceId(dto.getRelatedResourceId());
+            article.setIsOriginal(dto.getIsOriginal() != null ? dto.getIsOriginal() : 1);
+            article.setStatus(1); // 已发布
+            article.setViewCount(0);
+            article.setLikeCount(0);
+            article.setCollectCount(0);
+            article.setPublishTime(new Date()); // 设置发布时间
+            article.setCreateTime(new Date());
+            article.setUpdateTime(new Date());
+
+            articleDao.save(article);
+
+            // 插入标签关联
+            if (dto.getTags() != null && !dto.getTags().isEmpty()) {
+                saveArticleTags(article.getArticleId(), dto.getTags());
+            }
+
+            log.info("文章发布成功：articleId={}, title={}", article.getArticleId(), dto.getTitle());
         }
 
-        article.setCategoryId(dto.getCategoryId());
-        article.setAuthorId(userId);
-        article.setAuthorName(userName);
-        article.setRelatedResourceId(dto.getRelatedResourceId());
-        article.setIsOriginal(dto.getIsOriginal() != null ? dto.getIsOriginal() : 1);
-        article.setStatus(1); // 已发布
-        article.setViewCount(0);
-        article.setLikeCount(0);
-        article.setCollectCount(0);
-        article.setCreateTime(new Date());
-        article.setUpdateTime(new Date());
-
-        articleDao.save(article);
-
-        // 处理标签 - 使用标签ID列表
-        if (dto.getTags() != null && !dto.getTags().isEmpty()) {
-            saveArticleTags(article.getArticleId(), dto.getTags());
-        }
-
-        log.info("文章发布成功：articleId={}, title={}", article.getArticleId(), dto.getTitle());
         return article;
     }
 
@@ -127,39 +170,68 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public MyArticle saveDraft(ArticlePublishDto dto, Integer userId, String userName) {
-        MyArticle article = new MyArticle();
-        article.setTitle(dto.getTitle());
-        article.setContent(dto.getContent());
+        MyArticle article;
 
-        // 如果没有摘要，自动生成
-        if (dto.getSummary() == null || dto.getSummary().trim().isEmpty()) {
-            String summary = generateSummary(dto.getContent());
-            article.setSummary(summary);
+        // 判断是新建还是更新草稿
+        if (dto.getArticleId() != null && dto.getArticleId() > 0) {
+            // 更新现有草稿
+            article = articleDao.getArticleById(dto.getArticleId());
+            if (article == null) {
+                throw new RuntimeException("文章不存在");
+            }
+
+            // 验证权限
+            if (!article.getAuthorId().equals(userId)) {
+                throw new RuntimeException("无权编辑他人文章");
+            }
+
+            article.setTitle(dto.getTitle());
+            article.setContent(dto.getContent());
+            article.setSummary(dto.getSummary() != null ? dto.getSummary() : generateSummary(dto.getContent()));
+            article.setCategoryId(dto.getCategoryId());
+            article.setCoverImage(dto.getCoverImage()); // 保存封面
+            article.setRelatedResourceId(dto.getRelatedResourceId());
+            article.setIsOriginal(dto.getIsOriginal() != null ? dto.getIsOriginal() : 1);
+            article.setStatus(0); // 保持草稿状态
+            article.setUpdateTime(new Date());
+
+            articleDao.update(article);
+
+            // 更新标签
+            if (dto.getTags() != null) {
+                saveArticleTags(article.getArticleId(), dto.getTags());
+            }
+
+            log.info("草稿更新成功：articleId={}, title={}", article.getArticleId(), dto.getTitle());
+
         } else {
-            article.setSummary(dto.getSummary());
+            // 创建新草稿
+            article = new MyArticle();
+            article.setTitle(dto.getTitle());
+            article.setContent(dto.getContent());
+            article.setSummary(dto.getSummary() != null ? dto.getSummary() : generateSummary(dto.getContent()));
+            article.setCategoryId(dto.getCategoryId());
+            article.setCoverImage(dto.getCoverImage()); // 保存封面
+            article.setAuthorId(userId);
+            article.setAuthorName(userName);
+            article.setRelatedResourceId(dto.getRelatedResourceId());
+            article.setIsOriginal(dto.getIsOriginal() != null ? dto.getIsOriginal() : 1);
+            article.setStatus(0); // 草稿
+            article.setViewCount(0);
+            article.setLikeCount(0);
+            article.setCollectCount(0);
+            article.setCreateTime(new Date());
+            article.setUpdateTime(new Date());
+
+            articleDao.save(article);
+
+            if (dto.getTags() != null && !dto.getTags().isEmpty()) {
+                saveArticleTags(article.getArticleId(), dto.getTags());
+            }
+
+            log.info("草稿保存成功：articleId={}, title={}", article.getArticleId(), dto.getTitle());
         }
 
-        article.setCategoryId(dto.getCategoryId());
-        article.setCoverImage(dto.getCoverImage());
-        article.setAuthorId(userId);
-        article.setAuthorName(userName);
-        article.setRelatedResourceId(dto.getRelatedResourceId());
-        article.setIsOriginal(dto.getIsOriginal() != null ? dto.getIsOriginal() : 1);
-        article.setStatus(0); // 草稿
-        article.setViewCount(0);
-        article.setLikeCount(0);
-        article.setCollectCount(0);
-        article.setCreateTime(new Date());
-        article.setUpdateTime(new Date());
-
-        articleDao.save(article);
-
-        // 处理标签 - 使用标签ID列表
-        if (dto.getTags() != null && !dto.getTags().isEmpty()) {
-            saveArticleTags(article.getArticleId(), dto.getTags());
-        }
-
-        log.info("草稿保存成功：articleId={}, title={}", article.getArticleId(), dto.getTitle());
         return article;
     }
 
@@ -298,5 +370,36 @@ public class ArticleServiceImpl implements ArticleService {
         dto.setTotalViews(((Number) map.getOrDefault("totalViews", 0)).longValue());
         dto.setTotalLikes(((Number) map.getOrDefault("totalLikes", 0)).longValue());
         return dto;
+    }
+
+    @Override
+    @Transactional
+    public boolean toggleLike(Integer articleId, Integer userId, String userName) {
+        MyArticle article = articleDao.getArticleById(articleId);
+        if (article == null) {
+            throw new RuntimeException("文章不存在");
+        }
+
+        // 检查是否已点赞
+        Integer recordId = articleDao.checkUserLike(articleId, userId);
+
+        if (recordId != null) {
+            // 已点赞，执行取消点赞
+            articleDao.cancelLike(recordId);
+            articleDao.decreaseLikeCount(articleId);
+            log.info("用户取消点赞：articleId={}, userId={}", articleId, userId);
+            return false; // 返回false表示未点赞状态
+        } else {
+            // 未点赞，执行点赞
+            articleDao.addLikeRecord(articleId, userId, userName, article.getTitle());
+            articleDao.increaseLikeCount(articleId);
+            log.info("用户点赞：articleId={}, userId={}", articleId, userId);
+            return true; // 返回true表示已点赞状态
+        }
+    }
+
+    @Override
+    public boolean checkUserLiked(Integer articleId, Integer userId) {
+        return articleDao.checkUserLike(articleId, userId) != null;
     }
 }

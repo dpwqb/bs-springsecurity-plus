@@ -41,4 +41,7 @@ public class ArticlePublishDto {
 
     @ApiModelProperty(value = "状态（0草稿 1已发布）")
     private Integer status = 1;
+
+    @ApiModelProperty(value = "文章ID（编辑时必传）")
+    private Integer articleId;
 }

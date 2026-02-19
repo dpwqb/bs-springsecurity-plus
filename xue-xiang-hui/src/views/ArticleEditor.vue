@@ -199,11 +199,22 @@ const handleSaveDraft = async () => {
 
   saving.value = true
   try {
-    const res = await saveDraft(articleForm.value)
+    // 传递articleId，支持更新草稿
+    const payload = {
+      ...articleForm.value,
+      articleId: articleId.value || undefined
+    }
+
+    const res = await saveDraft(payload)
     if (res.code === 0) {
       ElMessage.success('草稿保存成功')
+      // 如果是新建草稿，更新URL中的ID
+      if (!articleId.value && res.data[0].articleId) {
+        router.replace('/article/edit/' + res.data[0].articleId)
+      }
     }
   } catch (error) {
+    console.error('保存失败:', error)
     ElMessage.error('保存失败')
   } finally {
     saving.value = false
@@ -222,12 +233,21 @@ const publish = async () => {
 
   publishing.value = true
   try {
-    const res = await publishArticle(articleForm.value)
+    // 传递articleId，支持编辑模式
+    const payload = {
+      ...articleForm.value,
+      articleId: articleId.value || undefined // 编辑时传递，新建时不传
+    }
+
+    const res = await publishArticle(payload)
     if (res.code === 0) {
       ElMessage.success('发布成功')
-      router.push('/article/' + res.data.id)
+      // 修复：正确解析返回结构获取articleId
+      const publishedArticleId = res.data[0].articleId
+      router.push('/article/' + publishedArticleId)
     }
   } catch (error) {
+    console.error('发布失败:', error)
     ElMessage.error('发布失败')
   } finally {
     publishing.value = false

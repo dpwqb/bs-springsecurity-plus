@@ -174,15 +174,47 @@ public class ArticleController {
 
     @PostMapping("/{articleId}/like")
     @ResponseBody
-    @ApiOperation(value = "点赞文章")
+    @ApiOperation(value = "点赞/取消点赞文章")
     @MyLog("点赞文章")
     public Result like(@PathVariable Integer articleId) {
         try {
-            articleService.increaseLikeCount(articleId);
-            return Result.ok().message("点赞成功");
+            Integer userId = SecurityUtils.getCurrentUser().getMyUser().getUserId();
+            String userName = SecurityUtils.getCurrentUser().getMyUser().getNickName();
+
+            boolean isLiked = articleService.toggleLike(articleId, userId, userName);
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("isLiked", isLiked);
+
+            return Result.ok()
+                    .data(java.util.Collections.singletonList(result))
+                    .message(isLiked ? "点赞成功" : "已取消点赞");
         } catch (Exception e) {
-            log.error("点赞失败", e);
-            return Result.error().message("点赞失败：" + e.getMessage());
+            log.error("点赞操作失败", e);
+            return Result.error().message("操作失败：" + e.getMessage());
+        }
+    }
+
+    @GetMapping("/{articleId}/like-status")
+    @ResponseBody
+    @ApiOperation(value = "获取用户点赞状态")
+    public Result getLikeStatus(@PathVariable Integer articleId) {
+        try {
+            Integer userId = SecurityUtils.getCurrentUser().getMyUser().getUserId();
+            boolean isLiked = articleService.checkUserLiked(articleId, userId);
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("isLiked", isLiked);
+
+            return Result.ok()
+                    .data(java.util.Collections.singletonList(result))
+                    .message("查询成功");
+        } catch (Exception e) {
+            Map<String, Object> result = new HashMap<>();
+            result.put("isLiked", false);
+            return Result.ok()
+                    .data(java.util.Collections.singletonList(result))
+                    .message("未登录");
         }
     }
 

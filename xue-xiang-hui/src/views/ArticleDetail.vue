@@ -69,9 +69,13 @@
 
           <!-- 操作按钮 -->
           <div class="action-buttons">
-            <el-button type="primary" @click="handleLike" :loading="likeLoading">
+            <el-button
+              :type="isLiked ? 'primary' : 'default'"
+              @click="handleLike"
+              :loading="likeLoading"
+            >
               <el-icon><StarFilled /></el-icon>
-              点赞 ({{ article.likeCount || 0 }})
+              {{ isLiked ? '已点赞' : '点赞' }} ({{ article.likeCount || 0 }})
             </el-button>
             <el-button @click="router.back()">
               <el-icon><Back /></el-icon>
@@ -130,7 +134,7 @@ import { useRouter, useRoute } from 'vue-router'
 import {
   User, Calendar, View, StarFilled, ChatDotRound, Back
 } from '@element-plus/icons-vue'
-import { getArticleDetail, likeArticle } from '@/api/article'
+import { getArticleDetail, likeArticle, getArticleLikeStatus } from '@/api/article'
 import AiChatSidebar from '@/components/AiChatSidebar.vue'
 import { ElMessage } from 'element-plus'
 
@@ -144,6 +148,7 @@ const article = ref({})
 const selectedText = ref('')
 const aiDrawerVisible = ref(false)
 const aiForceUpdate = ref(false)
+const isLiked = ref(false)
 
 const articleId = computed(() => {
   const id = Number(route.params.id)
@@ -188,16 +193,35 @@ const fetchArticleDetail = async () => {
   }
 }
 
+// 获取点赞状态
+const fetchLikeStatus = async () => {
+  try {
+    const res = await getArticleLikeStatus(articleId.value)
+    if (res.code === 0) {
+      isLiked.value = res.data[0].isLiked
+    }
+  } catch (error) {
+    console.error('获取点赞状态失败:', error)
+  }
+}
+
 // 点赞
 const handleLike = async () => {
   likeLoading.value = true
   try {
     const res = await likeArticle(articleId.value)
     if (res.code === 0) {
-      article.value.likeCount = (article.value.likeCount || 0) + 1
+      isLiked.value = res.data[0].isLiked
+      // 根据操作类型更新计数
+      if (isLiked.value) {
+        article.value.likeCount = (article.value.likeCount || 0) + 1
+      } else {
+        article.value.likeCount = Math.max(0, (article.value.likeCount || 0) - 1)
+      }
     }
   } catch (error) {
-    console.error('点赞失败:', error)
+    console.error('点赞操作失败:', error)
+    ElMessage.error('操作失败')
   } finally {
     likeLoading.value = false
   }
@@ -251,6 +275,7 @@ const formatDate = (dateStr) => {
 
 onMounted(() => {
   fetchArticleDetail()
+  fetchLikeStatus()
 
   // 监听全局点击事件
   document.addEventListener('click', (e) => {

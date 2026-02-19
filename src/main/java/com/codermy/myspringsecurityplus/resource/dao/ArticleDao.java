@@ -115,4 +115,39 @@ public interface ArticleDao {
      * @return 统计数据
      */
     Map<String, Object> getArticleStatistics();
+
+    /**
+     * 检查用户是否已点赞
+     * @param articleId 文章ID
+     * @param userId 用户ID
+     * @return 记录ID，未点赞返回null
+     */
+    Integer checkUserLike(@Param("articleId") Integer articleId, @Param("userId") Integer userId);
+
+    /**
+     * 添加点赞记录
+     * @param articleId 文章ID
+     * @param userId 用户ID
+     * @param userName 用户名
+     * @param articleTitle 文章标题
+     * @return 影响行数
+     */
+    int addLikeRecord(@Param("articleId") Integer articleId,
+                      @Param("userId") Integer userId,
+                      @Param("userName") String userName,
+                      @Param("articleTitle") String articleTitle);
+
+    /**
+     * 取消点赞（软删除）
+     * @param recordId 记录ID
+     * @return 影响行数
+     */
+    int cancelLike(@Param("recordId") Integer recordId);
+
+    /**
+     * 减少点赞数
+     * @param articleId 文章ID
+     * @return 影响行数
+     */
+    int decreaseLikeCount(Integer articleId);
 }
