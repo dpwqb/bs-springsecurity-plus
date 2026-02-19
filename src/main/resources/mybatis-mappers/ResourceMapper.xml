@@ -23,7 +23,15 @@
             <if test="params.categoryId != null and params.categoryId != ''">
                 AND r.category_id = #{params.categoryId}
             </if>
-            <if test="params.fileType != null and params.fileType != ''">
+            <!-- 优先使用扩展名列表筛选（支持多扩展名分类） -->
+            <if test="params.fileTypeList != null and !params.fileTypeList.isEmpty()">
+                AND r.file_type IN
+                <foreach collection="params.fileTypeList" item="ext" open="(" separator="," close=")">
+                    #{ext}
+                </foreach>
+            </if>
+            <!-- 兼容精确匹配单个扩展名的情况 -->
+            <if test="params.fileTypeList == null and params.fileType != null and params.fileType != ''">
                 AND r.file_type = #{params.fileType}
             </if>
             <if test="params.uploaderId != null and params.uploaderId != ''">

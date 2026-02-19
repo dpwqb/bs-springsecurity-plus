@@ -1,6 +1,7 @@
 package com.codermy.myspringsecurityplus.resource.service.impl;
 
 import com.codermy.myspringsecurityplus.resource.config.FileUploadConfig;
+import com.codermy.myspringsecurityplus.resource.config.FileTypeConfig;
 import com.codermy.myspringsecurityplus.resource.dao.ResourceDao;
 import com.codermy.myspringsecurityplus.resource.dao.TagDao;
 import com.codermy.myspringsecurityplus.resource.dto.ResourceStatisticsDto;
@@ -35,8 +36,19 @@ public class ResourceServiceImpl implements ResourceService {
     @Autowired
     private FileUploadConfig fileUploadConfig;
 
+    @Autowired
+    private FileTypeConfig fileTypeConfig;
+
     @Override
     public List<ResourceInfo> getResourcesByPage(Map<String, Object> params) {
+        // 处理文件类型参数：将分类转换为扩展名列表
+        String fileType = (String) params.get("fileType");
+        if (fileType != null && !fileType.isEmpty()) {
+            List<String> extensions = fileTypeConfig.getExtensionsByCategory(fileType);
+            if (!extensions.isEmpty()) {
+                params.put("fileTypeList", extensions);
+            }
+        }
         return resourceDao.getResourceByPage(params);
     }
 
@@ -167,8 +179,12 @@ public class ResourceServiceImpl implements ResourceService {
      * 文件校验
      */
     private void validateFile(MultipartFile file) {
-        if (file == null || file.isEmpty()) {
+        if (file == null) {
             throw new RuntimeException("请选择要上传的文件");
+        }
+
+        if (file.isEmpty()) {
+            throw new RuntimeException("文件不能为空");
         }
 
         // 大小校验

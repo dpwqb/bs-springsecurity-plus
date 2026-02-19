@@ -52,8 +52,11 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional
     public int delete(Integer tagId) {
-        // TODO: 删除标签时需要同时删除关联关系
-
+        // 先删除文章标签关联
+        tagDao.deleteArticleTagRelationByTagId(tagId);
+        // 再删除资源标签关联
+        tagDao.deleteResourceTagRelationByTagId(tagId);
+        // 最后删除标签
         return tagDao.delete(tagId);
     }
 

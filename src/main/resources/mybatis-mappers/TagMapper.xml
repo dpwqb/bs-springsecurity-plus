@@ -71,4 +71,14 @@
         DELETE FROM article_tag_relation WHERE article_id = #{articleId}
     </delete>
 
+    <!-- 根据标签ID删除文章标签关联 -->
+    <delete id="deleteArticleTagRelationByTagId">
+        DELETE FROM article_tag_relation WHERE tag_id = #{tagId}
+    </delete>
+
+    <!-- 根据标签ID删除资源标签关联 -->
+    <delete id="deleteResourceTagRelationByTagId">
+        DELETE FROM resource_tag_relation WHERE tag_id = #{tagId}
+    </delete>
+
 </mapper>

@@ -24,14 +24,17 @@ export function getResourceDetail(id) {
 /**
  * 上传资源
  */
-export function uploadResource(data) {
+export function uploadResource(data, onProgress) {
   return request({
     url: '/resource/upload',
     method: 'post',
     data,
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
+    onUploadProgress: onProgress ? (progressEvent) => {
+      if (progressEvent.total > 0) {
+        const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+        onProgress(percent)
+      }
+    } : undefined
   })
 }
 
@@ -163,5 +166,16 @@ export function getDownloadStats() {
   return request({
     url: '/download/count',
     method: 'get'
+  })
+}
+
+/**
+ * 更新资源状态
+ */
+export function updateResourceStatus(resourceId, status) {
+  return request({
+    url: `/resource/${resourceId}/status`,
+    method: 'put',
+    params: { status }
   })
 }

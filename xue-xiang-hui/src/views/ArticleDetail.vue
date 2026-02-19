@@ -52,6 +52,19 @@
             @mouseup="handleTextSelection"
           ></div>
 
+          <!-- 标签展示 -->
+          <div class="article-tags" v-if="article.tags && article.tags.length > 0">
+            <el-tag
+              v-for="tag in article.tags"
+              :key="tag.tagId"
+              type="info"
+              size="small"
+              style="margin-right: 8px; margin-bottom: 8px;"
+            >
+              {{ tag.tagName }}
+            </el-tag>
+          </div>
+
           <el-divider />
 
           <!-- 操作按钮 -->
@@ -361,6 +374,13 @@ onMounted(() => {
   display: flex;
   gap: 15px;
   justify-content: center;
+}
+
+.article-tags {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f5f7fa;
+  border-radius: 8px;
 }
 
 .ai-card {

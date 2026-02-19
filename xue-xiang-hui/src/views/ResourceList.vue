@@ -219,9 +219,9 @@ const selectedTags = ref([])
 const fileTypeOptions = [
   { label: '全部', value: '' },
   { label: 'PDF', value: 'pdf' },
-  { label: 'Word', value: 'doc' },
+  { label: 'Word', value: 'word' },
   { label: 'PPT', value: 'ppt' },
-  { label: '其他', value: 'other' }
+  { label: '压缩包', value: 'archive' }
 ]
 
 // 查询参数

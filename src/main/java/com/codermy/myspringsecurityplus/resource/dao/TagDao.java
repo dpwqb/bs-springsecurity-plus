@@ -98,4 +98,18 @@ public interface TagDao {
      * @return 影响行数
      */
     int deleteArticleTagRelation(Integer articleId);
+
+    /**
+     * 根据标签ID删除文章标签关联
+     * @param tagId 标签ID
+     * @return 影响行数
+     */
+    int deleteArticleTagRelationByTagId(@Param("tagId") Integer tagId);
+
+    /**
+     * 根据标签ID删除资源标签关联
+     * @param tagId 标签ID
+     * @return 影响行数
+     */
+    int deleteResourceTagRelationByTagId(@Param("tagId") Integer tagId);
 }

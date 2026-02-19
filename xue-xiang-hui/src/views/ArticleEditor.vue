@@ -51,8 +51,7 @@
             v-model="articleForm.tags"
             multiple
             filterable
-            allow-create
-            placeholder="选择或创建标签"
+            placeholder="选择标签"
           >
             <el-option
               v-for="tag in tags"
@@ -106,7 +105,7 @@ import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import { ElMessage } from 'element-plus'
 import AppHeader from '@/components/AppHeader.vue'
 import { Back, Plus } from '@element-plus/icons-vue'
-import { getArticleCategories, getArticleDetail, publishArticle, saveDraft, uploadArticleCover } from '@/api/article'
+import { getArticleCategories, getArticleDetail, publishArticle, saveDraft, uploadArticleCover, getTags } from '@/api/article'
 
 const router = useRouter()
 const route = useRoute()
@@ -248,7 +247,7 @@ const loadArticle = async () => {
         summary: article.summary,
         content: article.content,
         coverImage: article.coverImage,
-        tags: article.tags?.map(t => t.id) || []
+        tags: article.tags?.map(t => t.tagId) || []
       }
       // 更新编辑器内容
       if (editorRef.value) {
@@ -272,8 +271,24 @@ const loadCategories = async () => {
   }
 }
 
+const loadTags = async () => {
+  try {
+    const res = await getTags()
+    if (res.code === 0) {
+      // 数据结构适配：tagId -> id, tagName -> name
+      tags.value = (res.data || []).map(t => ({
+        id: t.tagId,
+        name: t.tagName
+      }))
+    }
+  } catch (error) {
+    console.error('获取标签失败:', error)
+  }
+}
+
 onMounted(async () => {
   await loadCategories()
+  await loadTags()
   if (isEdit.value) {
     await loadArticle()
   }

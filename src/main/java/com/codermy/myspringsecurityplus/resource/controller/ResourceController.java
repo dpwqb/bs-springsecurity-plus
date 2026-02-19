@@ -173,14 +173,15 @@ public class ResourceController {
     @ApiOperation(value = "我上传的资源")
     public Result<ResourceInfo> getMyResources(
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer limit) {
+            @RequestParam(defaultValue = "10") Integer limit,
+            @RequestParam(required = false) Integer status) {
 
         try {
             Integer userId = SecurityUtils.getCurrentUser().getMyUser().getUserId();
             Map<String, Object> params = new HashMap<>();
             params.put("page", page);
             params.put("limit", limit);
-            params.put("status", null); // 显示所有状态
+            params.put("status", status);
 
             return Result.ok()
                     .data(resourceService.getResourcesByUploaderId(userId, params))
@@ -204,6 +205,42 @@ public class ResourceController {
         } catch (Exception e) {
             log.error("删除资源失败", e);
             return Result.error().message("删除失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 更新资源状态
+     */
+    @PutMapping("/{resourceId}/status")
+    @ResponseBody
+    @ApiOperation(value = "更新资源状态")
+    public Result updateResourceStatus(
+            @PathVariable Integer resourceId,
+            @RequestParam Integer status) {
+
+        try {
+            Integer userId = SecurityUtils.getCurrentUser().getMyUser().getUserId();
+
+            // 验证资源所有权
+            ResourceInfo resource = resourceService.getResourceById(resourceId);
+            if (resource == null) {
+                return Result.error().message("资源不存在");
+            }
+            if (!resource.getUploaderId().equals(userId)) {
+                return Result.error().message("无权限修改此资源");
+            }
+
+            // 验证状态值
+            if (status != 0 && status != 1) {
+                return Result.error().message("无效的状态值");
+            }
+
+            boolean success = resourceService.updateStatus(resourceId, status);
+            return Result.judge(success ? 1 : 0, status == 1 ? "发布" : "下架");
+
+        } catch (Exception e) {
+            log.error("更新资源状态失败", e);
+            return Result.error().message("操作失败：" + e.getMessage());
         }
     }
 }

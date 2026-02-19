@@ -74,7 +74,7 @@ public class FileUploadConfig {
     /**
      * 允许的文件类型
      */
-    private String allowedTypes = "pdf,doc,docx,ppt,pptx,txt";
+    private String allowedTypes = "pdf,doc,docx,ppt,pptx,txt,zip,7z,rar";
 
     /**
      * 获取允许的文件类型列表

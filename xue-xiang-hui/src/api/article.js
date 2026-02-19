@@ -97,3 +97,13 @@ export function uploadArticleCover(formData) {
     }
   })
 }
+
+/**
+ * 获取所有标签
+ */
+export function getTags() {
+  return request({
+    url: '/tag',
+    method: 'get'
+  })
+}

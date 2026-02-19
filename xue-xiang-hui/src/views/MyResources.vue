@@ -262,7 +262,8 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   getMyResources,
   deleteResource,
-  getResourceCategories
+  getResourceCategories,
+  updateResourceStatus
 } from '@/api/resource'
 
 const router = useRouter()
@@ -410,23 +411,37 @@ const handleSaveEdit = async () => {
 }
 
 // 切换发布状态
-const toggleStatus = (resource) => {
+const toggleStatus = async (resource) => {
   const newStatus = resource.status === 1 ? 0 : 1
   const statusText = newStatus === 1 ? '发布' : '下架'
 
-  ElMessageBox.confirm(
-    `确定要${statusText}该资源吗？`,
-    '提示',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
+  try {
+    await ElMessageBox.confirm(
+      `确定要${statusText}该资源吗？`,
+      '提示',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    )
+
+    // 调用后端接口
+    const res = await updateResourceStatus(resource.resourceId, newStatus)
+
+    if (res.code === 0) {
+      resource.status = newStatus
+      ElMessage.success(`${statusText}成功`)
+      // 刷新列表以更新统计数据
+      fetchResources()
+    } else {
+      ElMessage.error(res.msg || `${statusText}失败`)
     }
-  ).then(() => {
-    // TODO: 调用更新状态接口
-    resource.status = newStatus
-    ElMessage.success(`${statusText}成功`)
-  }).catch(() => {})
+  } catch (error) {
+    if (error !== 'cancel') {
+      ElMessage.error(`${statusText}失败`)
+    }
+  }
 }
 
 // 删除资源

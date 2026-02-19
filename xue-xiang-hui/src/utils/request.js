@@ -30,7 +30,8 @@ request.interceptors.request.use(
     }
 
     // 同样处理 data 中的参数（用于 POST/PUT 请求）
-    if (config.data && typeof config.data === 'object') {
+    // 注意：FormData 对象不应被遍历和修改，否则会破坏 multipart 数据
+    if (config.data && typeof config.data === 'object' && !(config.data instanceof FormData)) {
       Object.keys(config.data).forEach(key => {
         const value = config.data[key]
         if (value === undefined ||

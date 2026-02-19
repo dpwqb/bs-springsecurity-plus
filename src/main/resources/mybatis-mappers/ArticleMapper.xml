@@ -44,7 +44,8 @@
     </select>
 
     <!-- 保存文章 -->
-    <insert id="save" parameterType="com.codermy.myspringsecurityplus.resource.entity.MyArticle">
+    <insert id="save" parameterType="com.codermy.myspringsecurityplus.resource.entity.MyArticle"
+            useGeneratedKeys="true" keyProperty="articleId" keyColumn="article_id">
         INSERT INTO my_article
         (title, content, summary, category_id, cover_image, author_id, author_name,
          related_resource_id, related_resource_title, status, is_top, is_recommend, is_original)
