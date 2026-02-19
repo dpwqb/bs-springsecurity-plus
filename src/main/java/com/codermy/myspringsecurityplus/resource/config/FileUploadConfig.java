@@ -26,7 +26,7 @@ public class FileUploadConfig {
     /**
      * 文件存储路径
      */
-    private String path = "D:/learn-share/uploads/";
+    private String path = "./uploads/";
 
     /**
      * 初始化文件上传路径

@@ -3,6 +3,8 @@ package com.codermy.myspringsecurityplus.resource.controller;
 import com.codermy.myspringsecurityplus.common.utils.Result;
 import com.codermy.myspringsecurityplus.log.aop.MyLog;
 import com.codermy.myspringsecurityplus.resource.dto.ArticlePublishDto;
+import com.codermy.myspringsecurityplus.resource.dto.ArticleListResponseDto;
+import com.codermy.myspringsecurityplus.resource.dto.ArticleResponseDto;
 import com.codermy.myspringsecurityplus.resource.entity.MyArticle;
 import com.codermy.myspringsecurityplus.resource.entity.ResourceTag;
 import com.codermy.myspringsecurityplus.resource.service.ArticleService;
@@ -40,7 +42,7 @@ public class ArticleController {
     @GetMapping
     @ResponseBody
     @ApiOperation(value = "文章列表（分页、搜索）")
-    public Result<MyArticle> list(
+    public Result<ArticleListResponseDto> list(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer limit,
             @RequestParam(required = false) String keyword,
@@ -55,14 +57,14 @@ public class ArticleController {
         params.put("status", status); // null: 全部, 0: 草稿, 1: 已发布
 
         return Result.ok()
-                .data(articleService.getArticlesByPage(params))
+                .data(articleService.getArticleListDtosByPage(params))
                 .message("查询成功");
     }
 
     @GetMapping("/{articleId}")
     @ResponseBody
     @ApiOperation(value = "文章详情")
-    public Result<MyArticle> getDetail(@PathVariable Integer articleId) {
+    public Result getDetail(@PathVariable Integer articleId) {
         MyArticle article = articleService.getArticleById(articleId);
         if (article == null) {
             return Result.error().message("文章不存在");
@@ -137,7 +139,7 @@ public class ArticleController {
     @GetMapping("/my")
     @ResponseBody
     @ApiOperation(value = "我的文章")
-    public Result<MyArticle> getMyArticles(
+    public Result<ArticleListResponseDto> getMyArticles(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer limit) {
 
@@ -149,7 +151,7 @@ public class ArticleController {
             params.put("status", null); // 显示所有状态
 
             return Result.ok()
-                    .data(articleService.getArticlesByAuthorId(userId, params))
+                    .data(articleService.getArticleListDtosByAuthorId(userId, params))
                     .message("查询成功");
 
         } catch (Exception e) {

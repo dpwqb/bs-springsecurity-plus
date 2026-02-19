@@ -85,10 +85,10 @@
             <Editor
               class="editor-content"
               :style="{ height: '500px' }"
-              v-model="articleForm.content"
               :defaultConfig="editorConfig"
               mode="default"
               @onCreated="handleCreated"
+              @onChange="handleContentChange"
             />
           </div>
         </el-form-item>
@@ -98,7 +98,7 @@
 </template>
 
 <script setup>
-import { ref, shallowRef, onMounted, onBeforeUnmount, computed } from 'vue'
+import { ref, shallowRef, onMounted, onBeforeUnmount, computed, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import '@wangeditor/editor/dist/css/style.css'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
@@ -128,9 +128,13 @@ const articleForm = ref({
   tags: []
 })
 
+// 用于存储待设置的内容
+const pendingContent = ref('')
+
 const toolbarConfig = {}
 const editorConfig = {
   placeholder: '请输入文章内容...',
+  defaultContent: [], // 设置默认内容为空数组
   MENU_CONF: {
     uploadImage: {
       server: '/api/upload/image',
@@ -142,6 +146,27 @@ const editorConfig = {
 
 const handleCreated = (editor) => {
   editorRef.value = editor
+  // 如果有待设置的内容，现在设置
+  if (pendingContent.value) {
+    nextTick(() => {
+      try {
+        // 确保内容是有效的HTML，如果是空字符串则设置为默认空内容
+        const content = pendingContent.value || '<p><br></p>'
+        editor.setHtml(content)
+        pendingContent.value = ''
+      } catch (error) {
+        console.error('设置编辑器内容失败:', error)
+        // 失败时设置为空内容
+        editor.setHtml('<p><br></p>')
+        pendingContent.value = ''
+      }
+    })
+  }
+}
+
+const handleContentChange = (editor) => {
+  // 同步编辑器内容到表单
+  articleForm.value.content = editor.getHtml()
 }
 
 const beforeCoverUpload = async (file) => {
@@ -187,7 +212,7 @@ const getCoverImageUrl = (path) => {
     return path
   }
   // 使用相对路径，通过静态资源映射访问
-  return '/uploads/' + path
+  return path
 }
 
 
@@ -199,9 +224,13 @@ const handleSaveDraft = async () => {
 
   saving.value = true
   try {
+    // 从编辑器获取最新内容
+    const content = editorRef.value ? editorRef.value.getHtml() : ''
+
     // 传递articleId，支持更新草稿
     const payload = {
       ...articleForm.value,
+      content: content, // 使用编辑器的最新内容
       articleId: articleId.value || undefined
     }
 
@@ -226,7 +255,10 @@ const publish = async () => {
     ElMessage.warning('请输入文章标题')
     return
   }
-  if (!articleForm.value.content) {
+
+  // 从编辑器获取最新内容
+  const content = editorRef.value ? editorRef.value.getHtml() : ''
+  if (!content || content === '<p><br></p>') {
     ElMessage.warning('请输入文章内容')
     return
   }
@@ -236,6 +268,7 @@ const publish = async () => {
     // 传递articleId，支持编辑模式
     const payload = {
       ...articleForm.value,
+      content: content, // 使用编辑器的最新内容
       articleId: articleId.value || undefined // 编辑时传递，新建时不传
     }
 
@@ -261,17 +294,42 @@ const loadArticle = async () => {
     const res = await getArticleDetail(articleId.value)
     if (res.code === 0) {
       const article = res.data[0].article
+
+      // 处理内容：确保是有效的HTML字符串
+      let content = article.content || ''
+      // 如果内容不是以HTML标签开头，包装在p标签中
+      if (content && !content.trim().startsWith('<')) {
+        content = `<p>${content}</p>`
+      }
+      // 空内容设置为默认的空行
+      if (!content || content.trim() === '') {
+        content = '<p><br></p>'
+      }
+
+      // 更新表单（但不设置content，避免v-model冲突）
       articleForm.value = {
         title: article.title,
         categoryId: article.categoryId,
         summary: article.summary,
-        content: article.content,
+        content: '', // 先设置为空，由编辑器管理
         coverImage: article.coverImage,
         tags: article.tags?.map(t => t.tagId) || []
       }
-      // 更新编辑器内容
+
+      // 设置编辑器内容
       if (editorRef.value) {
-        editorRef.value.setHtml(article.content)
+        // 编辑器已创建，直接设置
+        nextTick(() => {
+          try {
+            editorRef.value.setHtml(content)
+          } catch (error) {
+            console.error('设置编辑器内容失败:', error)
+            editorRef.value.setHtml('<p><br></p>')
+          }
+        })
+      } else {
+        // 编辑器未创建，存储待设置的内容
+        pendingContent.value = content
       }
     }
   } catch (error) {

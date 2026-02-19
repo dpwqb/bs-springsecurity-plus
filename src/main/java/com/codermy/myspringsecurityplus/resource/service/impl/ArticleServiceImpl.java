@@ -5,10 +5,12 @@ import com.codermy.myspringsecurityplus.resource.dao.ArticleDao;
 import com.codermy.myspringsecurityplus.resource.dao.TagDao;
 import com.codermy.myspringsecurityplus.resource.dto.ArticlePublishDto;
 import com.codermy.myspringsecurityplus.resource.dto.ArticleStatisticsDto;
+import com.codermy.myspringsecurityplus.resource.dto.ArticleListResponseDto;
 import com.codermy.myspringsecurityplus.resource.entity.MyArticle;
 import com.codermy.myspringsecurityplus.resource.entity.ResourceTag;
 import com.codermy.myspringsecurityplus.resource.service.ArticleService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,11 +18,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * 文章服务实现类
@@ -401,5 +405,49 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public boolean checkUserLiked(Integer articleId, Integer userId) {
         return articleDao.checkUserLike(articleId, userId) != null;
+    }
+
+    // ==================== DTO方法实现 ====================
+
+    @Override
+    public ArticleListResponseDto getArticleListDtoById(Integer articleId) {
+        MyArticle entity = articleDao.getArticleById(articleId);
+        return toListDto(entity);
+    }
+
+    @Override
+    public List<ArticleListResponseDto> getArticleListDtosByPage(Map<String, Object> params) {
+        List<MyArticle> entities = articleDao.getArticleByPage(params);
+        return toListDto(entities);
+    }
+
+    @Override
+    public List<ArticleListResponseDto> getArticleListDtosByAuthorId(Integer authorId, Map<String, Object> params) {
+        List<MyArticle> entities = articleDao.getArticlesByAuthorId(authorId, params);
+        return toListDto(entities);
+    }
+
+    /**
+     * 将单个实体转换为列表DTO
+     */
+    private ArticleListResponseDto toListDto(MyArticle entity) {
+        if (entity == null) {
+            return null;
+        }
+        ArticleListResponseDto dto = new ArticleListResponseDto();
+        BeanUtils.copyProperties(entity, dto);
+        return dto;
+    }
+
+    /**
+     * 将实体列表转换为列表DTO
+     */
+    private List<ArticleListResponseDto> toListDto(List<MyArticle> entities) {
+        if (entities == null || entities.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return entities.stream()
+                .map(this::toListDto)
+                .collect(Collectors.toList());
     }
 }

@@ -92,7 +92,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/swagger-ui.html",
                         "/webjars/**",
                         "/v2/**",
-                        "/druid/**");
+                        "/druid/**",
+                        "/uploads/**");
     }
 
     /**
@@ -139,7 +140,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                     "/api/article/category/**",
                     "/api/tag/**",
                     "/api/resource/category/**",
-                    "/api/download/**"
+                    "/api/download/**",
+                    "/uploads/**"
                 ).permitAll()
                 // AI 对话需要认证
                 .antMatchers("/api/ai/**").authenticated()

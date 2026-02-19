@@ -1,6 +1,7 @@
 package com.codermy.myspringsecurityplus.resource.service;
 
 import com.codermy.myspringsecurityplus.resource.dto.ArticlePublishDto;
+import com.codermy.myspringsecurityplus.resource.dto.ArticleListResponseDto;
 import com.codermy.myspringsecurityplus.resource.entity.MyArticle;
 import com.codermy.myspringsecurityplus.resource.dto.ArticleStatisticsDto;
 import org.springframework.web.multipart.MultipartFile;
@@ -142,4 +143,28 @@ public interface ArticleService {
      * @return true表示已点赞，false表示未点赞
      */
     boolean checkUserLiked(Integer articleId, Integer userId);
+
+    // ==================== DTO方法（返回带有完整URL的DTO） ====================
+
+    /**
+     * 根据ID查询文章详情DTO（包含完整的coverImage URL）
+     * @param articleId 文章ID
+     * @return 文章详情DTO
+     */
+    ArticleListResponseDto getArticleListDtoById(Integer articleId);
+
+    /**
+     * 分页查询文章列表DTO（包含完整的coverImage URL）
+     * @param params 查询参数（keyword, categoryId, status等）
+     * @return 文章列表DTO
+     */
+    List<ArticleListResponseDto> getArticleListDtosByPage(Map<String, Object> params);
+
+    /**
+     * 查询用户的文章列表DTO（包含完整的coverImage URL）
+     * @param authorId 作者ID
+     * @param params 查询参数
+     * @return 文章列表DTO
+     */
+    List<ArticleListResponseDto> getArticleListDtosByAuthorId(Integer authorId, Map<String, Object> params);
 }
