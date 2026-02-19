@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 资源分类管理Controller
@@ -59,6 +60,16 @@ public class ResourceCategoryController {
         }
         return Result.ok()
                 .data(java.util.Collections.singletonList(category))
+                .message("查询成功");
+    }
+
+    @GetMapping("/hot")
+    @ResponseBody
+    @ApiOperation(value = "查询热门分类")
+    public Result getHotCategories() {
+        List<Map<String, Object>> categories = resourceCategoryService.getHotCategories();
+        return Result.ok()
+                .data(categories)
                 .message("查询成功");
     }
 

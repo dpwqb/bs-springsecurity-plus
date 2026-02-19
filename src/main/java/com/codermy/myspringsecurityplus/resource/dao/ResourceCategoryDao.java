@@ -4,6 +4,7 @@ import com.codermy.myspringsecurityplus.resource.entity.ResourceCategory;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 资源分类数据访问层
@@ -61,4 +62,10 @@ public interface ResourceCategoryDao {
      * @return 分类信息
      */
     ResourceCategory checkCategoryNameUnique(String categoryName, Integer categoryId);
+
+    /**
+     * 查询热门分类（带资源数量）
+     * @return 热门分类列表
+     */
+    List<Map<String, Object>> getHotCategories();
 }

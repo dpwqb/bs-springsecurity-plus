@@ -3,6 +3,7 @@ package com.codermy.myspringsecurityplus.resource.service;
 import com.codermy.myspringsecurityplus.resource.entity.ResourceCategory;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 资源分类服务接口
@@ -59,4 +60,10 @@ public interface ResourceCategoryService {
      * @return true: 唯一, false: 不唯一
      */
     boolean checkCategoryNameUnique(String categoryName, Integer categoryId);
+
+    /**
+     * 获取热门分类列表（带资源数量）
+     * @return 热门分类列表
+     */
+    List<Map<String, Object>> getHotCategories();
 }

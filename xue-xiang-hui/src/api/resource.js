@@ -128,6 +128,16 @@ export function getResourceCategories() {
 }
 
 /**
+ * 热门分类列表（带资源数量）
+ */
+export function getHotCategories() {
+  return request({
+    url: '/resource/category/hot',
+    method: 'get'
+  })
+}
+
+/**
  * 标签列表
  */
 export function getTags() {

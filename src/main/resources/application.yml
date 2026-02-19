@@ -93,6 +93,10 @@ ai:
   api:
     base-url: http://localhost:11434     # 可改为 https://api.deepseek.com 等
     key: ollama                          # 用户自行配置
-    model: qwen2.5:1.5b                  # 可改为 deepseek-chat 等
-    timeout: 30000                       # 30秒超时
+    model: qwen2.5:14b                   # 可改为 deepseek-chat 等
+    timeout: 180000                       # 30秒超时
     max-tokens: 1000                     # 最大token数
+    # 多轮对话配置
+    enable-multi-turn-chat: true         # 是否启用多轮对话
+    max-history-turns: 10                # 历史对话最大轮数
+    history-days-limit: 7                # 历史对话时间范围（天）

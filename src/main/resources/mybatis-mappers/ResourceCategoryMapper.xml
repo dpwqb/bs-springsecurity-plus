@@ -68,4 +68,24 @@
         LIMIT 1
     </select>
 
+    <!-- 查询热门分类（带资源数量，仅包含有资源的分类） -->
+    <select id="getHotCategories" resultType="java.util.HashMap">
+        SELECT
+            rc.category_id as categoryId,
+            rc.parent_id as parentId,
+            rc.category_name as categoryName,
+            rc.description,
+            rc.icon,
+            rc.sort_order as sortOrder,
+            rc.status,
+            COUNT(r.resource_id) as resourceCount
+        FROM resource_category rc
+        LEFT JOIN resource_info r ON rc.category_id = r.category_id AND r.status = 1
+        WHERE rc.status = 1
+        GROUP BY rc.category_id, rc.parent_id, rc.category_name, rc.description, rc.icon, rc.sort_order, rc.status
+        HAVING resourceCount > 0
+        ORDER BY resourceCount DESC, rc.sort_order ASC
+        LIMIT 6
+    </select>
+
 </mapper>

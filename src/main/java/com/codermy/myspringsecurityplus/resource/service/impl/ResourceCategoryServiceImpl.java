@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 资源分类服务实现类
@@ -72,5 +73,10 @@ public class ResourceCategoryServiceImpl implements ResourceCategoryService {
     public boolean checkCategoryNameUnique(String categoryName, Integer categoryId) {
         ResourceCategory category = resourceCategoryDao.checkCategoryNameUnique(categoryName, categoryId);
         return category == null;
+    }
+
+    @Override
+    public List<Map<String, Object>> getHotCategories() {
+        return resourceCategoryDao.getHotCategories();
     }
 }

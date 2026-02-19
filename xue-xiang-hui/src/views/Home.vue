@@ -240,11 +240,16 @@ const notices = ref([
   { id: 3, type: 'warning', tag: '通知', title: '资源审核规则调整' }
 ])
 
-// 获取分类列表
+// 获取分类列表（热门分类）
 const fetchCategories = async () => {
-  const result = await resourceStore.fetchCategories()
-  if (result.success) {
-    categories.value = result.data.slice(0, 8)
+  try {
+    const { getHotCategories } = await import('@/api/resource')
+    const res = await getHotCategories()
+    if (res.code === 0) {
+      categories.value = res.data || []
+    }
+  } catch (error) {
+    console.error('获取热门分类失败:', error)
   }
 }
 
