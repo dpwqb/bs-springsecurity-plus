@@ -619,7 +619,7 @@
       return editor.getParam('api_key', editor.getParam('imagetools_api_key', '', 'string'), 'string');
     };
     var getUploadTimeout = function (editor) {
-      return editor.getParam('images_upload_timeout', 30000, 'number');
+      return editor.getParam('images_upload_timeout', 90000, 'number');
     };
     var shouldReuseFilename = function (editor) {
       return editor.getParam('images_reuse_filename', false, 'boolean');

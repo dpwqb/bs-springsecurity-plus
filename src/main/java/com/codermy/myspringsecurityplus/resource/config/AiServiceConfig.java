@@ -35,12 +35,28 @@ public class AiServiceConfig {
     /**
      * 请求超时时间（毫秒）
      */
-    private Integer timeout = 30000; // 30秒
+    private Integer timeout = 120000;
 
     /**
      * 最大token数
      */
     private Integer maxTokens = 1000;
+
+    /**
+     * 是否启用多轮对话（默认启用）
+     */
+    private Boolean enableMultiTurnChat = true;
+
+    /**
+     * 获取历史对话的最大轮数（默认10轮）
+     */
+    private Integer maxHistoryTurns = 10;
+
+    /**
+     * 历史对话的时间范围（天，默认7天）
+     * 超过此天数的历史对话将被忽略
+     */
+    private Integer historyDaysLimit = 7;
 
     /**
      * 检查配置是否有效

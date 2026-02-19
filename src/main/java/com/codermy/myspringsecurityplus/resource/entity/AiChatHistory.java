@@ -31,11 +31,8 @@ public class AiChatHistory extends BaseEntity {
     /** 会话ID（UUID） */
     private String sessionId;
 
-    /** 用户选中的问题文本 */
+    /** 用户问题（用户实际输入的问题文本） */
     private String questionText;
-
-    /** 问题上下文（网页内容片段） */
-    private String questionContext;
 
     /** AI回答内容 */
     private String answerText;

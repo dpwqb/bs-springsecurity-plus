@@ -7,9 +7,9 @@
     <!-- 保存对话记录 -->
     <insert id="save" parameterType="com.codermy.myspringsecurityplus.resource.entity.AiChatHistory">
         INSERT INTO ai_chat_history
-        (user_id, session_id, question_text, question_context, answer_text, model_name, tokens_used, create_time)
+        (user_id, session_id, question_text, answer_text, model_name, tokens_used, create_time)
         VALUES
-        (#{userId}, #{sessionId}, #{questionText}, #{questionContext}, #{answerText}, #{modelName}, #{tokensUsed}, #{createTime})
+        (#{userId}, #{sessionId}, #{questionText}, #{answerText}, #{modelName}, #{tokensUsed}, #{createTime})
     </insert>
 
     <!-- 根据会话ID查询对话历史 -->

@@ -74,9 +74,13 @@ const props = defineProps({
     type: String,
     default: ''
   },
-  resourceId: {
+  articleId: {
     type: Number,
     default: null
+  },
+  forceUpdate: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -87,6 +91,7 @@ const question = ref('')
 const loading = ref(false)
 const chatHistoryRef = ref(null)
 const sessionId = ref(generateSessionId())
+const lastSelectedText = ref('') // 记录上次的选中文本
 
 // 生成会话ID
 function generateSessionId() {
@@ -190,10 +195,18 @@ const formatTime = (time) => {
 
 // 监听选中文本变化，自动添加到输入框
 watch(
-  () => props.selectedText,
-  (newText) => {
-    if (newText && question.value === '') {
-      question.value = `请帮我解释这段内容："${newText.substring(0, 50)}${newText.length > 50 ? '...' : ''}"`
+  [() => props.selectedText, () => props.forceUpdate],
+  ([newText]) => {
+    // 当有选中文本且文本真正变化或强制更新时
+    if (newText && (newText !== lastSelectedText.value || props.forceUpdate)) {
+      lastSelectedText.value = newText
+
+      // 自动生成友好的提示问题
+      const truncatedText = newText.length > 100
+        ? newText.substring(0, 100) + '...'
+        : newText
+
+      question.value = `请帮我解读这段内容：\n${truncatedText}`
     }
   }
 )

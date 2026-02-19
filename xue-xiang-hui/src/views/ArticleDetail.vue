@@ -46,7 +46,11 @@
 
           <el-divider />
 
-          <div class="article-content" v-html="article.content"></div>
+          <div
+            class="article-content"
+            v-html="article.content"
+            @mouseup="handleTextSelection"
+          ></div>
 
           <el-divider />
 
@@ -63,7 +67,7 @@
           </div>
         </el-card>
 
-        <!-- AI助手 -->
+        <!-- AI助手提示卡片 -->
         <el-card class="ai-card">
           <template #header>
             <div class="ai-header">
@@ -71,18 +75,9 @@
                 <el-icon><ChatDotRound /></el-icon>
                 AI 智能解读
               </h3>
-              <p class="ai-hint">选中文章内容，点击"AI 解读"按钮获取智能解答</p>
+              <p class="ai-hint">💡 选中上方文章中的任意文本，即可唤起 AI 智能解读功能</p>
             </div>
           </template>
-
-          <!-- 文章内容用于选择 -->
-          <div
-            class="article-text"
-            @mouseup="handleTextSelection"
-            ref="contentRef"
-          >
-            {{ stripHtml(article.content) }}
-          </div>
         </el-card>
       </el-main>
     </el-container>
@@ -109,6 +104,7 @@
       <AiChatSidebar
         :selected-text="selectedText"
         :article-id="articleId"
+        :force-update="aiForceUpdate"
         @close="aiDrawerVisible = false"
       />
     </el-drawer>
@@ -134,7 +130,7 @@ const likeLoading = ref(false)
 const article = ref({})
 const selectedText = ref('')
 const aiDrawerVisible = ref(false)
-const contentRef = ref(null)
+const aiForceUpdate = ref(false)
 
 const articleId = computed(() => {
   const id = Number(route.params.id)
@@ -200,7 +196,22 @@ const handleTextSelection = () => {
   const text = selection.toString().trim()
 
   if (text.length > 0) {
-    selectedText.value = text
+    const range = selection.getRangeAt(0)
+    const container = range.commonAncestorContainer
+
+    // 检查选中的文本是否在文章内容区域内
+    const articleContent = document.querySelector('.article-content')
+    if (articleContent && articleContent.contains(container)) {
+      // 确保选中的是有效文本内容（至少2个字符）
+      const cleanText = text.replace(/\s+/g, ' ').trim()
+      if (cleanText.length >= 2) {
+        selectedText.value = cleanText
+      } else {
+        selectedText.value = ''
+      }
+    } else {
+      selectedText.value = ''
+    }
   } else {
     selectedText.value = ''
   }
@@ -208,6 +219,8 @@ const handleTextSelection = () => {
 
 // 打开AI对话
 const openAiChat = () => {
+  // 切换强制更新标志，确保输入框能正确填充选中文本
+  aiForceUpdate.value = !aiForceUpdate.value
   aiDrawerVisible.value = true
 }
 
@@ -223,18 +236,14 @@ const formatDate = (dateStr) => {
   return date.toLocaleString('zh-CN')
 }
 
-// 去除HTML标签
-const stripHtml = (html) => {
-  if (!html) return ''
-  return html.replace(/<[^>]+>/g, '')
-}
-
 onMounted(() => {
   fetchArticleDetail()
 
   // 监听全局点击事件
   document.addEventListener('click', (e) => {
-    if (contentRef.value && !contentRef.value.contains(e.target)) {
+    // 点击文章内容区域外部时，清除选中文本
+    const articleContent = document.querySelector('.article-content')
+    if (articleContent && !articleContent.contains(e.target)) {
       selectedText.value = ''
     }
   })
@@ -310,6 +319,19 @@ onMounted(() => {
   font-size: 16px;
   line-height: 1.8;
   color: #303133;
+  user-select: text; /* 确保文本可选择 */
+  cursor: text; /* 文本选择光标 */
+}
+
+/* 选中文本的高亮样式 */
+.article-content ::selection {
+  background: rgba(64, 158, 255, 0.2);
+  color: #303133;
+}
+
+.article-content ::-moz-selection {
+  background: rgba(64, 158, 255, 0.2);
+  color: #303133;
 }
 
 .article-content :deep(img) {
@@ -357,18 +379,6 @@ onMounted(() => {
   margin: 8px 0 0 0;
   font-size: 13px;
   color: #909399;
-}
-
-.article-text {
-  font-size: 14px;
-  line-height: 1.8;
-  color: #606266;
-  padding: 15px;
-  background: #f5f7fa;
-  border-radius: 4px;
-  max-height: 300px;
-  overflow-y: auto;
-  user-select: text;
 }
 
 /* 浮动AI按钮 */
