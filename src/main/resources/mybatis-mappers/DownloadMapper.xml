@@ -29,4 +29,10 @@
         SELECT COUNT(*) FROM download_record WHERE user_id = #{userId}
     </select>
 
+    <!-- 统计今日下载次数 -->
+    <select id="countTodayDownloads" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM download_record
+        WHERE DATE(download_time) = CURDATE()
+    </select>
+
 </mapper>

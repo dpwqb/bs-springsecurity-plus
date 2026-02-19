@@ -43,4 +43,10 @@ public interface DownloadDao {
      * @return 下载次数
      */
     Long countDownloadsByUserId(Integer userId);
+
+    /**
+     * 统计今日下载次数
+     * @return 今日下载次数
+     */
+    Integer countTodayDownloads();
 }

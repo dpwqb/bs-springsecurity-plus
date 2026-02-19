@@ -2,6 +2,7 @@ package com.codermy.myspringsecurityplus.resource.controller;
 
 import com.codermy.myspringsecurityplus.common.utils.Result;
 import com.codermy.myspringsecurityplus.log.aop.MyLog;
+import com.codermy.myspringsecurityplus.resource.dto.PlatformStatisticsDto;
 import com.codermy.myspringsecurityplus.resource.entity.ResourceInfo;
 import com.codermy.myspringsecurityplus.resource.service.ResourceService;
 import com.codermy.myspringsecurityplus.resource.service.DownloadService;
@@ -64,6 +65,16 @@ public class ResourceController {
 
         return Result.ok()
                 .data(resourceService.getResourcesByPage(params))
+                .message("查询成功");
+    }
+
+    @GetMapping("/statistics")
+    @ResponseBody
+    @ApiOperation(value = "获取平台统计数据（公开）")
+    public Result getPlatformStatistics() {
+        PlatformStatisticsDto stats = resourceService.getPlatformStatistics();
+        return Result.ok()
+                .data(java.util.Collections.singletonList(stats))
                 .message("查询成功");
     }
 

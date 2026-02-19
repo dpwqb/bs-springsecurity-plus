@@ -283,11 +283,20 @@ const fetchHotTags = async () => {
 
 // 获取统计数据
 const fetchStats = async () => {
-  // TODO: 对接后端统计接口
-  stats.value = {
-    totalResources: 1234,
-    totalUsers: 567,
-    todayDownloads: 89
+  try {
+    const { getPlatformStatistics } = await import('@/api/resource')
+    const res = await getPlatformStatistics()
+    if (res.code === 0 && res.data && res.data.length > 0) {
+      const data = res.data[0]
+      stats.value = {
+        totalResources: data.totalResources || 0,
+        totalUsers: data.totalUsers || 0,
+        todayDownloads: data.todayDownloads || 0
+      }
+    }
+  } catch (error) {
+    console.error('获取统计数据失败:', error)
+    // 保留默认值作为降级处理
   }
 }
 

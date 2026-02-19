@@ -189,3 +189,13 @@ export function updateResourceStatus(resourceId, status) {
     params: { status }
   })
 }
+
+/**
+ * 平台统计数据（公开）
+ */
+export function getPlatformStatistics() {
+  return request({
+    url: '/resource/statistics',
+    method: 'get'
+  })
+}

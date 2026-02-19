@@ -1,5 +1,6 @@
 package com.codermy.myspringsecurityplus.resource.service;
 
+import com.codermy.myspringsecurityplus.resource.dto.PlatformStatisticsDto;
 import com.codermy.myspringsecurityplus.resource.dto.ResourceStatisticsDto;
 import com.codermy.myspringsecurityplus.resource.entity.ResourceInfo;
 import org.springframework.web.multipart.MultipartFile;
@@ -102,4 +103,10 @@ public interface ResourceService {
      * @return 统计数据DTO
      */
     ResourceStatisticsDto getResourceStatistics();
+
+    /**
+     * 获取平台统计数据（公开）
+     * @return 平台统计数据DTO
+     */
+    PlatformStatisticsDto getPlatformStatistics();
 }

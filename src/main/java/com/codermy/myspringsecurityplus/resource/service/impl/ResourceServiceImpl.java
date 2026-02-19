@@ -4,6 +4,8 @@ import com.codermy.myspringsecurityplus.resource.config.FileUploadConfig;
 import com.codermy.myspringsecurityplus.resource.config.FileTypeConfig;
 import com.codermy.myspringsecurityplus.resource.dao.ResourceDao;
 import com.codermy.myspringsecurityplus.resource.dao.TagDao;
+import com.codermy.myspringsecurityplus.resource.dao.DownloadDao;
+import com.codermy.myspringsecurityplus.resource.dto.PlatformStatisticsDto;
 import com.codermy.myspringsecurityplus.resource.dto.ResourceStatisticsDto;
 import com.codermy.myspringsecurityplus.resource.entity.ResourceInfo;
 import com.codermy.myspringsecurityplus.resource.entity.ResourceTag;
@@ -34,10 +36,16 @@ public class ResourceServiceImpl implements ResourceService {
     private TagDao tagDao;
 
     @Autowired
+    private DownloadDao downloadDao;
+
+    @Autowired
     private FileUploadConfig fileUploadConfig;
 
     @Autowired
     private FileTypeConfig fileTypeConfig;
+
+    @Autowired
+    private com.codermy.myspringsecurityplus.admin.dao.UserDao userDao;
 
     @Override
     public List<ResourceInfo> getResourcesByPage(Map<String, Object> params) {
@@ -171,6 +179,23 @@ public class ResourceServiceImpl implements ResourceService {
         dto.setToday(todayCount);
         dto.setTotalDownloads(((Number) stats.getOrDefault("totalDownloads", 0)).longValue());
         dto.setTotalViews(((Number) stats.getOrDefault("totalViews", 0)).longValue());
+
+        return dto;
+    }
+
+    @Override
+    public PlatformStatisticsDto getPlatformStatistics() {
+        PlatformStatisticsDto dto = new PlatformStatisticsDto();
+
+        // 获取资源总数（使用现有查询）
+        Map<String, Object> resourceStats = resourceDao.getResourceStatistics();
+        dto.setTotalResources(((Number) resourceStats.getOrDefault("total", 0)).longValue());
+
+        // 获取用户总数
+        dto.setTotalUsers(userDao.countAllUser());
+
+        // 获取今日下载次数
+        dto.setTodayDownloads(downloadDao.countTodayDownloads());
 
         return dto;
     }

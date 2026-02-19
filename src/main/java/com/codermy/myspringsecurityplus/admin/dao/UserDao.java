@@ -23,8 +23,8 @@ public interface UserDao {
      List<MyUser> getFuzzyUserByPage( MyUser myUser);
 
     //计算所有用户数量
-    // @Select("select count(*) from My_user")
-    // Long countAllUser();
+    @Select("select count(*) from my_user")
+    Long countAllUser();
 
     /**
      *
