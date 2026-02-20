@@ -67,8 +67,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     @Transactional
-    public ResourceInfo upload(MultipartFile file, String title, Integer categoryId,
-                                String description, String tags, Integer userId, String userName) {
+    public ResourceInfo upload(MultipartFile file, String title, Integer categoryId, String description, String tags, Integer userId, String userName) {
         // 1. 文件校验
         validateFile(file);
 
@@ -124,8 +123,118 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     @Transactional
     public int deleteResource(Integer resourceId) {
-        // TODO: 删除文件（可选）
+        // 1. 获取资源信息（在删除前需要文件路径）
+        ResourceInfo resource = resourceDao.getResourceById(resourceId);
+        if (resource == null) {
+            return 0;
+        }
+
+        // 2. 将文件移动到回收站（而不是直接删除）
+        moveToRecycleBin(resource.getFilePath(), resource.getResourceId());
+
+        // 3. 删除资源标签关联
+        tagDao.deleteResourceTagRelation(resourceId);
+
+        // 4. 删除下载记录
+        downloadDao.deleteByResourceId(resourceId);
+
+        // 5. 删除数据库记录
         return resourceDao.delete(resourceId);
+    }
+
+    /**
+     * 将文件移动到回收站
+     * @param relativePath 原始相对路径
+     * @param resourceId 资源ID（用于创建唯一文件名）
+     */
+    private void moveToRecycleBin(String relativePath, Integer resourceId) {
+        try {
+            String sourcePath = fileUploadConfig.getPath() + relativePath;
+            File sourceFile = new File(sourcePath);
+
+            if (!sourceFile.exists()) {
+                log.warn("源文件不存在，跳过移动: {}", sourcePath);
+                return;
+            }
+
+            // 创建回收站目录: /recycle/bin/
+            String recycleDir = fileUploadConfig.getPath() + "recycle/bin/";
+            File recycleDirFile = new File(recycleDir);
+            if (!recycleDirFile.exists()) {
+                recycleDirFile.mkdirs();
+            }
+
+            // 生成目标文件名：原文件名_资源ID_时间戳.扩展名
+            String originalFileName = sourceFile.getName();
+            String extension = originalFileName.contains(".")
+                ? originalFileName.substring(originalFileName.lastIndexOf("."))
+                : "";
+            String baseName = originalFileName.contains(".")
+                ? originalFileName.substring(0, originalFileName.lastIndexOf("."))
+                : originalFileName;
+
+            String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            String newFileName = baseName + "_" + resourceId + "_" + timestamp + extension;
+            String targetPath = recycleDir + newFileName;
+
+            // 移动文件
+            File targetFile = new File(targetPath);
+
+            // 如果目标文件已存在，添加序号
+            int counter = 1;
+            while (targetFile.exists()) {
+                newFileName = baseName + "_" + resourceId + "_" + timestamp + "_" + counter + extension;
+                targetPath = recycleDir + newFileName;
+                targetFile = new File(targetPath);
+                counter++;
+            }
+
+            boolean moved = sourceFile.renameTo(targetFile);
+            if (moved) {
+                log.info("文件已移动到回收站: {} -> {}", sourcePath, targetPath);
+            } else {
+                log.warn("文件移动到回收站失败: {}", sourcePath);
+            }
+        } catch (Exception e) {
+            log.error("移动文件到回收站时发生错误: {}", relativePath, e);
+            // 不抛出异常，避免影响数据库删除操作
+        }
+    }
+
+    /**
+     * 清理回收站中指定天数之前的文件
+     * @param days 保留天数
+     * @return 清理的文件数量
+     */
+    public int cleanRecycleBin(int days) {
+        try {
+            String recycleDir = fileUploadConfig.getPath() + "recycle/bin/";
+            File recycleDirFile = new File(recycleDir);
+
+            if (!recycleDirFile.exists() || !recycleDirFile.isDirectory()) {
+                return 0;
+            }
+
+            long cutoffTime = System.currentTimeMillis() - (days * 24L * 60 * 60 * 1000);
+            int cleanedCount = 0;
+
+            File[] files = recycleDirFile.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.lastModified() < cutoffTime) {
+                        if (file.delete()) {
+                            cleanedCount++;
+                            log.info("清理回收站文件: {}", file.getName());
+                        }
+                    }
+                }
+            }
+
+            return cleanedCount;
+        } catch (Exception e) {
+            log.error("清理回收站失败", e);
+            return 0;
+        }
     }
 
     @Override

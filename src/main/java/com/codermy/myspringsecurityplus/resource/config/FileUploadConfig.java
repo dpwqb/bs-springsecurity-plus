@@ -108,24 +108,29 @@ public class FileUploadConfig {
 
     /**
      * 解析相对路径为绝对路径
-     * 优先级：JAR所在目录（生产） > 当前工作目录（开发）
+     * 开发环境：查找项目根目录（包含 pom.xml 的目录）
+     * 生产环境：使用 JAR 文件所在目录
      */
     private String resolveRelativePath(String relativePath) {
-        // 获取应用 Home 目录（JAR 文件所在目录或类路径根目录）
-        ApplicationHome home = new ApplicationHome(getClass());
-        File jarDir = home.getSource() != null ? home.getSource().getParentFile() : null;
         File workingDir = new File(System.getProperty("user.dir"));
-
         Path baseDir;
 
-        // 优先使用 JAR 文件所在目录（生产环境）
-        if (jarDir != null && jarDir.exists()) {
-            baseDir = jarDir.toPath();
-            log.info("使用 JAR 文件所在目录作为基准：{}", jarDir.getAbsolutePath());
+        // 1. 先检查是否在 IDE 开发环境（查找项目根目录）
+        File projectRoot = findProjectRoot(workingDir);
+        if (projectRoot != null) {
+            baseDir = projectRoot.toPath();
+            log.info("检测到开发环境，使用项目根目录作为基准：{}", projectRoot.getAbsolutePath());
         } else {
-            // 降级到当前工作目录（开发环境）
-            baseDir = workingDir.toPath();
-            log.info("使用当前工作目录作为基准：{}", workingDir.getAbsolutePath());
+            // 2. 生产环境：使用 JAR 文件所在目录
+            ApplicationHome home = new ApplicationHome(getClass());
+            File jarDir = home.getSource() != null ? home.getSource().getParentFile() : null;
+            if (jarDir != null && jarDir.exists()) {
+                baseDir = jarDir.toPath();
+                log.info("检测到生产环境，使用 JAR 文件所在目录作为基准：{}", jarDir.getAbsolutePath());
+            } else {
+                baseDir = workingDir.toPath();
+                log.info("使用当前工作目录作为基准：{}", workingDir.getAbsolutePath());
+            }
         }
 
         // 解析相对路径部分（移除 ./ 或 ~ 前缀）
@@ -134,7 +139,7 @@ public class FileUploadConfig {
             .replaceFirst("^\\.\\\\", "")
             .replaceFirst("^~/", "");
 
-        // 确保路径以 / 或 \ 结尾
+        // 确保路径以分隔符结尾
         if (!relativePart.endsWith("/") && !relativePart.endsWith("\\")) {
             relativePart = relativePart + File.separator;
         }
@@ -143,11 +148,37 @@ public class FileUploadConfig {
         Path absolutePath = baseDir.resolve(relativePart);
         String resolvedPath = absolutePath.normalize().toAbsolutePath().toString();
 
-        // 确保路径以分隔符结尾（用于后续拼接子目录）
+        // 确保路径以分隔符结尾
         if (!resolvedPath.endsWith("/") && !resolvedPath.endsWith("\\")) {
             resolvedPath = resolvedPath + File.separator;
         }
 
         return resolvedPath;
+    }
+
+    /**
+     * 查找项目根目录
+     * 通过向上遍历，找到包含 pom.xml 或 src 目录的父目录
+     */
+    private File findProjectRoot(File startDir) {
+        File current = startDir;
+        int maxIterations = 10; // 防止无限循环
+        int iterations = 0;
+
+        while (current != null && iterations < maxIterations) {
+            // 检查是否包含 Maven/Gradle 项目标识文件
+            File pomFile = new File(current, "pom.xml");
+            File gradleFile = new File(current, "build.gradle");
+            File srcDir = new File(current, "src");
+
+            if (pomFile.exists() || gradleFile.exists() || srcDir.exists()) {
+                return current;
+            }
+
+            current = current.getParentFile();
+            iterations++;
+        }
+
+        return null;
     }
 }

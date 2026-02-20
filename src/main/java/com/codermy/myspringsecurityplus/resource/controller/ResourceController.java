@@ -12,7 +12,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -207,10 +206,28 @@ public class ResourceController {
     @DeleteMapping("/{resourceId}")
     @ResponseBody
     @ApiOperation(value = "删除资源")
-    @PreAuthorize("hasAnyAuthority('resource:delete')")
     @MyLog("删除资源")
     public Result delete(@PathVariable Integer resourceId) {
         try {
+            Integer userId = SecurityUtils.getCurrentUser().getMyUser().getUserId();
+
+            // 验证资源所有权或管理员权限
+            ResourceInfo resource = resourceService.getResourceById(resourceId);
+            if (resource == null) {
+                return Result.error().message("资源不存在");
+            }
+
+            // 检查是否是资源上传者或有删除权限
+            boolean isOwner = resource.getUploaderId().equals(userId);
+            boolean hasDeletePermission = SecurityUtils.getCurrentUser()
+                    .getAuthorities()
+                    .stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("resource:delete"));
+
+            if (!isOwner && !hasDeletePermission) {
+                return Result.error().message("无权限删除此资源");
+            }
+
             int result = resourceService.deleteResource(resourceId);
             return Result.judge(result, "删除");
         } catch (Exception e) {

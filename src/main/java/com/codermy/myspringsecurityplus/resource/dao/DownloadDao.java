@@ -49,4 +49,11 @@ public interface DownloadDao {
      * @return 今日下载次数
      */
     Integer countTodayDownloads();
+
+    /**
+     * 删除指定资源的所有下载记录
+     * @param resourceId 资源ID
+     * @return 影响行数
+     */
+    int deleteByResourceId(@Param("resourceId") Integer resourceId);
 }

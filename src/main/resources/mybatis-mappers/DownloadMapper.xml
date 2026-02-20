@@ -35,4 +35,9 @@
         WHERE DATE(download_time) = CURDATE()
     </select>
 
+    <!-- 删除指定资源的所有下载记录 -->
+    <delete id="deleteByResourceId">
+        DELETE FROM download_record WHERE resource_id = #{resourceId}
+    </delete>
+
 </mapper>
