@@ -58,6 +58,12 @@ request.interceptors.response.use(
 
     // 处理 blob 响应（文件下载）
     if (response.config.responseType === 'blob') {
+      // 检查 HTTP 状态码，404 表示文件不存在
+      if (response.status === 404) {
+        ElMessage.error('文件不存在或已被删除')
+        return Promise.reject(new Error('文件不存在或已被删除'))
+      }
+
       // 检查 blob 响应是否为错误（后端可能返回 JSON 错误作为 blob）
       return new Promise((resolve, reject) => {
         const reader = new FileReader()
@@ -105,7 +111,27 @@ request.interceptors.response.use(
   },
   error => {
     console.error('响应错误:', error)
-    ElMessage.error(error.message || '网络错误')
+
+    // 处理 HTTP 错误状态码
+    if (error.response) {
+      const status = error.response.status
+      if (status === 404) {
+        ElMessage.error('文件不存在或已被删除')
+      } else if (status === 401) {
+        ElMessage.error('请先登录')
+        localStorage.removeItem('token')
+        window.location.href = '/login'
+      } else if (status === 403) {
+        ElMessage.error('没有权限访问此资源')
+      } else if (status === 500) {
+        ElMessage.error('服务器错误，请稍后重试')
+      } else {
+        ElMessage.error(`请求失败 (${status})`)
+      }
+    } else {
+      ElMessage.error(error.message || '网络错误')
+    }
+
     return Promise.reject(error)
   }
 )
@@ -148,13 +174,13 @@ export function downloadFile(url, filename) {
     link.click()
     document.body.removeChild(link)
     window.URL.revokeObjectURL(downloadUrl)
+
+    ElMessage.success('下载成功')
   }).catch(error => {
     console.error('下载失败:', error)
-    // 如果是 401 错误，已经在响应拦截器中处理了
-    // 这里只处理其他错误
-    if (error.message && !error.message.includes('401')) {
-      throw error
-    }
+    // 错误已经在响应拦截器中处理并显示了提示消息
+    // 这里只是把错误继续抛出，让调用者可以处理
+    throw error
   })
 }
 

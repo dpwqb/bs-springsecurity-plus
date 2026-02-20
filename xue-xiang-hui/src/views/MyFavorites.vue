@@ -227,12 +227,9 @@ const viewResource = (id) => {
 const handleDownload = async (id) => {
   try {
     await downloadResourceFile(id)
-    ElMessage.success('下载成功')
   } catch (error) {
+    // 错误已经在 downloadFile 和 request.js 中处理
     console.error('下载失败:', error)
-    if (error.message && !error.message.includes('401')) {
-      ElMessage.error(error.message || '下载失败，请稍后重试')
-    }
   }
 }
 
