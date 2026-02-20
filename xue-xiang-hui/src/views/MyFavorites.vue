@@ -170,14 +170,28 @@ const fetchFavorites = async () => {
       let list = res.data || []
       total.value = list.length
 
+      // 映射后端返回的字段到前端需要的格式
+      favorites.value = list.map(item => ({
+        id: item.favoriteId,           // 使用后端返回的 favoriteId
+        favoriteId: item.favoriteId,
+        resourceId: item.resourceId,
+        title: item.title,
+        description: item.description,
+        uploaderName: item.uploaderName,
+        categoryName: item.categoryName,
+        downloadCount: item.downloadCount,
+        viewCount: item.viewCount,
+        fileType: item.fileType,
+        coverImage: item.coverImage,
+        favoriteTime: item.createTime   // 使用后端返回的 createTime
+      }))
+
       // 排序
       if (sortBy.value === 'time') {
-        list.sort((a, b) => new Date(b.favoriteTime) - new Date(a.favoriteTime))
+        favorites.value.sort((a, b) => new Date(b.favoriteTime) - new Date(a.favoriteTime))
       } else if (sortBy.value === 'downloads') {
-        list.sort((a, b) => (b.downloadCount || 0) - (a.downloadCount || 0))
+        favorites.value.sort((a, b) => (b.downloadCount || 0) - (a.downloadCount || 0))
       }
-
-      favorites.value = list
     }
   } catch (error) {
     console.error('获取收藏列表失败:', error)

@@ -18,11 +18,32 @@
         WHERE user_id = #{userId} AND resource_id = #{resourceId}
     </delete>
 
-    <!-- 查询用户的收藏记录 -->
+    <!-- 查询用户的收藏记录（包含资源详情） -->
     <select id="getFavoriteRecordsByUserId" resultType="com.codermy.myspringsecurityplus.resource.entity.FavoriteRecord">
-        SELECT f.* FROM favorite_record f
+        SELECT
+            f.favorite_id as favoriteId,
+            f.user_id as userId,
+            f.resource_id as resourceId,
+            f.create_time as createTime,
+            r.title,
+            r.description,
+            r.uploader_name as uploaderName,
+            r.download_count as downloadCount,
+            r.view_count as viewCount,
+            r.file_type as fileType,
+            r.cover_image as coverImage,
+            c.category_name as categoryName
+        FROM favorite_record f
+        LEFT JOIN resource_info r ON f.resource_id = r.resource_id
+        LEFT JOIN resource_category c ON r.category_id = c.category_id
         WHERE f.user_id = #{userId}
         ORDER BY f.create_time DESC
+        <if test="params.limit != null">
+            LIMIT #{params.limit}
+        </if>
+        <if test="params.offset != null">
+            OFFSET #{params.offset}
+        </if>
     </select>
 
     <!-- 检查是否已收藏 -->
