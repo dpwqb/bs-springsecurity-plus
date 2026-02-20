@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request, { downloadFile } from '@/utils/request'
 
 /**
  * 资源列表
@@ -39,10 +39,21 @@ export function uploadResource(data, onProgress) {
 }
 
 /**
- * 下载资源
+ * 下载资源（返回 URL，用于直接打开）
+ * @deprecated 请使用 downloadResourceFile 代替，以支持认证
  */
 export function downloadResource(id) {
   return `/api/resource/download/${id}`
+}
+
+/**
+ * 下载资源文件（带认证，推荐使用）
+ * @param {number} id - 资源 ID
+ * @param {string} filename - 文件名（可选）
+ * @returns {Promise}
+ */
+export function downloadResourceFile(id, filename) {
+  return downloadFile(`/resource/download/${id}`, filename)
 }
 
 /**

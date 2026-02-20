@@ -163,7 +163,7 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { Download, Star, StarFilled, View, ChatDotRound } from '@element-plus/icons-vue'
-import { getResourceDetail, downloadResource, toggleFavorite, checkFavorited } from '@/api/resource'
+import { getResourceDetail, downloadResourceFile, toggleFavorite, checkFavorited } from '@/api/resource'
 import AiChatSidebar from '@/components/AiChatSidebar.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import { ElMessage } from 'element-plus'
@@ -267,13 +267,22 @@ const checkFavoriteStatus = async () => {
 }
 
 // 下载资源
-const handleDownload = () => {
+const handleDownload = async () => {
   if (!resourceId.value) {
     return
   }
 
-  const url = downloadResource(resourceId.value)
-  window.open(url, '_blank')
+  try {
+    await downloadResourceFile(resourceId.value)
+    ElMessage.success('下载成功')
+  } catch (error) {
+    console.error('下载失败:', error)
+    // 401 错误已在 request.js 中处理，会自动跳转到登录页
+    // 其他错误在这里显示
+    if (error.message && !error.message.includes('401')) {
+      ElMessage.error(error.message || '下载失败，请稍后重试')
+    }
+  }
 }
 
 // 切换收藏状态

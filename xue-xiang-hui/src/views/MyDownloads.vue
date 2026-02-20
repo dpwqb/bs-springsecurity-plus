@@ -142,7 +142,7 @@ import {
   User,
   Clock
 } from '@element-plus/icons-vue'
-import { getMyDownloads, getDownloadStats, downloadResource } from '@/api/resource'
+import { getMyDownloads, getDownloadStats, downloadResourceFile } from '@/api/resource'
 import AppHeader from '@/components/AppHeader.vue'
 
 const router = useRouter()
@@ -211,9 +211,16 @@ const viewResource = (id) => {
 }
 
 // 下载资源
-const handleDownload = (id) => {
-  const url = downloadResource(id)
-  window.open(url, '_blank')
+const handleDownload = async (id) => {
+  try {
+    await downloadResourceFile(id)
+    ElMessage.success('下载成功')
+  } catch (error) {
+    console.error('下载失败:', error)
+    if (error.message && !error.message.includes('401')) {
+      ElMessage.error(error.message || '下载失败，请稍后重试')
+    }
+  }
 }
 
 // 格式化文件大小

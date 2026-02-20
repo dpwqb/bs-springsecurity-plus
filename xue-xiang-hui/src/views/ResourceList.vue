@@ -200,7 +200,7 @@ import {
   Upload,
   Download
 } from '@element-plus/icons-vue'
-import { getResourceList } from '@/api/resource'
+import { getResourceList, downloadResourceFile } from '@/api/resource'
 
 const router = useRouter()
 const route = useRoute()
@@ -327,16 +327,22 @@ const handleShare = (resource) => {
 }
 
 // 下载
-const handleDownload = (resource) => {
+const handleDownload = async (resource) => {
   if (!userStore.isLoggedIn) {
     ElMessage.warning('请先登录')
     router.push('/login')
     return
   }
 
-  const { downloadResource } = require('@/api/resource')
-  const url = downloadResource(resource.resourceId)
-  window.open(url, '_blank')
+  try {
+    await downloadResourceFile(resource.resourceId)
+    ElMessage.success('下载成功')
+  } catch (error) {
+    console.error('下载失败:', error)
+    if (error.message && !error.message.includes('401')) {
+      ElMessage.error(error.message || '下载失败，请稍后重试')
+    }
+  }
 }
 
 // 上传资源
