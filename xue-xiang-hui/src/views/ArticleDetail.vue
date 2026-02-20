@@ -1,27 +1,9 @@
 <template>
-  <div class="article-detail-container">
-    <el-container>
-      <!-- 顶部导航 -->
-      <el-header class="header">
-        <div class="header-content">
-          <div class="logo" @click="router.push('/')">
-            <h2>📚 学享汇</h2>
-          </div>
-          <el-menu
-            :default-active="activeMenu"
-            class="menu"
-            mode="horizontal"
-            @select="handleMenuSelect"
-          >
-            <el-menu-item index="/">首页</el-menu-item>
-            <el-menu-item index="/resources">资源库</el-menu-item>
-            <el-menu-item index="/articles">文章广场</el-menu-item>
-          </el-menu>
-        </div>
-      </el-header>
+  <div class="article-detail-page">
+    <AppHeader />
 
-      <!-- 文章内容 -->
-      <el-main class="main-content" v-loading="loading">
+    <!-- 文章内容 -->
+    <div class="page-container" v-loading="loading">
         <el-card class="article-card">
           <h1 class="article-title">{{ article.title }}</h1>
 
@@ -96,8 +78,7 @@
             </div>
           </template>
         </el-card>
-      </el-main>
-    </el-container>
+    </div>
 
     <!-- 浮动AI按钮 -->
     <transition name="fade">
@@ -136,11 +117,11 @@ import {
 } from '@element-plus/icons-vue'
 import { getArticleDetail, likeArticle, getArticleLikeStatus } from '@/api/article'
 import AiChatSidebar from '@/components/AiChatSidebar.vue'
+import AppHeader from '@/components/AppHeader.vue'
 import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 const route = useRoute()
-const activeMenu = ref('/articles')
 
 const loading = ref(false)
 const likeLoading = ref(false)
@@ -261,11 +242,6 @@ const openAiChat = () => {
   aiDrawerVisible.value = true
 }
 
-// 菜单选择
-const handleMenuSelect = (index) => {
-  router.push(index)
-}
-
 // 格式化日期
 const formatDate = (dateStr) => {
   if (!dateStr) return '-'
@@ -288,49 +264,27 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.article-detail-container {
+<style scoped lang="scss">
+@use '@/styles/variables.scss' as *;
+
+.article-detail-page {
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background-color: $bg-secondary;
+  padding-top: 64px; // AppHeader 高度
 }
 
-.header {
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 0;
-}
-
-.header-content {
-  display: flex;
-  align-items: center;
-  max-width: 1000px;
+.page-container {
+  max-width: $container-xxl;
   margin: 0 auto;
-  padding: 0 20px;
-}
+  padding: $spacing-xxl $spacing-lg;
 
-.logo {
-  margin-right: 40px;
-  cursor: pointer;
-}
-
-.logo h2 {
-  margin: 0;
-  color: #409EFF;
-}
-
-.menu {
-  flex: 1;
-  border-bottom: none;
-}
-
-.main-content {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 30px 20px;
+  @include respond-to('sm') {
+    padding: $spacing-xl $spacing-md;
+  }
 }
 
 .article-card {
-  margin-bottom: 20px;
+  margin-bottom: $spacing-xl;
 }
 
 .article-title {

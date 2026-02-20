@@ -1,28 +1,9 @@
 <template>
-  <div class="my-resources-container">
-    <el-container>
-      <!-- 顶部导航 -->
-      <el-header class="header">
-        <div class="header-content">
-          <div class="logo" @click="router.push('/')">
-            <h2>📚 学享汇</h2>
-          </div>
-          <el-menu
-            :default-active="activeMenu"
-            class="menu"
-            mode="horizontal"
-            @select="handleMenuSelect"
-          >
-            <el-menu-item index="/">首页</el-menu-item>
-            <el-menu-item index="/resources">资源库</el-menu-item>
-            <el-menu-item index="/articles">文章广场</el-menu-item>
-            <el-menu-item index="/my-resources">我的资源</el-menu-item>
-          </el-menu>
-        </div>
-      </el-header>
+  <div class="my-resources-page">
+    <AppHeader />
 
-      <!-- 主内容 -->
-      <el-main class="main-content">
+    <!-- 主内容 -->
+    <div class="page-container">
         <!-- 统计卡片 -->
         <el-row :gutter="20" class="stats-row">
           <el-col :xs="12" :sm="6" :md="6" :lg="6">
@@ -181,65 +162,64 @@
             @current-change="handlePageChange"
           />
         </div>
-      </el-main>
-    </el-container>
 
-    <!-- 编辑对话框 -->
-    <el-dialog
-      v-model="editDialogVisible"
-      title="编辑资源"
-      width="600px"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        ref="editFormRef"
-        :model="editForm"
-        :rules="editFormRules"
-        label-width="100px"
-      >
-        <el-form-item label="资源标题" prop="title">
-          <el-input
-            v-model="editForm.title"
-            placeholder="请输入资源标题"
-            maxlength="100"
-            show-word-limit
-          />
-        </el-form-item>
-
-        <el-form-item label="资源分类" prop="categoryId">
-          <el-select
-            v-model="editForm.categoryId"
-            placeholder="请选择分类"
-            style="width: 100%"
+        <!-- 编辑对话框 -->
+        <el-dialog
+          v-model="editDialogVisible"
+          title="编辑资源"
+          width="600px"
+          :close-on-click-modal="false"
+        >
+          <el-form
+            ref="editFormRef"
+            :model="editForm"
+            :rules="editFormRules"
+            label-width="100px"
           >
-            <el-option
-              v-for="category in categories"
-              :key="category.categoryId"
-              :label="category.categoryName"
-              :value="category.categoryId"
-            />
-          </el-select>
-        </el-form-item>
+            <el-form-item label="资源标题" prop="title">
+              <el-input
+                v-model="editForm.title"
+                placeholder="请输入资源标题"
+                maxlength="100"
+                show-word-limit
+              />
+            </el-form-item>
 
-        <el-form-item label="资源描述" prop="description">
-          <el-input
-            v-model="editForm.description"
-            type="textarea"
-            :rows="5"
-            placeholder="请输入资源描述"
-            maxlength="500"
-            show-word-limit
-          />
-        </el-form-item>
-      </el-form>
+            <el-form-item label="资源分类" prop="categoryId">
+              <el-select
+                v-model="editForm.categoryId"
+                placeholder="请选择分类"
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="category in categories"
+                  :key="category.categoryId"
+                  :label="category.categoryName"
+                  :value="category.categoryId"
+                />
+              </el-select>
+            </el-form-item>
 
-      <template #footer>
-        <el-button @click="editDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSaveEdit" :loading="saving">
-          保存
-        </el-button>
-      </template>
-    </el-dialog>
+            <el-form-item label="资源描述" prop="description">
+              <el-input
+                v-model="editForm.description"
+                type="textarea"
+                :rows="5"
+                placeholder="请输入资源描述"
+                maxlength="500"
+                show-word-limit
+              />
+            </el-form-item>
+          </el-form>
+
+          <template #footer>
+            <el-button @click="editDialogVisible = false">取消</el-button>
+            <el-button type="primary" @click="handleSaveEdit" :loading="saving">
+              保存
+            </el-button>
+          </template>
+        </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -265,9 +245,9 @@ import {
   getResourceCategories,
   updateResourceStatus
 } from '@/api/resource'
+import AppHeader from '@/components/AppHeader.vue'
 
 const router = useRouter()
-const activeMenu = ref('/my-resources')
 
 const loading = ref(false)
 const saving = ref(false)
@@ -470,11 +450,6 @@ const handleDelete = (resource) => {
   }).catch(() => {})
 }
 
-// 菜单选择
-const handleMenuSelect = (index) => {
-  router.push(index)
-}
-
 // 格式化日期
 const formatDate = (dateStr) => {
   if (!dateStr) return '-'
@@ -508,49 +483,27 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.my-resources-container {
+<style scoped lang="scss">
+@use '@/styles/variables.scss' as *;
+
+.my-resources-page {
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background-color: $bg-secondary;
+  padding-top: 64px;
 }
 
-.header {
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 0;
-}
-
-.header-content {
-  display: flex;
-  align-items: center;
-  max-width: 1400px;
+.page-container {
+  max-width: $container-xxl;
   margin: 0 auto;
-  padding: 0 20px;
-}
+  padding: $spacing-xxl $spacing-lg;
 
-.logo {
-  margin-right: 40px;
-  cursor: pointer;
-}
-
-.logo h2 {
-  margin: 0;
-  color: #409EFF;
-}
-
-.menu {
-  flex: 1;
-  border-bottom: none;
-}
-
-.main-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 20px;
+  @include respond-to('sm') {
+    padding: $spacing-xl $spacing-md;
+  }
 }
 
 .stats-row {
-  margin-bottom: 20px;
+  margin-bottom: $spacing-lg;
 }
 
 .stat-card {

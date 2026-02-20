@@ -1,28 +1,9 @@
 <template>
-  <div class="my-favorites-container">
-    <el-container>
-      <!-- 顶部导航 -->
-      <el-header class="header">
-        <div class="header-content">
-          <div class="logo" @click="router.push('/')">
-            <h2>📚 学享汇</h2>
-          </div>
-          <el-menu
-            :default-active="activeMenu"
-            class="menu"
-            mode="horizontal"
-            @select="handleMenuSelect"
-          >
-            <el-menu-item index="/">首页</el-menu-item>
-            <el-menu-item index="/resources">资源库</el-menu-item>
-            <el-menu-item index="/articles">文章广场</el-menu-item>
-            <el-menu-item index="/my-favorites">我的收藏</el-menu-item>
-          </el-menu>
-        </div>
-      </el-header>
+  <div class="my-favorites-page">
+    <AppHeader />
 
-      <!-- 主内容 -->
-      <el-main class="main-content">
+    <!-- 主内容 -->
+    <div class="page-container">
         <!-- 统计和排序栏 -->
         <el-card class="toolbar-card">
           <div class="toolbar">
@@ -145,8 +126,7 @@
             @current-change="handlePageChange"
           />
         </div>
-      </el-main>
-    </el-container>
+    </div>
   </div>
 </template>
 
@@ -167,9 +147,9 @@ import {
   removeFavorite,
   downloadResource
 } from '@/api/resource'
+import AppHeader from '@/components/AppHeader.vue'
 
 const router = useRouter()
-const activeMenu = ref('/my-favorites')
 
 const loading = ref(false)
 const favorites = ref([])
@@ -261,11 +241,6 @@ const handleRemoveFavorite = (item) => {
   }).catch(() => {})
 }
 
-// 菜单选择
-const handleMenuSelect = (index) => {
-  router.push(index)
-}
-
 // 格式化日期
 const formatDate = (dateStr) => {
   if (!dateStr) return '-'
@@ -278,49 +253,27 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.my-favorites-container {
+<style scoped lang="scss">
+@use '@/styles/variables.scss' as *;
+
+.my-favorites-page {
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background-color: $bg-secondary;
+  padding-top: 64px;
 }
 
-.header {
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 0;
-}
-
-.header-content {
-  display: flex;
-  align-items: center;
-  max-width: 1400px;
+.page-container {
+  max-width: $container-xxl;
   margin: 0 auto;
-  padding: 0 20px;
-}
+  padding: $spacing-xxl $spacing-lg;
 
-.logo {
-  margin-right: 40px;
-  cursor: pointer;
-}
-
-.logo h2 {
-  margin: 0;
-  color: #409EFF;
-}
-
-.menu {
-  flex: 1;
-  border-bottom: none;
-}
-
-.main-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 20px;
+  @include respond-to('sm') {
+    padding: $spacing-xl $spacing-md;
+  }
 }
 
 .toolbar-card {
-  margin-bottom: 20px;
+  margin-bottom: $spacing-lg;
 }
 
 .toolbar {

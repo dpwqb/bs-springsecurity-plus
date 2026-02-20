@@ -1,29 +1,10 @@
 <template>
-  <div class="upload-container">
-    <el-container>
-      <!-- 顶部导航 -->
-      <el-header class="header">
-        <div class="header-content">
-          <div class="logo" @click="router.push('/')">
-            <h2>📚 学享汇</h2>
-          </div>
-          <el-menu
-            :default-active="activeMenu"
-            class="menu"
-            mode="horizontal"
-            @select="handleMenuSelect"
-          >
-            <el-menu-item index="/">首页</el-menu-item>
-            <el-menu-item index="/resources">资源库</el-menu-item>
-            <el-menu-item index="/articles">文章广场</el-menu-item>
-            <el-menu-item index="/upload">上传资源</el-menu-item>
-          </el-menu>
-        </div>
-      </el-header>
+  <div class="upload-page">
+    <AppHeader />
 
-      <!-- 上传内容 -->
-      <el-main class="main-content">
-        <el-card class="upload-card">
+    <!-- 上传内容 -->
+    <div class="page-container">
+      <el-card class="upload-card">
           <template #header>
             <h2>上传资源</h2>
           </template>
@@ -156,8 +137,7 @@
             </el-form-item>
           </el-form>
         </el-card>
-      </el-main>
-    </el-container>
+    </div>
   </div>
 </template>
 
@@ -167,9 +147,9 @@ import { useRouter } from 'vue-router'
 import { UploadFilled, Upload, RefreshLeft, Back } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { uploadResource, getResourceCategories, getTags } from '@/api/resource'
+import AppHeader from '@/components/AppHeader.vue'
 
 const router = useRouter()
-const activeMenu = ref('/upload')
 
 const formRef = ref(null)
 const uploadRef = ref(null)
@@ -377,66 +357,39 @@ const handleReset = () => {
   uploadStatus.value = ''
 }
 
-// 菜单选择
-const handleMenuSelect = (index) => {
-  router.push(index)
-}
-
 onMounted(() => {
   fetchCategories()
   fetchTags()
 })
 </script>
 
-<style scoped>
-.upload-container {
+<style scoped lang="scss">
+@use '@/styles/variables.scss' as *;
+
+.upload-page {
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background-color: $bg-secondary;
+  padding-top: 64px;
 }
 
-.header {
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 0;
-}
-
-.header-content {
-  display: flex;
-  align-items: center;
-  max-width: 1200px;
+.page-container {
+  max-width: $container-xl;
   margin: 0 auto;
-  padding: 0 20px;
-}
+  padding: $spacing-xxl $spacing-lg;
 
-.logo {
-  margin-right: 40px;
-  cursor: pointer;
-}
-
-.logo h2 {
-  margin: 0;
-  color: #409EFF;
-}
-
-.menu {
-  flex: 1;
-  border-bottom: none;
-}
-
-.main-content {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 30px 20px;
+  @include respond-to('sm') {
+    padding: $spacing-xl $spacing-md;
+  }
 }
 
 .upload-card {
-  margin-bottom: 20px;
+  margin-bottom: $spacing-xl;
 }
 
 .upload-card h2 {
   margin: 0;
-  font-size: 24px;
-  color: #303133;
+  font-size: $font-size-xxl;
+  color: $text-primary;
 }
 
 .upload-demo {
