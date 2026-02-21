@@ -252,9 +252,10 @@ public class ArticleController {
 
             String relativePath = articleService.saveCoverImage(file, userId, userName);
 
-            // 5. 返回文件相对路径
+            // 5. 返回完整路径（包含 /uploads/ 前缀）
+            String fullPath = "/uploads/" + relativePath;
             return Result.ok()
-                    .data(java.util.Collections.singletonList(relativePath))
+                    .data(java.util.Collections.singletonList(fullPath))
                     .message("图片上传成功");
 
         } catch (Exception e) {

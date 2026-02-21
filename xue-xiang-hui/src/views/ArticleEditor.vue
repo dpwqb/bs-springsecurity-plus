@@ -207,11 +207,14 @@ const beforeCoverUpload = async (file) => {
 // 获取封面图片完整URL
 const getCoverImageUrl = (path) => {
   if (!path) return ''
-  // 如果已经是完整URL，直接返回
+  // 如果已经是完整URL或base64，直接返回
   if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:image')) {
     return path
   }
-  // 使用相对路径，通过静态资源映射访问
+  // 添加 /uploads/ 前缀（如果还没有）
+  if (!path.startsWith('/uploads/')) {
+    return '/uploads/' + path
+  }
   return path
 }
 

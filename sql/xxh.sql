@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `article_category` (
   `update_time` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '更新时间',
   PRIMARY KEY (`category_id`),
   KEY `idx_parent_id` (`parent_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci COMMENT='文章分类表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci COMMENT='文章分类表';
 
 -- 正在导出表  my-springsecurity-plus.article_category 的数据：~10 rows (大约)
 INSERT INTO `article_category` (`parent_id`, `category_name`, `description`, `icon`, `sort_order`, `status`, `create_time`, `update_time`) VALUES
@@ -541,7 +541,7 @@ CREATE TABLE IF NOT EXISTS `resource_category` (
   `update_time` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '更新时间',
   PRIMARY KEY (`category_id`),
   KEY `idx_parent_id` (`parent_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci COMMENT='资源分类表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci COMMENT='资源分类表';
 
 -- 正在导出表  my-springsecurity-plus.resource_category 的数据：~10 rows (大约)
 INSERT INTO `resource_category` (`parent_id`, `category_name`, `description`, `icon`, `sort_order`, `status`, `create_time`, `update_time`) VALUES
