@@ -4,6 +4,7 @@
 *.html linguist-language=java
 *.md linguist-language=java
 target/
+uploads/
 
 # OS
 .DS_Store

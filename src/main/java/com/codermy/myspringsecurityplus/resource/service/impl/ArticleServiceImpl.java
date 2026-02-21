@@ -267,8 +267,8 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional
-    public void saveViewRecord(Integer articleId, Integer userId) {
-        articleDao.saveViewRecord(articleId, userId);
+    public void saveViewRecord(Integer articleId, Integer userId, String ipAddress) {
+        articleDao.saveViewRecord(articleId, userId, ipAddress);
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.codermy.myspringsecurityplus.resource.service.impl;
 
+import com.codermy.myspringsecurityplus.log.utils.LogUtils;
+import com.codermy.myspringsecurityplus.log.utils.RequestHolder;
 import com.codermy.myspringsecurityplus.resource.dao.DownloadDao;
 import com.codermy.myspringsecurityplus.resource.dao.ResourceDao;
 import com.codermy.myspringsecurityplus.resource.entity.DownloadRecord;
@@ -37,6 +39,7 @@ public class DownloadServiceImpl implements DownloadService {
         record.setUserId(userId);
         record.setUserName(userName);
         record.setDownloadTime(new Date());
+        record.setIpAddress(LogUtils.getIp(RequestHolder.getHttpServletRequest()));
 
         int result = downloadDao.save(record);
 

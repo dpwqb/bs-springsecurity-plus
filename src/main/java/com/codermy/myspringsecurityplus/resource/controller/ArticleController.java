@@ -2,6 +2,8 @@ package com.codermy.myspringsecurityplus.resource.controller;
 
 import com.codermy.myspringsecurityplus.common.utils.Result;
 import com.codermy.myspringsecurityplus.log.aop.MyLog;
+import com.codermy.myspringsecurityplus.log.utils.LogUtils;
+import com.codermy.myspringsecurityplus.log.utils.RequestHolder;
 import com.codermy.myspringsecurityplus.resource.dto.ArticlePublishDto;
 import com.codermy.myspringsecurityplus.resource.dto.ArticleListResponseDto;
 import com.codermy.myspringsecurityplus.resource.dto.ArticleResponseDto;
@@ -73,7 +75,8 @@ public class ArticleController {
         // 保存浏览记录
         try {
             Integer userId = SecurityUtils.getCurrentUser().getMyUser().getUserId();
-            articleService.saveViewRecord(articleId, userId);
+            String ipAddress = LogUtils.getIp(RequestHolder.getHttpServletRequest());
+            articleService.saveViewRecord(articleId, userId, ipAddress);
         } catch (Exception e) {
             // 未登录用户不记录浏览记录
         }

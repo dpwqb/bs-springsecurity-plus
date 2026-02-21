@@ -83,9 +83,10 @@ public interface ArticleDao {
      * 保存文章浏览记录
      * @param articleId 文章ID
      * @param userId 用户ID
+     * @param ipAddress 浏览IP地址
      * @return 影响行数
      */
-    int saveViewRecord(@Param("articleId") Integer articleId, @Param("userId") Integer userId);
+    int saveViewRecord(@Param("articleId") Integer articleId, @Param("userId") Integer userId, @Param("ipAddress") String ipAddress);
 
     /**
      * 管理员获取所有文章（包括草稿和已下架）

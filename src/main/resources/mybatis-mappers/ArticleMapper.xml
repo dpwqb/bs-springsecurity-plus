@@ -7,7 +7,7 @@
     <!-- 分页查询文章列表 -->
     <select id="getArticleByPage" resultType="com.codermy.myspringsecurityplus.resource.entity.MyArticle">
         SELECT a.article_id, a.title, a.summary, a.category_id, a.cover_image,
-               a.view_count, a.like_count, a.collect_count, a.comment_count,
+               a.view_count, a.like_count, a.collect_count,
                a.author_id, a.author_name, a.related_resource_id, a.related_resource_title,
                a.status, a.is_top, a.is_recommend, a.is_original,
                a.create_time, a.update_time, a.publish_time,
@@ -131,9 +131,9 @@
 
     <!-- 保存文章浏览记录 -->
     <insert id="saveViewRecord">
-        INSERT INTO article_view_record (article_id, user_id, view_time)
-        VALUES (#{articleId}, #{userId}, NOW())
-        ON DUPLICATE KEY UPDATE view_time = NOW()
+        INSERT INTO article_view_record (article_id, user_id, view_time, ip_address)
+        VALUES (#{articleId}, #{userId}, NOW(), #{ipAddress})
+        ON DUPLICATE KEY UPDATE view_time = NOW(), ip_address = #{ipAddress}
     </insert>
 
     <!-- 管理员获取所有文章（包括草稿和已下架） -->

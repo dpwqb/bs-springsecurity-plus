@@ -85,9 +85,10 @@ public interface ArticleService {
      * 保存文章浏览记录
      * @param articleId 文章ID
      * @param userId 用户ID
+     * @param ipAddress 浏览IP地址
      * @return 影响行数
      */
-    void saveViewRecord(Integer articleId, Integer userId);
+    void saveViewRecord(Integer articleId, Integer userId, String ipAddress);
 
     /**
      * 管理员获取所有文章（包括草稿和已下架）

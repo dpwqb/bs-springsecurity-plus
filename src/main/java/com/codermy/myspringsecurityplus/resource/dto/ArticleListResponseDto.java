@@ -41,9 +41,6 @@ public class ArticleListResponseDto {
     /** 收藏次数 */
     private Integer collectCount;
 
-    /** 评论次数 */
-    private Integer commentCount;
-
     /** 作者用户ID */
     private Integer authorId;
 

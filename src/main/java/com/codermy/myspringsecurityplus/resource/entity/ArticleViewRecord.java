@@ -31,19 +31,10 @@ public class ArticleViewRecord extends BaseEntity {
     /** 浏览用户ID（NULL表示游客） */
     private Integer userId;
 
-    /** 用户姓名（冗余） */
-    private String userName;
-
-    /** 文章标题（冗余） */
-    private String articleTitle;
-
     /** 浏览时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date viewTime;
 
     /** 浏览IP */
     private String ipAddress;
-
-    /** 阅读时长（秒） */
-    private Integer duration;
 }
