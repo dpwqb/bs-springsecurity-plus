@@ -59,15 +59,6 @@ public class AdminResourceController {
     }
 
     /**
-     * 下载记录页面
-     */
-    @GetMapping("/download")
-    @PreAuthorize("hasAnyAuthority('resource:download:list')")
-    public String download() {
-        return "admin/resource/download";
-    }
-
-    /**
      * 获取资源列表（数据接口）
      */
     @GetMapping

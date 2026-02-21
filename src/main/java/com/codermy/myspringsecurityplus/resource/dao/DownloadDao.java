@@ -56,4 +56,38 @@ public interface DownloadDao {
      * @return 影响行数
      */
     int deleteByResourceId(@Param("resourceId") Integer resourceId);
+
+    /**
+     * 分页查询所有下载记录（管理员）
+     * @param params 查询参数
+     * @return 下载记录列表
+     */
+    List<DownloadRecord> getDownloadRecordsForAdmin(@Param("params") Map<String, Object> params);
+
+    /**
+     * 统计总记录数（用于分页）
+     * @param params 查询参数
+     * @return 总记录数
+     */
+    Long countDownloadRecords(@Param("params") Map<String, Object> params);
+
+    /**
+     * 删除单条下载记录
+     * @param recordId 记录ID
+     * @return 影响行数
+     */
+    int deleteByRecordId(@Param("recordId") Integer recordId);
+
+    /**
+     * 批量删除下载记录
+     * @param recordIds 记录ID列表
+     * @return 影响行数
+     */
+    int batchDelete(@Param("recordIds") List<Integer> recordIds);
+
+    /**
+     * 删除所有下载记录
+     * @return 影响行数
+     */
+    int deleteAll();
 }

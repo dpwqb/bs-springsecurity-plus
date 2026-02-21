@@ -1,5 +1,7 @@
 package com.codermy.myspringsecurityplus.resource.service;
 
+import com.codermy.myspringsecurityplus.common.utils.Result;
+import com.codermy.myspringsecurityplus.resource.dto.DownloadQueryDto;
 import com.codermy.myspringsecurityplus.resource.entity.DownloadRecord;
 
 import java.util.List;
@@ -35,4 +37,33 @@ public interface DownloadService {
      * @return 下载次数
      */
     Long countDownloadsByUserId(Integer userId);
+
+    /**
+     * 分页查询所有下载记录（管理员）
+     * @param offset 起始位置
+     * @param limit 每页数量
+     * @param queryDto 查询条件
+     * @return 分页结果
+     */
+    Result<DownloadRecord> getDownloadRecordsForAdmin(Integer offset, Integer limit, DownloadQueryDto queryDto);
+
+    /**
+     * 删除单条下载记录
+     * @param recordId 记录ID
+     * @return 影响行数
+     */
+    int deleteDownloadRecord(Integer recordId);
+
+    /**
+     * 批量删除下载记录
+     * @param recordIds 记录ID列表
+     * @return 影响行数
+     */
+    int batchDeleteDownloadRecords(List<Integer> recordIds);
+
+    /**
+     * 删除所有下载记录
+     * @return 影响行数
+     */
+    int deleteAllDownloadRecords();
 }

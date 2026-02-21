@@ -40,4 +40,67 @@
         DELETE FROM download_record WHERE resource_id = #{resourceId}
     </delete>
 
+    <!-- 分页查询所有下载记录（管理员） -->
+    <select id="getDownloadRecordsForAdmin" resultType="com.codermy.myspringsecurityplus.resource.entity.DownloadRecord">
+        SELECT * FROM download_record
+        <where>
+            <if test="params.userName != null and params.userName != ''">
+                AND user_name LIKE CONCAT('%', #{params.userName}, '%')
+            </if>
+            <if test="params.resourceTitle != null and params.resourceTitle != ''">
+                AND resource_title LIKE CONCAT('%', #{params.resourceTitle}, '%')
+            </if>
+            <if test="params.startTime != null">
+                AND download_time &gt;= #{params.startTime}
+            </if>
+            <if test="params.endTime != null">
+                AND download_time &lt;= #{params.endTime}
+            </if>
+            <if test="params.ipAddress != null and params.ipAddress != ''">
+                AND ip_address LIKE CONCAT('%', #{params.ipAddress}, '%')
+            </if>
+        </where>
+        ORDER BY download_time DESC
+    </select>
+
+    <!-- 统计总记录数 -->
+    <select id="countDownloadRecords" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM download_record
+        <where>
+            <if test="params.userName != null and params.userName != ''">
+                AND user_name LIKE CONCAT('%', #{params.userName}, '%')
+            </if>
+            <if test="params.resourceTitle != null and params.resourceTitle != ''">
+                AND resource_title LIKE CONCAT('%', #{params.resourceTitle}, '%')
+            </if>
+            <if test="params.startTime != null">
+                AND download_time &gt;= #{params.startTime}
+            </if>
+            <if test="params.endTime != null">
+                AND download_time &lt;= #{params.endTime}
+            </if>
+            <if test="params.ipAddress != null and params.ipAddress != ''">
+                AND ip_address LIKE CONCAT('%', #{params.ipAddress}, '%')
+            </if>
+        </where>
+    </select>
+
+    <!-- 删除单条下载记录 -->
+    <delete id="deleteByRecordId">
+        DELETE FROM download_record WHERE record_id = #{recordId}
+    </delete>
+
+    <!-- 批量删除下载记录 -->
+    <delete id="batchDelete">
+        DELETE FROM download_record WHERE record_id IN
+        <foreach collection="recordIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 删除所有下载记录 -->
+    <delete id="deleteAll">
+        DELETE FROM download_record
+    </delete>
+
 </mapper>

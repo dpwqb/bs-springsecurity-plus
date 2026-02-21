@@ -362,7 +362,7 @@ INSERT INTO `my_menu` (`menu_id`, `parent_id`, `menu_name`, `icon`, `url`, `perm
 	(90, 0, '学享汇管理', 'layui-icon layui-icon-file', '', '', 4, 0, '2026-02-08 22:54:50', '2026-02-08 22:54:50'),
 	(91, 90, '资源列表', 'layui-icon layui-icon-file', '/api/admin/resource/list', 'resource:list', 1, 1, '2026-02-08 22:54:50', '2026-02-14 19:46:35'),
 	(92, 90, '资源分类', 'layui-icon layui-icon-app', '/api/admin/resource/category', 'resource:category:list', 2, 1, '2026-02-08 22:54:50', '2026-02-14 19:46:35'),
-	(93, 90, '资源标签', 'layui-icon layui-icon-note', '/api/admin/resource/tag', 'resource:tag:list', 3, 1, '2026-02-08 22:54:50', '2026-02-14 19:46:35'),
+	(93, 90, '标签管理', 'layui-icon layui-icon-note', '/api/admin/resource/tag', 'resource:tag:list', 3, 1, '2026-02-08 22:54:50', '2026-02-14 19:46:35'),
 	(94, 90, '下载记录', 'layui-icon layui-icon-download-circle', '/api/admin/resource/download', 'resource:download:list', 4, 1, '2026-02-08 22:54:50', '2026-02-14 19:46:35'),
 	(95, 90, '文章列表', 'layui-icon layui-icon-read', '/api/admin/article/list', 'article:list', 5, 1, '2026-02-08 22:54:50', '2026-02-14 19:46:35'),
 	(96, 90, '文章分类', 'layui-icon layui-icon-app', '/api/admin/article/category', 'article:category:list', 6, 1, '2026-02-08 22:54:50', '2026-02-14 19:46:35'),
