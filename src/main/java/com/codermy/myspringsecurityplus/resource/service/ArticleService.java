@@ -68,12 +68,6 @@ public interface ArticleService {
     void increaseLikeCount(Integer articleId);
 
     /**
-     * 增加收藏数
-     * @param articleId 文章ID
-     */
-    void increaseCollectCount(Integer articleId);
-
-    /**
      * 查询用户的文章列表
      * @param authorId 作者ID
      * @param params 查询参数

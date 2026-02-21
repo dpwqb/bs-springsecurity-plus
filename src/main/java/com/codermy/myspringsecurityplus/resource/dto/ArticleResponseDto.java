@@ -42,32 +42,14 @@ public class ArticleResponseDto {
     /** 点赞次数 */
     private Integer likeCount;
 
-    /** 收藏次数 */
-    private Integer collectCount;
-
     /** 作者用户ID */
     private Integer authorId;
 
     /** 作者姓名（冗余） */
     private String authorName;
 
-    /** 关联的资源ID */
-    private Integer relatedResourceId;
-
-    /** 关联资源标题（冗余） */
-    private String relatedResourceTitle;
-
     /** 状态：0草稿 1已发布 2已下架 */
     private Integer status;
-
-    /** 是否置顶：0否 1是 */
-    private Integer isTop;
-
-    /** 是否推荐：0否 1是 */
-    private Integer isRecommend;
-
-    /** 是否原创：0转载 1原创 */
-    private Integer isOriginal;
 
     /** 发布时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

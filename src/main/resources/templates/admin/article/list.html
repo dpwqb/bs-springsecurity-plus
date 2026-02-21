@@ -111,8 +111,6 @@
 <!-- 行操作模板 -->
 <script type="text/html" id="article-bar">
     <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="publish">发布</button>
-    <button class="pear-btn-success pear-btn-sm" lay-event="top">置顶</button>
-    <button class="pear-btn-warming pear-btn-sm" lay-event="recommend">推荐</button>
     <button class="pear-btn-danger pear-btn-sm" lay-event="remove">删除</button>
 </script>
 
@@ -160,7 +158,6 @@
                 {title: '状态', field: 'status', width: 100, templet: '#article-status'},
                 {title: '浏览', field: 'viewCount', width: 80},
                 {title: '点赞', field: 'likeCount', width: 80},
-                {title: '收藏', field: 'collectCount', width: 80},
                 {title: '创建时间', field: 'createTime', width: 160, templet: '#article-createTime'},
                 {title: '操作', toolbar: '#article-bar', fixed: 'right', width: 200}
             ]
@@ -236,34 +233,6 @@
                             table.reload('article-table');
                         }else{
                             layer.msg(result.msg || '发布失败', {icon:2,time:1000});
-                        }
-                    }
-                });
-            } else if(obj.event === 'top'){
-                $.ajax({
-                    url: "/api/admin/article/top/" + obj.data['articleId'],
-                    type: 'put',
-                    success:function(result){
-                        if(result.code == 0){
-                            layer.msg('置顶成功', {icon:1,time:1000});
-                            obj.update();
-                            table.reload('article-table');
-                        }else{
-                            layer.msg(result.msg || '置顶失败', {icon:2,time:1000});
-                        }
-                    }
-                });
-            } else if(obj.event === 'recommend'){
-                $.ajax({
-                    url: "/api/admin/article/recommend/" + obj.data['articleId'],
-                    type: 'put',
-                    success:function(result){
-                        if(result.code == 0){
-                            layer.msg('推荐成功', {icon:1,time:1000});
-                            obj.update();
-                            table.reload('article-table');
-                        }else{
-                            layer.msg(result.msg || '推荐失败', {icon:2,time:1000});
                         }
                     }
                 });

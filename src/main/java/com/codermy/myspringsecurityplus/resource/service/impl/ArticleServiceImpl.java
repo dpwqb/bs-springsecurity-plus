@@ -87,8 +87,6 @@ public class ArticleServiceImpl implements ArticleService {
                 article.setCoverImage(dto.getCoverImage());
             }
 
-            article.setRelatedResourceId(dto.getRelatedResourceId());
-            article.setIsOriginal(dto.getIsOriginal() != null ? dto.getIsOriginal() : 1);
             article.setStatus(1); // 已发布
             article.setPublishTime(new Date()); // 设置发布时间
             article.setUpdateTime(new Date());
@@ -112,12 +110,9 @@ public class ArticleServiceImpl implements ArticleService {
             article.setCoverImage(dto.getCoverImage()); // 直接使用封面
             article.setAuthorId(userId);
             article.setAuthorName(userName);
-            article.setRelatedResourceId(dto.getRelatedResourceId());
-            article.setIsOriginal(dto.getIsOriginal() != null ? dto.getIsOriginal() : 1);
             article.setStatus(1); // 已发布
             article.setViewCount(0);
             article.setLikeCount(0);
-            article.setCollectCount(0);
             article.setPublishTime(new Date()); // 设置发布时间
             article.setCreateTime(new Date());
             article.setUpdateTime(new Date());
@@ -194,8 +189,6 @@ public class ArticleServiceImpl implements ArticleService {
             article.setSummary(dto.getSummary() != null ? dto.getSummary() : generateSummary(dto.getContent()));
             article.setCategoryId(dto.getCategoryId());
             article.setCoverImage(dto.getCoverImage()); // 保存封面
-            article.setRelatedResourceId(dto.getRelatedResourceId());
-            article.setIsOriginal(dto.getIsOriginal() != null ? dto.getIsOriginal() : 1);
             article.setStatus(0); // 保持草稿状态
             article.setUpdateTime(new Date());
 
@@ -218,12 +211,9 @@ public class ArticleServiceImpl implements ArticleService {
             article.setCoverImage(dto.getCoverImage()); // 保存封面
             article.setAuthorId(userId);
             article.setAuthorName(userName);
-            article.setRelatedResourceId(dto.getRelatedResourceId());
-            article.setIsOriginal(dto.getIsOriginal() != null ? dto.getIsOriginal() : 1);
             article.setStatus(0); // 草稿
             article.setViewCount(0);
             article.setLikeCount(0);
-            article.setCollectCount(0);
             article.setCreateTime(new Date());
             article.setUpdateTime(new Date());
 
@@ -253,11 +243,6 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void increaseLikeCount(Integer articleId) {
         articleDao.increaseLikeCount(articleId);
-    }
-
-    @Override
-    public void increaseCollectCount(Integer articleId) {
-        articleDao.increaseCollectCount(articleId);
     }
 
     @Override
