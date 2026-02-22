@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.codermy.myspringsecurityplus.resource.dao.TagDao">
+
+    <!-- 查询所有标签 -->
+    <select id="getAllTags" resultType="com.codermy.myspringsecurityplus.resource.entity.ResourceTag">
+        SELECT * FROM resource_tag ORDER BY use_count DESC
+    </select>
+
+    <!-- 根据ID查询标签 -->
+    <select id="getTagById" resultType="com.codermy.myspringsecurityplus.resource.entity.ResourceTag">
+        SELECT * FROM resource_tag WHERE tag_id = #{tagId}
+    </select>
+
+    <!-- 根据名称查询标签 -->
+    <select id="getTagByName" resultType="com.codermy.myspringsecurityplus.resource.entity.ResourceTag">
+        SELECT * FROM resource_tag WHERE tag_name = #{tagName} LIMIT 1
+    </select>
+
+    <!-- 保存标签 -->
+    <insert id="save" parameterType="com.codermy.myspringsecurityplus.resource.entity.ResourceTag">
+        INSERT INTO resource_tag (tag_name, use_count)
+        VALUES (#{tagName}, 0)
+    </insert>
+
+    <!-- 更新标签使用次数 -->
+    <update id="increaseUseCount">
+        UPDATE resource_tag SET use_count = use_count + 1 WHERE tag_id = #{tagId}
+    </update>
+
+    <!-- 删除标签 -->
+    <delete id="delete">
+        DELETE FROM resource_tag WHERE tag_id = #{tagId}
+    </delete>
+
+    <!-- 根据资源ID查询标签列表 -->
+    <select id="getTagsByResourceId" resultType="com.codermy.myspringsecurityplus.resource.entity.ResourceTag">
+        SELECT t.* FROM resource_tag t
+        INNER JOIN resource_tag_relation r ON t.tag_id = r.tag_id
+        WHERE r.resource_id = #{resourceId}
+    </select>
+
+    <!-- 根据文章ID查询标签列表 -->
+    <select id="getTagsByArticleId" resultType="com.codermy.myspringsecurityplus.resource.entity.ResourceTag">
+        SELECT t.* FROM resource_tag t
+        INNER JOIN article_tag_relation a ON t.tag_id = a.tag_id
+        WHERE a.article_id = #{articleId}
+    </select>
+
+    <!-- 保存资源标签关联 -->
+    <insert id="saveResourceTagRelation">
+        INSERT INTO resource_tag_relation (resource_id, tag_id)
+        VALUES (#{resourceId}, #{tagId})
+    </insert>
+
+    <!-- 保存文章标签关联 -->
+    <insert id="saveArticleTagRelation">
+        INSERT INTO article_tag_relation (article_id, tag_id)
+        VALUES (#{articleId}, #{tagId})
+    </insert>
+
+    <!-- 删除资源标签关联 -->
+    <delete id="deleteResourceTagRelation">
+        DELETE FROM resource_tag_relation WHERE resource_id = #{resourceId}
+    </delete>
+
+    <!-- 删除文章标签关联 -->
+    <delete id="deleteArticleTagRelation">
+        DELETE FROM article_tag_relation WHERE article_id = #{articleId}
+    </delete>
+
+    <!-- 根据标签ID删除文章标签关联 -->
+    <delete id="deleteArticleTagRelationByTagId">
+        DELETE FROM article_tag_relation WHERE tag_id = #{tagId}
+    </delete>
+
+    <!-- 根据标签ID删除资源标签关联 -->
+    <delete id="deleteResourceTagRelationByTagId">
+        DELETE FROM resource_tag_relation WHERE tag_id = #{tagId}
+    </delete>
+
+</mapper>

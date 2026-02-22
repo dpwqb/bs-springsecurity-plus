@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * @author codermy
- * @createTime 2020/7/14
+ * @createTime 2025/7/14
  */
 @Data
 public class UserQueryDto implements Serializable {

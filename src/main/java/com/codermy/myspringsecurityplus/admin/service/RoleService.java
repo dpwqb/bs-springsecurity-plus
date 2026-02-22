@@ -6,7 +6,7 @@ import com.codermy.myspringsecurityplus.common.utils.Result;
 
 /**
  * @author codermy
- * @createTime 2020/7/10
+ * @createTime 2025/7/10
  */
 public interface RoleService {
     /**

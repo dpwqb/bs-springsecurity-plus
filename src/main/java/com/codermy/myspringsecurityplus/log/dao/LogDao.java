@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * @author codermy
- * @createTime 2020/8/8
+ * @createTime 2025/8/8
  */
 @Mapper
 public interface LogDao {
@@ -47,4 +47,10 @@ public interface LogDao {
      */
     @Delete("delete from my_log where type = #{type}")
     void delAllByInfo(String type);
+
+    /**
+     * 统计今日访问量
+     * @return 今日访问次数
+     */
+    Integer countTodayVisits();
 }

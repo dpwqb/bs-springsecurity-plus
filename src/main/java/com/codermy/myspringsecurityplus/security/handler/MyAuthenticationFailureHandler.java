@@ -14,7 +14,7 @@ import java.io.IOException;
 
 /**
  * @author codermy
- * @createTime 2020/8/2
+ * @createTime 2025/8/2
  */
 @Component
 public class MyAuthenticationFailureHandler implements AuthenticationFailureHandler {

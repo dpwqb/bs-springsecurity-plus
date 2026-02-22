@@ -2,14 +2,14 @@ package com.codermy.myspringsecurityplus.common.utils;
 
 /**
  * @author codermy
- * @createTime 2020/5/15
+ * @createTime 2025/5/15
  * 状态码
  */
 public interface ResultCode {
     /**
-     * 请求t成功
+     * 请求成功
      */
-    public static final Integer SUCCESS = 200;
+    public static final Integer SUCCESS = 0;
     /**
      * 请求table成功
      */

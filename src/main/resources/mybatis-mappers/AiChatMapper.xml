@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.codermy.myspringsecurityplus.resource.dao.AiChatDao">
+
+    <!-- 保存对话记录 -->
+    <insert id="save" parameterType="com.codermy.myspringsecurityplus.resource.entity.AiChatHistory">
+        INSERT INTO ai_chat_history
+        (user_id, session_id, question_text, answer_text, model_name, tokens_used, create_time)
+        VALUES
+        (#{userId}, #{sessionId}, #{questionText}, #{answerText}, #{modelName}, #{tokensUsed}, #{createTime})
+    </insert>
+
+    <!-- 根据会话ID查询对话历史 -->
+    <select id="getChatsBySessionId" resultType="com.codermy.myspringsecurityplus.resource.entity.AiChatHistory">
+        SELECT * FROM ai_chat_history
+        WHERE session_id = #{sessionId}
+        ORDER BY create_time ASC
+    </select>
+
+    <!-- 根据用户ID查询对话历史 -->
+    <select id="getChatsByUserId" resultType="com.codermy.myspringsecurityplus.resource.entity.AiChatHistory">
+        SELECT * FROM ai_chat_history
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 删除会话的所有对话 -->
+    <delete id="deleteBySessionId">
+        DELETE FROM ai_chat_history WHERE session_id = #{sessionId}
+    </delete>
+
+    <!-- 统计用户消耗的token数 -->
+    <select id="sumTokensByUserId" resultType="long">
+        SELECT COALESCE(SUM(tokens_used), 0) FROM ai_chat_history WHERE user_id = #{userId}
+    </select>
+
+</mapper>

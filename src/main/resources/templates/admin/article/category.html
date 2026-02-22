@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>文章分类管理</title>
+    <header th:replace="header::html"></header>
+</head>
+<body class="pear-container">
+<div class="layui-card">
+    <div class="layui-card-body">
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">分类名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="categoryName" placeholder="请输入分类名称" class="layui-input">
+                </div>
+                <label class="layui-form-label">状态</label>
+                <div class="layui-input-inline">
+                    <select name="status">
+                        <option value="">全部状态</option>
+                        <option value="1">启用</option>
+                        <option value="0">禁用</option>
+                    </select>
+                </div>
+                <button class="pear-btn pear-btn-md pear-btn-primary" lay-submit="" lay-filter="category-query">
+                    <i class="layui-icon layui-icon-search"></i>
+                    查询
+                </button>
+                <button type="reset" class="pear-btn pear-btn-md">
+                    <i class="layui-icon layui-icon-refresh"></i>
+                    重置
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table id="article-category-table" lay-filter="article-category-table"></table>
+    </div>
+</div>
+
+<!-- 工具栏模板 -->
+<script type="text/html" id="category-toolbar">
+    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
+        <i class="layui-icon layui-icon-add-1"></i>
+        新增
+    </button>
+    <button class="pear-btn pear-btn-success pear-btn-md" lay-event="expandAll">
+        <i class="layui-icon layui-icon-spread-left"></i>
+        展开全部
+    </button>
+    <button class="pear-btn pear-btn-success pear-btn-md" lay-event="foldAll">
+        <i class="layui-icon layui-icon-shrink-right"></i>
+        折叠全部
+    </button>
+</script>
+
+<!-- 行操作模板 -->
+<script type="text/html" id="category-bar">
+    <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></button>
+    <button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>
+</script>
+
+<!-- 状态模板 -->
+<script type="text/html" id="category-status">
+    <input type="checkbox" name="status" value="{{d.categoryId}}"
+           lay-skin="switch" lay-text="启用|禁用"
+           lay-filter="category-status"
+           {{ d.status == 1 ? 'checked' : '' }}>
+</script>
+
+<!-- 创建时间模板 -->
+<script type="text/html" id="category-time">
+    {{layui.util.toDateString(d.createTime, 'yyyy-MM-dd HH:mm:ss')}}
+</script>
+
+<script>
+    layui.use(['table', 'form', 'jquery', 'treetable'], function () {
+        let table = layui.table;
+        let form = layui.form;
+        let $ = layui.jquery;
+        let treetable = layui.treetable;
+
+        var insTb = treetable.render({
+            treeColIndex: 1,           // 树形图标在第1列
+            treeSpid: 0,              // 顶级父ID为0
+            treeIdName: 'categoryId',   // ID字段名
+            treePidName: 'parentId',   // 父ID字段名
+            skin: 'line',
+            method: 'get',
+            toolbar: '#category-toolbar',
+            elem: '#article-category-table',
+            url: '/api/article/category',
+            page: false,
+            cols: [
+                [
+                    {type: 'radio'},
+                    {field: 'categoryName', minWidth: 200, title: '分类名称'},
+                    {field: 'description', title: '描述'},
+                    {field: 'sortOrder', width: 100, title: '排序'},
+                    {field: 'status', title: '状态', templet: '#category-status', width: 100},
+                    {title: '创建时间', field: 'createTime', align: 'center', templet: '#category-time'},
+                    {title: '操作', templet: '#category-bar', width: 150, align: 'center'}
+                ]
+            ]
+        });
+
+        // 监听行工具事件
+        table.on('tool(article-category-table)', function (obj) {
+            if (obj.event === 'remove') {
+                window.remove(obj);
+            } else if (obj.event === 'edit') {
+                window.edit(obj);
+            }
+        });
+
+        // 监听工具栏事件
+        table.on('toolbar(article-category-table)', function (obj) {
+            if (obj.event === 'add') {
+                window.add();
+            } else if (obj.event === 'expandAll') {
+                treetable.expandAll("#article-category-table");
+            } else if (obj.event === 'foldAll') {
+                treetable.foldAll("#article-category-table");
+            }
+        });
+
+        // 监听状态切换
+        form.on('switch(category-status)', function (obj) {
+            layer.confirm('确定要' + (obj.elem.checked ? '启用' : '禁用') + '该分类吗？', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                var status = obj.elem.checked ? 1 : 0;
+                var data = {
+                    categoryId: obj.value,
+                    status: status
+                };
+                let loading = layer.load();
+                $.ajax({
+                    url: '/api/article/category',
+                    data: JSON.stringify(data),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    type: 'put',
+                    success: function (result) {
+                        layer.close(loading);
+                        if (result.success) {
+                            layer.msg(result.msg || '操作成功', {icon: 1, time: 1000}, function () {
+                                table.reload('article-category-table');
+                            });
+                        } else {
+                            layer.msg(result.msg || '操作失败', {icon: 2});
+                            table.reload('article-category-table');
+                        }
+                    }
+                });
+            });
+        });
+
+        // 提交查询表单
+        form.on('submit(category-query)', function (data) {
+            treetable.reload('#article-category-table', {
+                where: data.field,
+                page: {
+                    curr: 1
+                }
+            });
+            return false;
+        });
+
+        // 监听重置按钮
+        $('.pear-btn[type="reset"]').on('click', function () {
+            treetable.reload('#article-category-table', {
+                page: {
+                    curr: 1
+                }
+            });
+        });
+
+        // 新增分类
+        window.add = function () {
+            layer.open({
+                type: 1,
+                title: '新增文章分类',
+                area: ['500px', '480px'],
+                content: `
+                    <form class="layui-form" style="padding: 20px;" lay-filter="category-form">
+                        <input type="hidden" name="parentId" value="0">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">分类名称 <span style="color: red;">*</span></label>
+                            <div class="layui-input-block">
+                                <input type="text" name="categoryName" lay-verify="required" placeholder="请输入分类名称" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">父分类</label>
+                            <div class="layui-input-block">
+                                <input type="number" id="addParentId" name="parentId" value="0" style="display:none;">
+                                <ul id="addParentTree" class="dtree" data-id="0"></ul>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">分类描述</label>
+                            <div class="layui-input-block">
+                                <textarea name="description" placeholder="请输入分类描述" class="layui-textarea"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">排序</label>
+                            <div class="layui-input-block">
+                                <input type="number" name="sortOrder" value="0" lay-verify="number" placeholder="请输入排序值" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">状态</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="status" value="1" title="启用" checked>
+                                <input type="radio" name="status" value="0" title="禁用">
+                            </div>
+                        </div>
+                        <div class="layui-form-item" style="text-align: center; margin-top: 20px;">
+                            <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="category-save">
+                                <i class="layui-icon layui-icon-ok"></i>
+                                提交
+                            </button>
+                            <button type="reset" class="layui-btn layui-btn-primary">
+                                <i class="layui-icon layui-icon-refresh"></i>
+                                重置
+                            </button>
+                        </div>
+                    </form>
+                `,
+                success: function (layero, index) {
+                    // 初始化父分类树
+                    layui.use(['dtree', 'form'], function () {
+                        let dtree = layui.dtree;
+                        let form = layui.form;
+
+                        dtree.render({
+                            elem: "#addParentTree",
+                            initLevel: "1",
+                            width: "100%",
+                            method: 'get',
+                            dataStyle: "layuiStyle",
+                            response: {message: "msg", statusCode: 200},
+                            url: "/api/article/category/tree",  // 使用新的tree接口
+                            dataFormat: "list",                  // 关键参数：让dtree自动构建树形结构
+                            select: true,
+                            selectTips: "不选默认是顶级分类",
+                            selectCardHeight: "150"              // 设置下拉高度
+                        });
+
+                        // 监听表单提交
+                        form.on('submit(category-save)', function (data) {
+                            $.ajax({
+                                url: '/api/article/category',
+                                method: 'POST',
+                                contentType: 'application/json',
+                                data: JSON.stringify(data.field),
+                                success: function (res) {
+                                    if (res.success) {
+                                        layer.msg('新增成功', {icon: 1, time: 1000}, function () {
+                                            layer.close(index);
+                                            table.reload('article-category-table');
+                                        });
+                                    } else {
+                                        layer.msg(res.msg || '新增失败', {icon: 2});
+                                    }
+                                }
+                            });
+                            return false;
+                        });
+
+                        // 重新渲染表单
+                        form.render(null, '.layui-form');
+                    });
+                }
+            });
+        };
+
+        // 编辑分类
+        window.edit = function (obj) {
+            var data = obj.data;
+            layer.open({
+                type: 1,
+                title: '编辑文章分类',
+                area: ['500px', '480px'],
+                content: `
+                    <form class="layui-form" style="padding: 20px;" lay-filter="category-form">
+                        <input type="hidden" name="categoryId" value="${data.categoryId}">
+                        <input type="hidden" name="parentId" value="${data.parentId}">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">分类名称 <span style="color: red;">*</span></label>
+                            <div class="layui-input-block">
+                                <input type="text" name="categoryName" value="${data.categoryName}" lay-verify="required" placeholder="请输入分类名称" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">父分类</label>
+                            <div class="layui-input-block">
+                                <input type="number" id="editParentId" name="parentId" value="${data.parentId}" style="display:none;">
+                                <ul id="editParentTree" class="dtree" data-id="${data.parentId}"></ul>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">分类描述</label>
+                            <div class="layui-input-block">
+                                <textarea name="description" placeholder="请输入分类描述" class="layui-textarea">${data.description || ''}</textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">排序</label>
+                            <div class="layui-input-block">
+                                <input type="number" name="sortOrder" value="${data.sortOrder || 0}" lay-verify="number" placeholder="请输入排序值" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">状态</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="status" value="1" title="启用" ${data.status == 1 ? 'checked' : ''}>
+                                <input type="radio" name="status" value="0" title="禁用" ${data.status == 0 ? 'checked' : ''}>
+                            </div>
+                        </div>
+                        <div class="layui-form-item" style="text-align: center; margin-top: 20px;">
+                            <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="category-save">
+                                <i class="layui-icon layui-icon-ok"></i>
+                                提交
+                            </button>
+                            <button type="reset" class="layui-btn layui-btn-primary">
+                                <i class="layui-icon layui-icon-refresh"></i>
+                                重置
+                            </button>
+                        </div>
+                    </form>
+                `,
+                success: function (layero, index) {
+                    // 初始化父分类树
+                    layui.use(['dtree', 'form'], function () {
+                        let dtree = layui.dtree;
+                        let form = layui.form;
+
+                        dtree.render({
+                            elem: "#editParentTree",
+                            initLevel: "1",
+                            width: "100%",
+                            method: 'get',
+                            dataStyle: "layuiStyle",
+                            response: {message: "msg", statusCode: 0},
+                            url: "/api/article/category/tree?excludeId=" + data.categoryId,  // 排除当前分类
+                            dataFormat: "list",                  // 关键参数
+                            select: true,
+                            selectTips: "不选默认是顶级分类",
+                            selectCardHeight: "150",
+                            initValue: "" + data.parentId    // 设置默认选中当前父分类
+                        });
+
+                        // 监听节点选择，同步到隐藏域
+                        dtree.on("node('editParentTree')", function(obj){
+                            $("#editParentId").val(obj.param.nodeId);
+                        });
+
+                        // 监听表单提交
+                        form.on('submit(category-save)', function (formData) {
+                            $.ajax({
+                                url: '/api/article/category',
+                                method: 'PUT',
+                                contentType: 'application/json',
+                                data: JSON.stringify(formData.field),
+                                success: function (res) {
+                                    if (res.success) {
+                                        layer.msg('修改成功', {icon: 1, time: 1000}, function () {
+                                            layer.close(index);
+                                            table.reload('article-category-table');
+                                        });
+                                    } else {
+                                        layer.msg(res.msg || '修改失败', {icon: 2});
+                                    }
+                                }
+                            });
+                            return false;
+                        });
+
+                        // 重新渲染表单
+                        form.render(null, '.layui-form');
+                    });
+                }
+            });
+        };
+
+        // 删除分类
+        window.remove = function (obj) {
+            layer.confirm('确定要删除该分类吗？删除后无法恢复！', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: "/api/article/category/" + obj.data.categoryId,
+                    type: 'delete',
+                    success: function (result) {
+                        layer.close(loading);
+                        if (result.success) {
+                            layer.msg('删除成功', {icon: 1, time: 1000}, function () {
+                                obj.del();
+                            });
+                        } else {
+                            layer.msg(result.msg || '删除失败', {icon: 2});
+                        }
+                    }
+                });
+            });
+        };
+    });
+</script>
+</body>
+</html>

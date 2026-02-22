@@ -7,7 +7,7 @@ import java.util.Date;
 
 /**
  * @author codermy
- * @createTime 2020/8/8
+ * @createTime 2025/8/8
  */
 @Data
 public class ErrorLogDto implements Serializable {

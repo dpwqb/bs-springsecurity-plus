@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.codermy.myspringsecurityplus.resource.dao.ArticleDao">
+
+    <!-- 检查用户点赞状态 -->
+    <select id="checkUserLike" resultType="java.lang.Integer">
+        SELECT record_id
+        FROM article_like_record
+        WHERE article_id = #{articleId}
+          AND user_id = #{userId}
+          AND is_cancelled = 0
+        LIMIT 1
+    </select>
+
+    <!-- 添加点赞记录（支持重新激活已取消的点赞） -->
+    <insert id="addLikeRecord">
+        INSERT INTO article_like_record
+        (article_id, user_id, user_name, article_title, is_cancelled, create_time, cancel_time)
+        VALUES
+        (#{articleId}, #{userId}, #{userName}, #{articleTitle}, 0, NOW(), NULL)
+        ON DUPLICATE KEY UPDATE
+            is_cancelled = 0,
+            cancel_time = NULL,
+            user_name = #{userName},
+            article_title = #{articleTitle}
+    </insert>
+
+    <!-- 取消点赞（软删除） -->
+    <update id="cancelLike">
+        UPDATE article_like_record
+        SET is_cancelled = 1,
+            cancel_time = NOW()
+        WHERE record_id = #{recordId}
+    </update>
+
+    <!-- 减少点赞数 -->
+    <update id="decreaseLikeCount">
+        UPDATE my_article
+        SET like_count = like_count - 1
+        WHERE article_id = #{articleId}
+          AND like_count > 0
+    </update>
+
+</mapper>

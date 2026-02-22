@@ -9,10 +9,11 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
  * @author codermy
- * @createTime 2020/5/8
+ * @createTime 2025/5/8
  */
 @RestControllerAdvice
 @Slf4j
@@ -69,6 +70,22 @@ public class GlobalExceptionHandler {
     public Result handleAuthenticationServiceException(AuthenticationServiceException e){
         log.error(e.getMessage());
         return Result.error().message("验证码错误");
+    }
+
+    @ExceptionHandler({NumberFormatException.class, MethodArgumentTypeMismatchException.class})
+    public Result handleNumberFormatException(Exception e){
+        log.error("参数格式错误: {}", e.getMessage());
+
+        // 检查是否是 NaN 导致的错误
+        if (e.getMessage() != null && e.getMessage().contains("NaN")) {
+            return Result.error()
+                    .code(ResultCode.BAD_REQUEST)
+                    .message("参数格式错误：请提供有效的数字参数");
+        }
+
+        return Result.error()
+                .code(ResultCode.BAD_REQUEST)
+                .message("参数格式错误：" + e.getMessage());
     }
 
 }

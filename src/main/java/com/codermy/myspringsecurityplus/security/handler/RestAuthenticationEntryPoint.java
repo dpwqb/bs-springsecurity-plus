@@ -14,7 +14,7 @@ import java.io.IOException;
 
 /**
  * @author codermy
- * @createTime 2020/8/1
+ * @createTime 2025/8/1
  * 当未登录或者token失效访问接口时，自定义的返回结果
  */
 @Component
@@ -23,7 +23,8 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
-        response.getWriter().println(JSON.toJSONString(Result.error().message("尚未登录，或者登录过期   " + authException.getMessage())));
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 返回 401 而非默认的 403
+        response.getWriter().println(JSON.toJSONString(Result.error().message("尚未登录，或者登录过期 - " + authException.getMessage())));
         response.getWriter().flush();
     }
 }

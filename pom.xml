@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.codermy</groupId>
-    <artifactId>my-springsecurity-plus</artifactId>
+    <artifactId>xue-xiang-hui</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>my-springsecurity-plus</name>
-    <description>my-springsecurity-plus-admin</description>
+    <name>xue-xiang-hui</name>
+    <description>学享汇·资源共享平台</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -85,6 +85,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
             <optional>true</optional>
         </dependency>
         <!-- 验证码-->
@@ -98,6 +99,17 @@
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
+        </dependency>
+        <!-- JAXB API for Java 11+ -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.1</version>
         </dependency>
         <!--aop-->
         <dependency>
@@ -123,7 +135,7 @@
             <version>4.4.2</version>
         </dependency>
 
-        <!--ip2region，这是根据ip查地址的工具，有兴趣自己可以了解-->
+        <!--ip2region，根据ip查地址的工具-->
         <!-- <dependency>-->
         <!-- <groupId>org.lionsoul</groupId>-->
         <!-- <artifactId>ip2region</artifactId>-->

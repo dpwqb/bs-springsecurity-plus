@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>下载记录管理</title>
+    <header th:replace="header::html"></header>
+</head>
+<body class="pear-container">
+<div class="layui-card">
+    <div class="layui-card-body">
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="userName" placeholder="请输入用户名" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">资源标题</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="resourceTitle" placeholder="请输入资源标题" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">IP地址</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="ipAddress" placeholder="请输入IP地址" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">开始时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="startTime" id="startTime" placeholder="开始时间" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">结束时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="endTime" id="endTime" placeholder="结束时间" class="layui-input">
+                    </div>
+                </div>
+                <button id="download-query" class="pear-btn pear-btn-md pear-btn-primary" lay-submit="" lay-filter="download-query">
+                    <i class="layui-icon layui-icon-search"></i>
+                    查询
+                </button>
+                <button type="reset" class="pear-btn pear-btn-md">
+                    <i class="layui-icon layui-icon-refresh"></i>
+                    重置
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table id="download-table" lay-filter="download-table"></table>
+    </div>
+</div>
+
+<!-- 工具栏模板 -->
+<script type="text/html" id="download-toolbar">
+    <button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove">
+        <i class="layui-icon layui-icon-delete"></i>
+        批量删除
+    </button>
+    <button class="pear-btn pear-btn-danger pear-btn-md" lay-event="clearAll">
+        <i class="layui-icon layui-icon-close"></i>
+        清空所有
+    </button>
+</script>
+
+<!-- 行工具栏模板 -->
+<script type="text/html" id="download-bar">
+    <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="detail" title="查看详情">
+        <i class="layui-icon layui-icon-read"></i>
+    </button>
+    <button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove" title="删除">
+        <i class="layui-icon layui-icon-delete"></i>
+    </button>
+</script>
+
+<!-- 时间格式化模板 -->
+<script type="text/html" id="download-time">
+    {{layui.util.toDateString(d.downloadTime, 'yyyy-MM-dd HH:mm:ss')}}
+</script>
+
+<script>
+    layui.use(['table', 'form', 'jquery', 'laydate', 'popup'], function () {
+        let table = layui.table;
+        let form = layui.form;
+        let $ = layui.jquery;
+        let laydate = layui.laydate;
+        let popup = layui.popup;
+
+        // 初始化日期选择器
+        laydate.render({
+            elem: '#startTime',
+            type: 'datetime'
+        });
+        laydate.render({
+            elem: '#endTime',
+            type: 'datetime'
+        });
+
+        let cols = [
+            [
+                {type: 'checkbox'},
+                {title: '记录ID', field: 'recordId', align: 'center', width: 100},
+                {title: '用户名', field: 'userName', align: 'center', width: 120},
+                {title: '资源标题', field: 'resourceTitle', align: 'center', width: 300},
+                {title: 'IP地址', field: 'ipAddress', align: 'center', width: 150},
+                {title: '下载时间', field: 'downloadTime', align: 'center', width: 180, templet: '#download-time'},
+                {title: '操作', toolbar: '#download-bar', align: 'center', width: 150, fixed: 'right'}
+            ]
+        ];
+
+        var tableIns = table.render({
+            elem: '#download-table',
+            url: '/api/admin/resource/download/list',
+            page: true,
+            cols: cols,
+            skin: 'line',
+            toolbar: '#download-toolbar',
+            defaultToolbar: [{
+                layEvent: 'refresh',
+                icon: 'layui-icon-refresh',
+            }, 'filter', 'exports'],
+            response: {
+                statusCode: 0
+            }
+        });
+
+        // 监听工具栏事件
+        table.on('toolbar(download-table)', function (obj) {
+            if (obj.event === 'batchRemove') {
+                var checkStatus = table.checkStatus('download-table');
+                var data = checkStatus.data;
+                if (data.length === 0) {
+                    layer.msg('请选择要删除的记录', {icon: 2});
+                    return;
+                }
+                var recordIds = data.map(function (item) {
+                    return item.recordId;
+                });
+                layer.confirm('确定要删除选中的 ' + data.length + ' 条记录吗？', {icon: 3, title: '提示'}, function (index) {
+                    batchRemove(recordIds.join(','));
+                    layer.close(index);
+                });
+            } else if (obj.event === 'clearAll') {
+                layer.confirm('该操作会删除所有下载记录，请谨慎操作', {icon: 3, title: '警告'}, function (index) {
+                    clearAll();
+                    layer.close(index);
+                });
+            } else if (obj.event === 'refresh') {
+                window.refresh();
+            }
+        });
+
+        // 监听行工具事件
+        table.on('tool(download-table)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'remove') {
+                layer.confirm('确定要删除该条记录吗？', {icon: 3, title: '提示'}, function (index) {
+                    remove(data.recordId);
+                    layer.close(index);
+                });
+            } else if (obj.event === 'detail') {
+                showDetail(data);
+            }
+        });
+
+        // 监听查询提交
+        form.on('submit(download-query)', function (data) {
+            var formData = data.field;
+            tableIns.reload({
+                page: {
+                    curr: 1
+                },
+                where: formData
+            });
+            return false;
+        });
+
+        // 删除单条记录
+        function remove(recordId) {
+            let loading = layer.load();
+            $.ajax({
+                url: "/api/admin/resource/download/" + recordId,
+                type: 'delete',
+                dataType: 'json',
+                success: function (result) {
+                    layer.close(loading);
+                    if (result.success) {
+                        layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                            refresh();
+                        });
+                    } else {
+                        layer.msg(result.msg, {icon: 2, time: 1000});
+                    }
+                },
+                error: function () {
+                    layer.close(loading);
+                    layer.msg('删除失败', {icon: 2, time: 1000});
+                }
+            });
+        }
+
+        // 批量删除
+        function batchRemove(recordIds) {
+            let loading = layer.load();
+            $.ajax({
+                url: "/api/admin/resource/download/batch",
+                type: 'delete',
+                data: {recordIds: recordIds},
+                dataType: 'json',
+                success: function (result) {
+                    layer.close(loading);
+                    if (result.success) {
+                        layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                            refresh();
+                        });
+                    } else {
+                        layer.msg(result.msg, {icon: 2, time: 1000});
+                    }
+                },
+                error: function () {
+                    layer.close(loading);
+                    layer.msg('删除失败', {icon: 2, time: 1000});
+                }
+            });
+        }
+
+        // 清空所有
+        function clearAll() {
+            let loading = layer.load();
+            $.ajax({
+                url: "/api/admin/resource/download/all",
+                type: 'delete',
+                dataType: 'json',
+                success: function (result) {
+                    layer.close(loading);
+                    if (result.success) {
+                        layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                            refresh();
+                        });
+                    } else {
+                        layer.msg(result.msg, {icon: 2, time: 1000});
+                    }
+                },
+                error: function () {
+                    layer.close(loading);
+                    layer.msg('操作失败', {icon: 2, time: 1000});
+                }
+            });
+        }
+
+        // 查看详情
+        function showDetail(data) {
+            layer.open({
+                type: 1,
+                title: '下载记录详情',
+                area: ['600px', '400px'],
+                content: '<div style="padding: 20px; line-height: 2;">' +
+                    '<p><strong>记录ID：</strong>' + (data.recordId || '-') + '</p>' +
+                    '<p><strong>用户名：</strong>' + (data.userName || '-') + '</p>' +
+                    '<p><strong>资源标题：</strong>' + (data.resourceTitle || '-') + '</p>' +
+                    '<p><strong>IP地址：</strong>' + (data.ipAddress || '-') + '</p>' +
+                    '<p><strong>下载时间：</strong>' + layui.util.toDateString(data.downloadTime, 'yyyy-MM-dd HH:mm:ss') + '</p>' +
+                    '</div>'
+            });
+        }
+
+        // 刷新表格
+        window.refresh = function () {
+            tableIns.reload();
+        }
+    });
+</script>
+</body>
+</html>

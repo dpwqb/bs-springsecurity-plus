@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 统一返回结果的类
  * @author codermy
- * @createTime 2020/5/15
+ * @createTime 2025/5/15
  */
 @Data
 public class Result<T> implements Serializable {

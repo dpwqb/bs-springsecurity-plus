@@ -4,11 +4,11 @@ spring:
   profiles:
     active: dev
   application:
-    name: my-springsecurity-plus
+    name: xue-xiang-hui
   datasource:
     driver:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/my-springsecurity-plus?serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/xue-xiang-hui?serverTimezone=Asia/Shanghai
     username: root
     password: 180430121
     type: com.alibaba.druid.pool.DruidDataSource
@@ -45,16 +45,22 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+  # 文件上传配置
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
   # 热部署
   devtools:
     restart:
-      enabled: true
-      additional-paths: src/main/java
-      exclude: WEB-INF/**
+      enabled: false  # 禁用自动重启，避免反复重启
+      # additional-paths: src/main/java  # 注释掉，避免监控源码目录
+      exclude: WEB-INF/**,mybatis-mappers/**,static/**,templates/**
 #mybatis配置
 mybatis:
   type-aliases-package: com.codermy.myspringsecurityplus.entity
-  mapper-locations: classpath:/mybatis-mappers/*
+  mapper-locations: classpath*:/mybatis-mappers/*.xml
   configuration:
     map-underscore-to-camel-case: true
 
@@ -64,7 +70,7 @@ logging:
 
 jwt:
   tokenHeader: Authorization #JWT存储的请求头
-  secret: my-springsecurity-plus #JWT加解密使用的密钥
+  secret: xue-xiang-hui #JWT加解密使用的密钥
   expiration: 604800 #JWT的超期限时间(60*60*24*7)
   tokenHead: 'Bearer ' #JWT负载中拿到开头
 
@@ -75,3 +81,22 @@ pagehelper:
   support-methods-arguments: true
   params: count=countSql
   pageSizeZero: true #pageSize=0 or RowBounds.Limit = 0的时候就不适用分页，但是返回对象还是PageInfo
+
+# 文件上传配置
+upload:
+  path: ./uploads/                       # 相对路径：jar包运行目录下的uploads文件夹
+  max-size: 52428800                     # 50MB
+  allowed-types: pdf,doc,docx,ppt,pptx,txt,zip,7z,rar
+
+# AI服务配置（支持任意OpenAI兼容的API）
+ai:
+  api:
+    base-url: http://localhost:11434/v1  # 可改用其他大模型提供商
+    key: ollama                          # AI密钥
+    model: gpt-oss:20b                   # 模型名称
+    timeout: 180000                      # 超时时间（毫秒）
+    max-tokens: 1000                     # 最大token数
+    # 多轮对话配置
+    enable-multi-turn-chat: true         # 是否启用多轮对话
+    max-history-turns: 10                # 历史对话最大轮数
+    history-days-limit: 7                # 历史对话时间范围（天）

@@ -10,7 +10,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 
 /**
  * @author codermy
- * @createTime 2020/8/4
+ * @createTime 2025/8/4
  */
 public interface MyLogService {
 
@@ -50,4 +50,10 @@ public interface MyLogService {
      * 删除所有INFO日志
      */
     void delAllByInfo();
+
+    /**
+     * 统计今日访问量
+     * @return 今日访问次数
+     */
+    Integer countTodayVisits();
 }

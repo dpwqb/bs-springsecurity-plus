@@ -31,4 +31,10 @@
         ORDER BY l.create_time desc
     </select>
 
+    <!-- 统计今日访问量 -->
+    <select id="countTodayVisits" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM my_log
+        WHERE DATE(create_time) = CURDATE()
+    </select>
+
 </mapper>

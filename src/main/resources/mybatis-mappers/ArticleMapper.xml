@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.codermy.myspringsecurityplus.resource.dao.ArticleDao">
+
+    <!-- 分页查询文章列表 -->
+    <select id="getArticleByPage" resultType="com.codermy.myspringsecurityplus.resource.entity.MyArticle">
+        SELECT a.article_id, a.title, a.summary, a.category_id, a.cover_image,
+               a.view_count, a.like_count,
+               a.author_id, a.author_name,
+               a.status,
+               a.create_time, a.update_time, a.publish_time,
+               c.category_name
+        FROM my_article a
+        LEFT JOIN article_category c ON a.category_id = c.category_id
+        <where>
+            <if test="params.status != null and params.status != ''">
+                AND a.status = #{params.status}
+            </if>
+            <if test="params.keyword != null and params.keyword != ''">
+                AND (a.title LIKE CONCAT('%', #{params.keyword}, '%')
+                OR a.summary LIKE CONCAT('%', #{params.keyword}, '%'))
+            </if>
+            <if test="params.categoryId != null and params.categoryId != ''">
+                AND a.category_id = #{params.categoryId}
+            </if>
+            <if test="params.authorId != null and params.authorId != ''">
+                AND a.author_id = #{params.authorId}
+            </if>
+        </where>
+        ORDER BY a.create_time DESC
+    </select>
+
+    <!-- 根据ID查询文章详情 -->
+    <select id="getArticleById" resultType="com.codermy.myspringsecurityplus.resource.entity.MyArticle">
+        SELECT * FROM my_article WHERE article_id = #{articleId}
+    </select>
+
+    <!-- 保存文章 -->
+    <insert id="save" parameterType="com.codermy.myspringsecurityplus.resource.entity.MyArticle"
+            useGeneratedKeys="true" keyProperty="articleId" keyColumn="article_id">
+        INSERT INTO my_article
+        (title, content, summary, category_id, cover_image, author_id, author_name, status)
+        VALUES
+        (#{title}, #{content}, #{summary}, #{categoryId}, #{coverImage}, #{authorId}, #{authorName}, #{status})
+    </insert>
+
+    <!-- 更新文章 -->
+    <update id="update" parameterType="com.codermy.myspringsecurityplus.resource.entity.MyArticle">
+        UPDATE my_article
+        <set>
+            <if test="title != null and title != ''">
+                title = #{title},
+            </if>
+            <if test="content != null">
+                content = #{content},
+            </if>
+            <if test="summary != null">
+                summary = #{summary},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId},
+            </if>
+            <if test="coverImage != null">
+                cover_image = #{coverImage},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="publishTime != null">
+                publish_time = #{publishTime},
+            </if>
+            update_time = NOW()
+        </set>
+        WHERE article_id = #{articleId}
+    </update>
+
+    <!-- 删除文章 -->
+    <delete id="delete">
+        DELETE FROM my_article WHERE article_id = #{articleId}
+    </delete>
+
+    <!-- 增加浏览量 -->
+    <update id="increaseViewCount">
+        UPDATE my_article SET view_count = view_count + 1 WHERE article_id = #{articleId}
+    </update>
+
+    <!-- 增加点赞数 -->
+    <update id="increaseLikeCount">
+        UPDATE my_article SET like_count = like_count + 1 WHERE article_id = #{articleId}
+    </update>
+
+    <!-- 查询用户的文章列表 -->
+    <select id="getArticlesByAuthorId" resultType="com.codermy.myspringsecurityplus.resource.entity.MyArticle">
+        SELECT * FROM my_article
+        WHERE author_id = #{authorId}
+        <if test="params.status != null">
+            AND status = #{params.status}
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 保存文章浏览记录 -->
+    <insert id="saveViewRecord">
+        INSERT INTO article_view_record (article_id, user_id, view_time, ip_address)
+        VALUES (#{articleId}, #{userId}, NOW(), #{ipAddress})
+        ON DUPLICATE KEY UPDATE view_time = NOW(), ip_address = #{ipAddress}
+    </insert>
+
+    <!-- 管理员获取所有文章（包括草稿和已下架） -->
+    <select id="getAllArticlesForAdmin" resultType="com.codermy.myspringsecurityplus.resource.entity.MyArticle">
+        SELECT a.*, c.category_name, u.nick_name as author_name
+        FROM my_article a
+        LEFT JOIN article_category c ON a.category_id = c.category_id
+        LEFT JOIN my_user u ON a.author_id = u.user_id
+        <where>
+            <if test="params.keyword != null and params.keyword != ''">
+                AND (a.title LIKE CONCAT('%', #{params.keyword}, '%')
+                OR a.summary LIKE CONCAT('%', #{params.keyword}, '%'))
+            </if>
+            <if test="params.categoryId != null and params.categoryId != ''">
+                AND a.category_id = #{params.categoryId}
+            </if>
+            <if test="params.status != null and params.status != ''">
+                AND a.status = #{params.status}
+            </if>
+        </where>
+        ORDER BY a.create_time DESC
+    </select>
+
+    <!-- 更新文章状态 -->
+    <update id="updateArticleStatus">
+        UPDATE my_article
+        SET status = #{status}, update_time = NOW()
+        WHERE article_id = #{articleId}
+    </update>
+
+    <!-- 批量更新文章状态 -->
+    <update id="batchUpdateArticleStatus">
+        UPDATE my_article
+        SET status = #{status}, update_time = NOW()
+        WHERE article_id IN
+        <foreach collection="articleIds" item="articleId" open="(" close=")" separator=",">
+            #{articleId}
+        </foreach>
+    </update>
+
+    <!-- 获取文章统计 -->
+    <select id="getArticleStatistics" resultType="map">
+        SELECT
+            COUNT(*) as totalArticles,
+            SUM(CASE WHEN DATE(create_time) = CURDATE() THEN 1 ELSE 0 END) as todayArticles,
+            COALESCE(SUM(view_count), 0) as totalViews,
+            COALESCE(SUM(like_count), 0) as totalLikes
+        FROM my_article
+    </select>
+
+</mapper>
