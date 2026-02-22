@@ -7,14 +7,14 @@
           <h1 class="brand-title">加入学享汇</h1>
           <p class="brand-slogan">开启你的学习之旅</p>
           <div class="brand-stats">
-            <div class="stat-item">
+            <!-- <div class="stat-item">
               <div class="stat-number">10W+</div>
               <div class="stat-label">注册用户</div>
             </div>
             <div class="stat-item">
               <div class="stat-number">50W+</div>
               <div class="stat-label">优质资源</div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -230,12 +230,12 @@ const handleRegister = async () => {
 
 // 显示用户协议
 const showTerms = () => {
-  ElMessage.info('用户协议页面即将开放')
+  router.push('/terms')
 }
 
 // 显示隐私政策
 const showPrivacy = () => {
-  ElMessage.info('隐私政策页面即将开放')
+  router.push('/privacy')
 }
 
 onMounted(() => {
