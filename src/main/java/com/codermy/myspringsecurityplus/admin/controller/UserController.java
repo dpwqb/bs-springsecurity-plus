@@ -54,7 +54,7 @@ public class UserController {
     public String addUser(Model model){
         model.addAttribute("myUser",new MyUser());
         model.addAttribute("jobs",jobService.selectJobAll());
-        return "/system/user/user-add";
+        return "system/user/user-add";
     }
 
     @PostMapping
@@ -80,7 +80,7 @@ public class UserController {
     public String editUser(Model model, MyUser tbUser){
         model.addAttribute("myUser",userService.getUserById(tbUser.getUserId()));
         model.addAttribute("jobs",jobService.selectJobsByUserId(tbUser.getUserId()));
-        return "/system/user/user-edit";
+        return "system/user/user-edit";
     }
 
     @PutMapping

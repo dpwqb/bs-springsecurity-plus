@@ -40,7 +40,7 @@ public class DictDetailController {
     @PreAuthorize("hasAnyAuthority('dict:add')")
     public String addDictDetail(Model model,MyDictDetail myDictDetail){
         model.addAttribute("MyDictDetail",myDictDetail);
-        return "/system/dict/dict-detail-add";
+        return "system/dict/dict-detail-add";
     }
 
     @PostMapping

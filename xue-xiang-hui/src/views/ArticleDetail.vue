@@ -55,6 +55,7 @@
               :type="isLiked ? 'primary' : 'default'"
               @click="handleLike"
               :loading="likeLoading"
+              :disabled="!userStore.isLoggedIn"
             >
               <el-icon><StarFilled /></el-icon>
               {{ isLiked ? '已点赞' : '点赞' }} ({{ article.likeCount || 0 }})
@@ -119,9 +120,11 @@ import { getArticleDetail, likeArticle, getArticleLikeStatus } from '@/api/artic
 import AiChatSidebar from '@/components/AiChatSidebar.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
 const route = useRoute()
+const userStore = useUserStore()
 
 const loading = ref(false)
 const likeLoading = ref(false)
@@ -176,6 +179,12 @@ const fetchArticleDetail = async () => {
 
 // 获取点赞状态
 const fetchLikeStatus = async () => {
+  // 未登录时跳过检查，避免触发401错误
+  if (!userStore.isLoggedIn) {
+    isLiked.value = false
+    return
+  }
+
   try {
     const res = await getArticleLikeStatus(articleId.value)
     if (res.code === 0) {
@@ -188,6 +197,12 @@ const fetchLikeStatus = async () => {
 
 // 点赞
 const handleLike = async () => {
+  if (!userStore.isLoggedIn) {
+    ElMessage.warning('请先登录')
+    router.push('/login')
+    return
+  }
+
   likeLoading.value = true
   try {
     const res = await likeArticle(articleId.value)
@@ -237,6 +252,12 @@ const handleTextSelection = () => {
 
 // 打开AI对话
 const openAiChat = async () => {
+  if (!userStore.isLoggedIn) {
+    ElMessage.warning('请先登录')
+    router.push('/login')
+    return
+  }
+
   // 先打开抽屉
   aiDrawerVisible.value = true
   // 等待组件挂载

@@ -71,6 +71,7 @@
                     size="large"
                     @click="handleToggleFavorite"
                     :loading="favoriteLoading"
+                    :disabled="!userStore.isLoggedIn"
                   >
                     <el-icon>
                       <Star v-if="!isFavorited" />
@@ -167,9 +168,11 @@ import { getResourceDetail, downloadResourceFile, toggleFavorite, checkFavorited
 import AiChatSidebar from '@/components/AiChatSidebar.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
 const route = useRoute()
+const userStore = useUserStore()
 
 const loading = ref(false)
 const favoriteLoading = ref(false)
@@ -247,6 +250,12 @@ const fetchResourceDetail = async () => {
 
 // 检查收藏状态
 const checkFavoriteStatus = async () => {
+  // 未登录时跳过检查，避免触发401错误
+  if (!userStore.isLoggedIn) {
+    isFavorited.value = false
+    return
+  }
+
   if (!resourceId.value) {
     return
   }
@@ -268,6 +277,12 @@ const checkFavoriteStatus = async () => {
 
 // 下载资源
 const handleDownload = async () => {
+  if (!userStore.isLoggedIn) {
+    ElMessage.warning('请先登录')
+    router.push('/login')
+    return
+  }
+
   if (!resourceId.value) {
     return
   }
@@ -282,6 +297,12 @@ const handleDownload = async () => {
 
 // 切换收藏状态
 const handleToggleFavorite = async () => {
+  if (!userStore.isLoggedIn) {
+    ElMessage.warning('请先登录')
+    router.push('/login')
+    return
+  }
+
   if (!resourceId.value) {
     return
   }
@@ -318,6 +339,12 @@ const handleTextSelection = () => {
 
 // 打开AI对话
 const openAiChat = () => {
+  if (!userStore.isLoggedIn) {
+    ElMessage.warning('请先登录')
+    router.push('/login')
+    return
+  }
+
   aiDrawerVisible.value = true
 }
 

@@ -49,7 +49,7 @@ public class DictController {
     @PreAuthorize("hasAnyAuthority('dict:add')")
     public String addDict(Model model){
         model.addAttribute("MyDict",new MyDict());
-        return "/system/dict/dict-add";
+        return "system/dict/dict-add";
     }
 
     @PostMapping
