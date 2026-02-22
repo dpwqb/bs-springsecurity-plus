@@ -23,7 +23,7 @@ public interface UserDao {
      List<MyUser> getFuzzyUserByPage( MyUser myUser);
 
     //计算所有用户数量
-    @Select("select count(*) from my_user")
+    @Select("select count(*) from user")
     Long countAllUser();
 
     /**
@@ -32,7 +32,7 @@ public interface UserDao {
      * @param userId
      * @return
      */
-    @Select("select u.user_id,u.dept_id,u.user_name,u.password,u.nick_name,u.phone,u.email,u.status,u.create_time,u.update_time from my_user u where u.user_id = #{userId}")
+    @Select("select u.user_id,u.dept_id,u.user_name,u.password,u.nick_name,u.phone,u.email,u.status,u.create_time,u.update_time from user u where u.user_id = #{userId}")
     MyUser getUserById(Integer userId);
 
     /**
@@ -54,7 +54,7 @@ public interface UserDao {
      * @param email 邮箱
      * @return 用户信息
      */
-    @Select("select u.user_id from my_user u where u.email = #{email}")
+    @Select("select u.user_id from user u where u.email = #{email}")
     MyUser checkEmailUnique(String email);
     /**
      * 更新用户
@@ -71,7 +71,7 @@ public interface UserDao {
      * @return
      */
     @Options(useGeneratedKeys = true, keyProperty = "userId")
-    @Insert("insert into my_user(dept_id,user_name, password, nick_name, phone, email, status, create_time, update_time) values(#{deptId},#{userName}, #{password}, #{nickName}, #{phone}, #{email}, #{status}, now(), now())")
+    @Insert("insert into user(dept_id,user_name, password, nick_name, phone, email, status, create_time, update_time) values(#{deptId},#{userName}, #{password}, #{nickName}, #{phone}, #{email}, #{status}, now(), now())")
     int save(MyUser myUser);
 
     /**
@@ -79,7 +79,7 @@ public interface UserDao {
      * @param userId
      * @return
      */
-    @Delete("delete from my_user where user_id = #{userId}")
+    @Delete("delete from user where user_id = #{userId}")
     int deleteUserById(Integer userId);
 
 
@@ -89,7 +89,7 @@ public interface UserDao {
      * @param userName
      * @return
      */
-    @Select("select * from my_user t where t.user_name = #{userName}")
+    @Select("select * from user t where t.user_name = #{userName}")
     MyUser getUser(String userName);
 
 

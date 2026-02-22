@@ -26,7 +26,7 @@ public interface JobDao {
      * @param job 岗位信息
      * @return 结果
      */
-    @Insert("INSERT INTO my_job(job_name,status,sort, create_time, update_time) values(#{jobName},#{status},#{sort}, now(), now())")
+    @Insert("INSERT INTO job(job_name,status,sort, create_time, update_time) values(#{jobName},#{status},#{sort}, now(), now())")
     int insertDept(MyJob job);
 
 
@@ -41,7 +41,7 @@ public interface JobDao {
      * @param jobId
      * @return
      */
-    @Select("select j.job_id,j.job_name,j.status,j.sort,j.create_time,j.update_time from my_job j where j.job_id = #{jobId}")
+    @Select("select j.job_id,j.job_name,j.status,j.sort,j.create_time,j.update_time from job j where j.job_id = #{jobId}")
     MyJob getJobById(Integer jobId);
 
     /**

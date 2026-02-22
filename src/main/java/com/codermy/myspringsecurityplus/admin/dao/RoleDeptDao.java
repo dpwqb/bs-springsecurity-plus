@@ -18,7 +18,7 @@ public interface RoleDeptDao {
      * @param roleId
      * @return
      */
-    @Delete("delete from my_role_dept where role_id = #{roleId}")
+    @Delete("delete from role_dept where role_id = #{roleId}")
     int deleteRoleDept(Integer roleId);
 
     /**

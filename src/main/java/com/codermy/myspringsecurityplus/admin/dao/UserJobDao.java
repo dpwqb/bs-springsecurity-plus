@@ -19,7 +19,7 @@ public interface UserJobDao {
      * @param jobId 岗位ID
      * @return 结果
      */
-    @Select("select count(1) from my_user_job where job_id=#{jobId}")
+    @Select("select count(1) from user_job where job_id=#{jobId}")
     int countUserJobtById(Integer jobId);
 
     /**

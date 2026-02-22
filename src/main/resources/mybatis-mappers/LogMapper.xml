@@ -5,7 +5,7 @@
 <mapper namespace="com.codermy.myspringsecurityplus.log.dao.LogDao">
     <select id="getFuzzyLogByPage" resultType="com.codermy.myspringsecurityplus.log.dto.LogDto">
         SELECT l.user_name,l.ip,l.params,l.description,l.browser,l.time,l.method,l.create_time
-        FROM my_log l
+        FROM log l
         <where>
             <if test="logQuery.logType != null and logQuery.logType  != ''">
                 AND l.type = #{logQuery.logType}
@@ -19,7 +19,7 @@
 
     <select id="getFuzzyErrorLogByPage" resultType="com.codermy.myspringsecurityplus.log.dto.ErrorLogDto">
         SELECT l.user_name,l.ip,l.params,l.description,l.browser,l.exception_detail,l.method,l.create_time
-        FROM my_log l
+        FROM log l
         <where>
             <if test="logQuery.logType != null and logQuery.logType  != ''">
                 AND l.type = #{logQuery.logType}
@@ -33,7 +33,7 @@
 
     <!-- 统计今日访问量 -->
     <select id="countTodayVisits" resultType="java.lang.Integer">
-        SELECT COUNT(*) FROM my_log
+        SELECT COUNT(*) FROM log
         WHERE DATE(create_time) = CURDATE()
     </select>
 

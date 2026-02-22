@@ -28,14 +28,14 @@ public interface MenuDao {
      * @param menuId
      * @return
      */
-    @Select("select m.menu_id,m.parent_id,m.menu_name,m.icon,m.url,m.permission,m.sort,m.type,m.create_time,m.update_time from my_menu m where m.menu_id = #{menuId}")
+    @Select("select m.menu_id,m.parent_id,m.menu_name,m.icon,m.url,m.permission,m.sort,m.type,m.create_time,m.update_time from menu m where m.menu_id = #{menuId}")
     MyMenu getMenuById(Integer menuId);
 
     /**
      * 菜单树
      * @return
      */
-    @Select("select m.menu_id,m.parent_id,m.menu_name from my_menu m")
+    @Select("select m.menu_id,m.parent_id,m.menu_name from menu m")
     @Result(property = "title",column = "menu_name")
     @Result(property = "id",column = "menu_id")
     List<MenuDto> buildAll();
@@ -53,7 +53,7 @@ public interface MenuDao {
      * @return
      */
     @Options(useGeneratedKeys = true, keyProperty = "menuId")
-    @Insert("insert into my_menu(parent_id, menu_name, icon, url, permission, sort, type, create_time, update_time)values(#{parentId}, #{menuName}, #{icon}, #{url}, #{permission}, #{sort}, #{type}, now(), now())")
+    @Insert("insert into menu(parent_id, menu_name, icon, url, permission, sort, type, create_time, update_time)values(#{parentId}, #{menuName}, #{icon}, #{url}, #{permission}, #{sort}, #{type}, now(), now())")
     int save(MyMenu menu);
 
     /**
@@ -61,7 +61,7 @@ public interface MenuDao {
      * @param menuId
      * @return
      */
-    @Delete("delete from my_menu where menu_id = #{menuId}")
+    @Delete("delete from menu where menu_id = #{menuId}")
     int deleteById(Integer menuId);
 
     /**
@@ -69,7 +69,7 @@ public interface MenuDao {
      * @param parentId
      * @return
      */
-    @Delete("delete from my_menu where parent_id = #{parentId}")
+    @Delete("delete from menu where parent_id = #{parentId}")
     int deleteByParentId(Integer parentId);
 
     /**
@@ -77,7 +77,7 @@ public interface MenuDao {
      * @param parentId
      * @return
      */
-    @Select("select m.menu_id from my_menu m where parent_id = #{parentId}")
+    @Select("select m.menu_id from menu m where parent_id = #{parentId}")
     List<Integer> selectByParentId(Integer parentId);
 
     /**
@@ -85,7 +85,7 @@ public interface MenuDao {
      * @param roleId
      * @return
      */
-    @Select("select m.menu_id,m.parent_id,m.menu_name from my_menu m inner join my_role_menu rm on m.menu_id = rm.menu_id where rm.role_id = #{roleId}")
+    @Select("select m.menu_id,m.parent_id,m.menu_name from menu m inner join role_menu rm on m.menu_id = rm.menu_id where rm.role_id = #{roleId}")
     @Result(property = "title",column = "menu_name")
     @Result(property = "id",column = "menu_id")
     List<MenuDto> listByRoleId(Integer roleId);

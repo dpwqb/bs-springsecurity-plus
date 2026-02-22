@@ -41,7 +41,7 @@ public interface DeptDao {
      * @param dept 岗位信息
      * @return 结果
      */
-    @Insert("INSERT INTO my_dept(parent_id,ancestors,dept_name,sort,status, create_time, update_time) values(#{parentId},#{ancestors},#{deptName},#{sort},#{status}, now(), now())")
+    @Insert("INSERT INTO dept(parent_id,ancestors,dept_name,sort,status, create_time, update_time) values(#{parentId},#{ancestors},#{deptName},#{sort},#{status}, now(), now())")
     int insertDept(MyDept dept);
     /**
      * 根据部门ID查询信息
@@ -55,7 +55,7 @@ public interface DeptDao {
      * @param deptId
      * @return
      */
-    @Select("select d.dept_id,d.parent_id,d.ancestors,d.dept_name,d.sort,d.status,d.create_time,d.update_time from my_dept d where d.dept_id = #{deptId}")
+    @Select("select d.dept_id,d.parent_id,d.ancestors,d.dept_name,d.sort,d.status,d.create_time,d.update_time from dept d where d.dept_id = #{deptId}")
     MyDept getDeptById(Integer deptId);
 
 
