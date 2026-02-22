@@ -69,14 +69,14 @@ public class SwaggerConfig {
                 .globalOperationParameters(pars);
     }
     /**
-     * 该套 API 说明，包含作者、简介、版本、等信息
+     * API 说明
      * @return
      */
     private ApiInfo webApiInfo(){
         return new ApiInfoBuilder()
                 .contact(new Contact("CoderMy",null,null))
-                .title("my-springsecurity-plus-API文档")
-                .description("本文档描述了my-springsecurity-plus接口定义")
+                .title("学享汇-API文档")
+                .description("本文档描述了接口定义")
                 .version("1.0.8")
                 .build();
     }

@@ -70,7 +70,7 @@ logging:
 
 jwt:
   tokenHeader: Authorization #JWT存储的请求头
-  secret: my-springsecurity-plus #JWT加解密使用的密钥
+  secret: xue-xiang-hui #JWT加解密使用的密钥
   expiration: 604800 #JWT的超期限时间(60*60*24*7)
   tokenHead: 'Bearer ' #JWT负载中拿到开头
 
@@ -91,10 +91,10 @@ upload:
 # AI服务配置（支持任意OpenAI兼容的API）
 ai:
   api:
-    base-url: http://localhost:11434     # 可改为 https://api.deepseek.com 等
-    key: ollama                          # 用户自行配置
-    model: qwen2.5:14b                   # 可改为 deepseek-chat 等
-    timeout: 180000                       # 30秒超时
+    base-url: http://localhost:11434/v1  # 可改用其他大模型提供商
+    key: ollama                          # AI密钥
+    model: gpt-oss:20b                   # 模型名称
+    timeout: 180000                      # 超时时间（毫秒）
     max-tokens: 1000                     # 最大token数
     # 多轮对话配置
     enable-multi-turn-chat: true         # 是否启用多轮对话

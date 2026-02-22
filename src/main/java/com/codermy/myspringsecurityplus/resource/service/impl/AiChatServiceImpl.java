@@ -50,11 +50,15 @@ public class AiChatServiceImpl implements AiChatService {
         // 3. 调用OpenAI兼容API
         String answer = null;
         int tokensUsed = 0;
+        long startTime = System.currentTimeMillis();
         try {
-            HttpResponse response = HttpRequest.post(aiServiceConfig.getBaseUrl() + "/v1/chat/completions")
+            log.info("AI请求配置：baseUrl={}, model={}, timeout={}ms", aiServiceConfig.getBaseUrl(), aiServiceConfig.getModel(), aiServiceConfig.getTimeout());
+
+            HttpResponse response = HttpRequest.post(aiServiceConfig.getBaseUrl() + "/chat/completions")
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + aiServiceConfig.getKey())
-                    .timeout(aiServiceConfig.getTimeout())
+                    .setConnectionTimeout(10000)  // 连接超时10秒
+                    .setReadTimeout(aiServiceConfig.getTimeout())  // 读取超时使用配置值
                     .body(JSONUtil.toJsonStr(requestBody))
                     .execute();
 
@@ -78,10 +82,12 @@ public class AiChatServiceImpl implements AiChatService {
                 tokensUsed = usage.getInt("total_tokens", 0);
             }
 
-            log.info("AI调用成功：userId={}, sessionId={}, tokens={}", userId, sessionId, tokensUsed);
+            long duration = System.currentTimeMillis() - startTime;
+            log.info("AI调用成功：userId={}, sessionId={}, tokens={},耗时={}ms", userId, sessionId, tokensUsed, duration);
 
         } catch (Exception e) {
-            log.error("AI调用失败", e);
+            long duration = System.currentTimeMillis() - startTime;
+            log.error("AI调用失败，耗时={}ms", duration, e);
             throw new RuntimeException("AI服务暂时不可用：" + e.getMessage());
         }
 
