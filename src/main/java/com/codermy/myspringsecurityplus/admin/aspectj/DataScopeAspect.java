@@ -119,7 +119,7 @@ public class DataScopeAspect {
             else if (DATA_SCOPE_CUSTOM.equals(dataScope))
             {
                 sqlString.append(StrUtil.format(
-                        " OR {}.dept_id IN ( SELECT dept_id FROM my_role_dept WHERE role_id = {} ) ", deptAlias,
+                        " OR {}.dept_id IN ( SELECT dept_id FROM role_dept WHERE role_id = {} ) ", deptAlias,
                         role.getRoleId()));
             }
             else if (DATA_SCOPE_DEPT.equals(dataScope))
@@ -129,7 +129,7 @@ public class DataScopeAspect {
             else if (DATA_SCOPE_DEPT_AND_CHILD.equals(dataScope))
             {
                 sqlString.append(StrUtil.format(
-                        " OR {}.dept_id IN ( SELECT dept_id FROM my_dept WHERE dept_id = {} or find_in_set( {} , ancestors ) )",
+                        " OR {}.dept_id IN ( SELECT dept_id FROM dept WHERE dept_id = {} or find_in_set( {} , ancestors ) )",
                         deptAlias, user.getMyUser().getDeptId(), user.getMyUser().getDeptId()));
             }
             else if (DATA_SCOPE_SELF.equals(dataScope))

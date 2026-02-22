@@ -41,7 +41,10 @@
 - 导入docs文件夹下sql文件到数据库
 - 修改数据库配置文件的路径，用户名等信息
 - 在settings--plugins中搜索并安装lombok插件(Lombok 是一个编译时库，在Idea上有支持的插件，可用来帮助开发人员消除冗长的Java代码，例如实体中的setters和getters),否则编译不过。
-- 运行
+- 运行（启动后端接口及管理后台）端口：8088
+- 进入xue-xiang-hui目录
+- 执行命令：`npm install`安装依赖
+- 执行命令：`npm run dev`启动Vue前端，端口：3000
 
 ### 项目中初始用户和密码
 
@@ -50,7 +53,6 @@
 
 ### 项目部署
 - 先进入xue-xiang-hui目录
-- 执行命令：`npm install`安装依赖
 - 执行命令：`npm run build`编译前端至`src/main/resources/static`目录
 - 进入项目根目录，执行命令：`mvn clean package -DskipTests`编译后端
 - 运行项目，执行命令：`java -jar target/xue-xiang-hui-0.0.1-SNAPSHOT.jar`
