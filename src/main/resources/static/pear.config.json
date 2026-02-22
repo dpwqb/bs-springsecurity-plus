@@ -50,12 +50,12 @@
 		{
 			"icon": "layui-icon layui-icon-read",
 			"title": "学享汇·客户端",
-			"href": "http://localhost:3000"
+			"href": "/"
 		},
 		{
 			"icon": "layui-icon layui-icon-fonts-code",
 			"title": "学享汇·管理端",
-			"href": "http://localhost:8088"
+			"href": "/admin"
 		}
 	],
 	"other": {

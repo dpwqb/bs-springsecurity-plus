@@ -3,6 +3,7 @@ package com.codermy.myspringsecurityplus.resource.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -36,5 +37,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .setCachePeriod(3600); // 缓存1小时
 
         System.out.println("静态资源映射已配置：/uploads/** -> " + uploadPath);
+    }
+
+    /**
+     * 添加视图控制器映射
+     * 用于处理简单的视图转发，无需编写控制器方法
+     */
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        // 根路径转发到Vue前端（作为IndexController的备用方案）
+        registry.addRedirectViewController("/", "/index.html");
     }
 }

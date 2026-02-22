@@ -79,7 +79,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/swagger-resources/**",
                         "/PearAdmin/**",
                         "/component/**",
-                        "/admin/**",
+                        "/admin/css/**",
+                        "/admin/js/**",
+                        "/admin/images/**",
                         "/**/*.html",
                         "/**/*.css",
                         "/**/*.js",
@@ -129,8 +131,23 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().authenticationEntryPoint(restAuthenticationEntryPoint)
                 .and()
                 .authorizeRequests()
-                //任何人都能访问这个请求
+                // 验证码接口公开
                 .antMatchers("/captcha").permitAll()
+                // 登录页面公开
+                .antMatchers("/login.html").permitAll()
+                // Vue前端路径全部公开（由前端路由控制权限）
+                .antMatchers(
+                    "/",
+                    "/resources",
+                    "/articles",
+                    "/upload",
+                    "/my-resources",
+                    "/my-favorites",
+                    "/my-downloads",
+                    "/my-articles"
+                ).permitAll()
+                // 管理后台路径需要认证
+                .antMatchers("/admin").authenticated()
                 // 公开 API（无需认证）
                 .antMatchers(
                     "/login",
@@ -149,7 +166,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                //登录页面 不设限访问
+                //登录页面 不设限访问 - 未登录访问/admin时重定向到这里
                 .loginPage("/login.html")
                 //拦截的请求
                 .loginProcessingUrl("/login")

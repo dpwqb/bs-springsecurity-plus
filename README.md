@@ -1,6 +1,6 @@
 <div align="center">
   <h1 align="center">
-    bs-springsecurity-plus
+    学享汇资源共享平台
   </h1>
   <p align="center">
     <a href="https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html">
@@ -13,7 +13,7 @@
 </div>
 
 ### 前言
-基于SpringBoot+SpringSecurity的RBAC权限管理系统。
+基于SpringBoot+Vue开发的资源共享平台。
 ### 系统功能
 - 用户管理：提供用户的相关配置
 - 角色管理：对权限与菜单进行分配
@@ -48,10 +48,9 @@
 - **后台登录：** 用户：admin和test，密码：123456。其余的，若用户名是test1(2)，则密码是六个1(2)，依次类推
 - **Druid：** 用户：admin，密码：admin
 
-### 将来要做的事
-- [x] 部门管理
-- [x] 岗位管理
-- [x] 字典管理
-- [ ] 定时任务
-- [ ] 在线用户
-- [ ] 服务监控
+### 项目部署
+- 先进入xue-xiang-hui目录
+- 执行命令：`npm install`安装依赖
+- 执行命令：`npm run build`编译前端至`src/main/resources/static`目录
+- 进入项目根目录，执行命令：`mvn clean package -DskipTests`编译后端
+- 运行项目，执行命令：`java -jar target/xue-xiang-hui-0.0.1-SNAPSHOT.jar`
