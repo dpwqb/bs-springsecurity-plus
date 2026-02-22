@@ -47,4 +47,10 @@ public interface LogDao {
      */
     @Delete("delete from my_log where type = #{type}")
     void delAllByInfo(String type);
+
+    /**
+     * 统计今日访问量
+     * @return 今日访问次数
+     */
+    Integer countTodayVisits();
 }

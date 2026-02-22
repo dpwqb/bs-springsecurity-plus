@@ -123,4 +123,14 @@ public class DownloadServiceImpl implements DownloadService {
         log.info("清空所有下载记录");
         return downloadDao.deleteAll();
     }
+
+    @Override
+    public List<Map<String, Object>> getDownloadTrendLast6Months() {
+        return downloadDao.getDownloadTrendLast6Months();
+    }
+
+    @Override
+    public Integer countTodayDownloads() {
+        return downloadDao.countTodayDownloads();
+    }
 }

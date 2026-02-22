@@ -100,4 +100,9 @@ public class MyLogServiceImpl implements MyLogService {
     public void delAllByInfo() {
         logDao.delAllByInfo("INFO");
     }
+
+    @Override
+    public Integer countTodayVisits() {
+        return logDao.countTodayVisits();
+    }
 }

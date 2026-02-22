@@ -50,4 +50,10 @@ public interface MyLogService {
      * 删除所有INFO日志
      */
     void delAllByInfo();
+
+    /**
+     * 统计今日访问量
+     * @return 今日访问次数
+     */
+    Integer countTodayVisits();
 }

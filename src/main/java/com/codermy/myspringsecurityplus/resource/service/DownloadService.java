@@ -66,4 +66,16 @@ public interface DownloadService {
      * @return 影响行数
      */
     int deleteAllDownloadRecords();
+
+    /**
+     * 获取最近6个月的下载趋势数据
+     * @return 月份和下载次数的列表
+     */
+    List<Map<String, Object>> getDownloadTrendLast6Months();
+
+    /**
+     * 统计今日下载次数
+     * @return 今日下载次数
+     */
+    Integer countTodayDownloads();
 }

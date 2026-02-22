@@ -90,4 +90,10 @@ public interface DownloadDao {
      * @return 影响行数
      */
     int deleteAll();
+
+    /**
+     * 获取最近6个月的下载趋势数据
+     * @return 月份和下载次数的Map列表
+     */
+    List<Map<String, Object>> getDownloadTrendLast6Months();
 }

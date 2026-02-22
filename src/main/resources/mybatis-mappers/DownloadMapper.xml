@@ -103,4 +103,15 @@
         DELETE FROM download_record
     </delete>
 
+    <!-- 获取最近6个月的下载趋势数据 -->
+    <select id="getDownloadTrendLast6Months" resultType="java.util.HashMap">
+        SELECT
+            DATE_FORMAT(download_time, '%Y-%m') as month,
+            COUNT(*) as downloadCount
+        FROM download_record
+        WHERE download_time >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+        GROUP BY DATE_FORMAT(download_time, '%Y-%m')
+        ORDER BY month ASC
+    </select>
+
 </mapper>
