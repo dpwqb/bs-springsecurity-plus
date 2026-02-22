@@ -151,6 +151,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 公开 API（无需认证）
                 .antMatchers(
                     "/login",
+                    "/api/auth/register",
                     "/api/resource",
                     "/api/resource/*",
                     "/api/article/**",

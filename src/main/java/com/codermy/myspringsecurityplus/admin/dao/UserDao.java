@@ -48,6 +48,14 @@ public interface UserDao {
      * @return
      */
     MyUser checkUsernameUnique(String userName);
+
+    /**
+     * 通过邮箱返回用户
+     * @param email 邮箱
+     * @return 用户信息
+     */
+    @Select("select u.user_id from my_user u where u.email = #{email}")
+    MyUser checkEmailUnique(String email);
     /**
      * 更新用户
      * @param myUser
