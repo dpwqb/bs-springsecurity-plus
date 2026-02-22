@@ -196,9 +196,9 @@ const formatTime = (time) => {
 // 监听选中文本变化，自动添加到输入框
 watch(
   [() => props.selectedText, () => props.forceUpdate],
-  ([newText]) => {
-    // 当有选中文本且文本真正变化或强制更新时
-    if (newText && (newText !== lastSelectedText.value || props.forceUpdate)) {
+  ([newText], [oldText]) => {
+    // 当有选中文本且（文本真正变化 或 强制更新 或 初始加载）
+    if (newText && (newText !== lastSelectedText.value || props.forceUpdate || oldText?.[0] === undefined)) {
       lastSelectedText.value = newText
 
       // 自动生成友好的提示问题
@@ -208,7 +208,8 @@ watch(
 
       question.value = `请帮我解读这段内容：\n${truncatedText}`
     }
-  }
+  },
+  { immediate: true } // 组件创建时立即执行watch
 )
 </script>
 

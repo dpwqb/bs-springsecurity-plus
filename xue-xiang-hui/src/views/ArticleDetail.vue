@@ -85,7 +85,7 @@
       <div
         v-if="selectedText"
         class="ai-float-button"
-        @click="openAiChat"
+        @click.stop="openAiChat"
       >
         <el-icon :size="24"><ChatDotRound /></el-icon>
         <span>AI 解读</span>
@@ -236,10 +236,13 @@ const handleTextSelection = () => {
 }
 
 // 打开AI对话
-const openAiChat = () => {
-  // 切换强制更新标志，确保输入框能正确填充选中文本
-  aiForceUpdate.value = !aiForceUpdate.value
+const openAiChat = async () => {
+  // 先打开抽屉
   aiDrawerVisible.value = true
+  // 等待组件挂载
+  await nextTick()
+  // 再切换强制更新标志，确保输入框能正确填充选中文本
+  aiForceUpdate.value = !aiForceUpdate.value
 }
 
 // 格式化日期
@@ -257,7 +260,9 @@ onMounted(() => {
   document.addEventListener('click', (e) => {
     // 点击文章内容区域外部时，清除选中文本
     const articleContent = document.querySelector('.article-content')
-    if (articleContent && !articleContent.contains(e.target)) {
+    const aiButton = document.querySelector('.ai-float-button')
+    if (articleContent && !articleContent.contains(e.target) &&
+        (!aiButton || !aiButton.contains(e.target))) {
       selectedText.value = ''
     }
   })
