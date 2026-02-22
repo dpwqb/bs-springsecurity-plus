@@ -80,6 +80,18 @@ const routes = [
     component: () => import('@/views/Register.vue'),
     meta: { title: '注册', hideForAuth: true }
   },
+  {
+    path: '/terms',
+    name: 'Terms',
+    component: () => import('@/views/Terms.vue'),
+    meta: { title: '用户协议' }
+  },
+  {
+    path: '/privacy',
+    name: 'Privacy',
+    component: () => import('@/views/Privacy.vue'),
+    meta: { title: '隐私政策' }
+  },
   // 404页面
   {
     path: '/:pathMatch(.*)*',

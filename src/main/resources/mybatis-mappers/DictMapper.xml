@@ -7,7 +7,7 @@
 
     <sql id="selectDictVo">
         select di.dict_id,di.dict_name,di.description,di.sort,di.create_by,di.update_by,di.create_time,di.update_time
-        from my_dict di
+        from dict di
     </sql>
 
     <select id="getFuzzyDictByPage" resultType="com.codermy.myspringsecurityplus.admin.entity.MyDict">
@@ -27,7 +27,7 @@
 
 
     <update id="updateDict" parameterType="com.codermy.myspringsecurityplus.admin.entity.MyDict">
-        update my_dict
+        update dict
         <set>
             <if test="dictName != null and dictName != ''">dict_name = #{dictName},</if>
             <if test="description != null">description = #{description},</if>
@@ -39,7 +39,7 @@
 
 
     <delete id="deleteDictByIds" parameterType="integer">
-        delete from my_dict where dict_id in
+        delete from dict where dict_id in
         <foreach collection="array" item="dictId" open="(" separator="," close=")">
             #{dictId}
         </foreach>

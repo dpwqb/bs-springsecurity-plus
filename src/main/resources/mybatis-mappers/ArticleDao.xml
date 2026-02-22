@@ -35,7 +35,7 @@
 
     <!-- 减少点赞数 -->
     <update id="decreaseLikeCount">
-        UPDATE my_article
+        UPDATE article
         SET like_count = like_count - 1
         WHERE article_id = #{articleId}
           AND like_count > 0

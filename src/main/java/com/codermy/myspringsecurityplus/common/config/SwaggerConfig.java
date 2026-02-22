@@ -1,11 +1,14 @@
 package com.codermy.myspringsecurityplus.common.config;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Predicates;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.Data;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +28,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,6 +83,17 @@ public class SwaggerConfig {
                 .description("本文档描述了接口定义")
                 .version("1.0.8")
                 .build();
+    }
+
+    /**
+     * 抑制Swagger的Illegal DefaultValue警告
+     * 这是Springfox 2.9.2的已知问题，不影响功能
+     */
+    @PostConstruct
+    public void suppressSwaggerWarnings() {
+        // 设置AbstractSerializableParameter的日志级别为ERROR
+        Logger swaggerLogger = (Logger) LoggerFactory.getLogger("io.swagger.models.parameters.AbstractSerializableParameter");
+        swaggerLogger.setLevel(Level.ERROR);
     }
 
 }

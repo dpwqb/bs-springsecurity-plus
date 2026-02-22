@@ -60,7 +60,7 @@ public class DeptController {
     @PreAuthorize("hasAnyAuthority('dept:add')")
     public String addJob(Model model){
         model.addAttribute("myDept",new MyDept());
-        return "/system/dept/dept-add";
+        return "system/dept/dept-add";
     }
 
     @PostMapping

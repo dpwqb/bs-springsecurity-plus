@@ -80,7 +80,7 @@ public class RoleController {
     @PreAuthorize("hasAnyAuthority('role:add')")
     public String addRole(Model model) {
         model.addAttribute("MyRole",new MyRole());
-        return "/system/role/role-add";
+        return "system/role/role-add";
     }
 
     @PostMapping

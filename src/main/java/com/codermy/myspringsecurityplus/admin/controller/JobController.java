@@ -49,7 +49,7 @@ public class JobController {
     @PreAuthorize("hasAnyAuthority('job:add')")
     public String addJob(Model model){
         model.addAttribute("MyJob",new MyJob());
-        return "/system/job/job-add";
+        return "system/job/job-add";
     }
 
     @PostMapping

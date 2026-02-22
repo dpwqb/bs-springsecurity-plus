@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<title>仪表盘</title>
 	<header th:replace="header::html"></header>
-	<link rel="stylesheet" th:href="@{/admin/css/other/console1.css}" />
+	<link rel="stylesheet" th:href="@{/admin/css/other/console.css}" />
 </head>
 <body class="pear-container">
 <div>
@@ -107,7 +107,7 @@
 						</tr>
 						<tr>
 							<td>客户端链接</td>
-							<td><a th:href="@{http://{domain}:3000(domain=${#httpServletRequest.serverName})}">学享汇客户端</a></td>
+							<td><a th:href="@{http://{domain}:{port}(domain=${#httpServletRequest.serverName},port=${#httpServletRequest.serverPort})}">学享汇客户端</a></td>
 						</tr>
 						</tbody>
 					</table>

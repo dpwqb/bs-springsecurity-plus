@@ -16,7 +16,7 @@ public interface RoleUserDao {
      * @param id
      * @return
      */
-    @Select("select * from my_role_user ru where ru.role_id = #{roleId}")
+    @Select("select * from role_user ru where ru.role_id = #{roleId}")
     List<MyRoleUser> listAllRoleUserByRoleId(Integer id);
 
 
@@ -26,7 +26,7 @@ public interface RoleUserDao {
      * @param userId
      * @return
      */
-    @Select("select * from my_role_user ru where ru.user_id = #{userId}")
+    @Select("select * from role_user ru where ru.user_id = #{userId}")
     List<MyRoleUser> getMyRoleUserByUserId(Integer userId);
 
     /**
@@ -34,7 +34,7 @@ public interface RoleUserDao {
      * @param intValue
      * @return
      */
-    @Select("select * from my_role_user ru where ru.user_id = #{userId}")
+    @Select("select * from role_user ru where ru.user_id = #{userId}")
     MyRoleUser getRoleUserByUserId(int intValue);
 
     /**
@@ -49,7 +49,7 @@ public interface RoleUserDao {
      * @param myRoleUser
      * @return
      */
-    @Insert("insert into my_role_user(user_id, role_id) values(#{userId}, #{roleId})")
+    @Insert("insert into role_user(user_id, role_id) values(#{userId}, #{roleId})")
     int save(MyRoleUser myRoleUser);
 
     /**
@@ -57,6 +57,6 @@ public interface RoleUserDao {
      * @param id
      * @return
      */
-    @Delete("delete from my_role_user where user_id = #{userId}")
+    @Delete("delete from role_user where user_id = #{userId}")
     int deleteRoleUserByUserId(Integer id);
 }

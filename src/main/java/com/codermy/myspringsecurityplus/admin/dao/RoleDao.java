@@ -27,7 +27,7 @@ public interface RoleDao {
      * @param roleId
      * @return
      */
-    @Select("select r.role_id,r.role_name,r.data_scope,r.description,r.create_time,r.update_time from my_role r where r.role_id = #{roleId}")
+    @Select("select r.role_id,r.role_name,r.data_scope,r.description,r.create_time,r.update_time from role r where r.role_id = #{roleId}")
     MyRole getRoleById(Integer roleId);
 
     /**
@@ -49,13 +49,13 @@ public interface RoleDao {
      * @param roleId
      * @return
      */
-    @Delete("delete from my_role where role_id = #{roleId}")
+    @Delete("delete from role where role_id = #{roleId}")
     int delete(Integer roleId);
 
     /**
      * 返回所有角色
      * @return
      */
-    @Select("select r.role_id,r.role_name,r.description from my_role r")
+    @Select("select r.role_id,r.role_name,r.description from role r")
     List<MyRole> getAllRoles();
 }

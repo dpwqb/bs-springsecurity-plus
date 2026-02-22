@@ -5,7 +5,7 @@
 <mapper namespace="com.codermy.myspringsecurityplus.admin.dao.JobDao">
     <sql id="selectJobVo">
         select j.job_id,j.job_name,j.sort,j.status,j.create_time,j.update_time
-        from my_job j
+        from job j
     </sql>
 
     <select id="getFuzzyJob" resultType="com.codermy.myspringsecurityplus.admin.entity.MyJob">
@@ -29,7 +29,7 @@
 
 
     <delete id="deleteJobByIds" parameterType="integer">
-        delete from my_job where job_id in
+        delete from job where job_id in
         <foreach collection="array" item="jobId" open="(" separator="," close=")">
             #{jobId}
         </foreach>
@@ -37,9 +37,9 @@
 
     <select id="selectJobsByUserId" parameterType="integer" resultType="com.codermy.myspringsecurityplus.admin.entity.MyJob">
 		SELECT j.job_id, j.job_name,j.status
-		FROM my_user u
-			 LEFT JOIN my_user_job uj ON u.user_id = uj.user_id
-			 LEFT JOIN my_job j ON uj.job_id = j.job_id
+		FROM user u
+			 LEFT JOIN user_job uj ON u.user_id = uj.user_id
+			 LEFT JOIN job j ON uj.job_id = j.job_id
 		WHERE uj.user_id = #{userId}
 	</select>
 
@@ -48,7 +48,7 @@
     </select>
 
     <update id="updateJob" parameterType="com.codermy.myspringsecurityplus.admin.entity.MyJob">
-        update my_job
+        update job
         <set>
             <if test="jobName != null and jobName != ''">job_name = #{jobName},</if>
             <if test="status != null">status = #{status},</if>

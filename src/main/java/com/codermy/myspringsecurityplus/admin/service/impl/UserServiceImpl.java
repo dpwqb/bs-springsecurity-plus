@@ -137,6 +137,72 @@ public class UserServiceImpl implements UserService {
         return userDao.getUser(userName);
     }
 
+    @Override
+    public String checkEmailUnique(String email) {
+        MyUser info = userDao.checkEmailUnique(email);
+        if (ObjectUtil.isNotEmpty(info)) {
+            return UserConstants.USER_EMAIL_NOT_UNIQUE;
+        }
+        return UserConstants.USER_EMAIL_UNIQUE;
+    }
+
+    @Override
+    public Result<MyUser> registerUser(String username, String email, String password) {
+        // 参数校验
+        if (StrUtil.isEmpty(username) || StrUtil.isEmpty(email) || StrUtil.isEmpty(password)) {
+            return Result.error().message("用户名、邮箱、密码不能为空");
+        }
+
+        // 检查用户名长度
+        if (username.length() < 3 || username.length() > 20) {
+            return Result.error().message("用户名长度在3-20个字符");
+        }
+
+        // 检查密码长度
+        if (password.length() < 6 || password.length() > 20) {
+            return Result.error().message("密码长度在6-20个字符");
+        }
+
+        // 检查邮箱格式
+        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            return Result.error().message("邮箱格式不正确");
+        }
+
+        // 检查用户名是否已存在
+        MyUser checkUser = new MyUser();
+        checkUser.setUserName(username);
+        if (UserConstants.USER_NAME_NOT_UNIQUE.equals(checkUserNameUnique(checkUser))) {
+            return Result.error().message("用户名已存在");
+        }
+
+        // 检查邮箱是否已存在
+        if (UserConstants.USER_EMAIL_NOT_UNIQUE.equals(checkEmailUnique(email))) {
+            return Result.error().message("邮箱已存在");
+        }
+
+        // 创建用户
+        MyUser newUser = new MyUser();
+        newUser.setUserName(username);
+        newUser.setNickName(username); // 默认昵称为用户名
+        newUser.setEmail(email);
+        newUser.setPhone(null); // 注册时不收集手机号
+        newUser.setDeptId(null); // 注册用户不分配部门
+        newUser.setStatus(MyUser.Status.VALID); // 默认有效状态
+
+        // 密码加密
+        org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder passwordEncoder =
+            new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+        newUser.setPassword(passwordEncoder.encode(password));
+
+        // 保存用户（默认角色为普通用户 roleId=2）
+        Result<MyUser> result = save(newUser, 2);
+        if (result.getSuccess()) {
+            return Result.ok().message("注册成功");
+        } else {
+            return Result.error().message("注册失败");
+        }
+    }
+
 
     /**
      * 新增用户岗位信息

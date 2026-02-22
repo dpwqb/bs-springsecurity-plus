@@ -6,8 +6,8 @@
 
     <select id="getFuzzyUserByPage" resultType="com.codermy.myspringsecurityplus.admin.entity.MyUser">
         SELECT u.user_id,u.dept_id,u.user_name,u.password,u.nick_name,u.phone,u.email,u.status,u.create_time,u.update_time
-        FROM my_user u
-        left join my_dept d on u.dept_id = d.dept_id
+        FROM user u
+        left join dept d on u.dept_id = d.dept_id
         <where>
             <if test="nickName != null and nickName != ''">
                 AND u.nick_name like CONCAT('%', #{nickName}, '%')
@@ -16,7 +16,7 @@
                 AND u.user_name like CONCAT('%', #{userName}, '%')
             </if>
             <if test="deptId != null and deptId != ''">
-                AND (u.dept_id = #{deptId} OR u.dept_id IN ( SELECT e.dept_id FROM my_dept e WHERE FIND_IN_SET(#{deptId},ancestors) ))
+                AND (u.dept_id = #{deptId} OR u.dept_id IN ( SELECT e.dept_id FROM dept e WHERE FIND_IN_SET(#{deptId},ancestors) ))
             </if>
             <!-- 数据范围过滤 -->
             ${params.dataScope}
@@ -25,15 +25,15 @@
     </select>
 
     <select id="checkPhoneUnique" parameterType="String" resultType="com.codermy.myspringsecurityplus.admin.entity.MyUser">
-		select u.user_id,u.phone from my_user u where u.phone = #{phone} limit 1
+		select u.user_id,u.phone from user u where u.phone = #{phone} limit 1
 	</select>
 
     <select id="checkUsernameUnique" parameterType="String" resultType="com.codermy.myspringsecurityplus.admin.entity.MyUser">
-		select u.user_id,u.user_name from my_user u where u.user_name = #{userName} limit 1
+		select u.user_id,u.user_name from user u where u.user_name = #{userName} limit 1
 	</select>
 
     <update id="updateUser">
-        update my_user u
+        update user u
         <set>
             <if test="deptId != null">
                 dept_id = #{deptId},

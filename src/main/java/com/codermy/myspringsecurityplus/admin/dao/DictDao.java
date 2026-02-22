@@ -38,7 +38,7 @@ public interface DictDao {
      * @param myDict
      * @return
      */
-    @Insert("INSERT INTO my_dict(dict_id,dict_name,description, sort,create_time, update_time)values(#{dictId},#{dictName},#{description},#{sort}, now(), now())")
+    @Insert("INSERT INTO dict(dict_id,dict_name,description, sort,create_time, update_time)values(#{dictId},#{dictName},#{description},#{sort}, now(), now())")
     int insertDict(MyDict myDict);
 
     /**
@@ -46,7 +46,7 @@ public interface DictDao {
      * @param dictId
      * @return
      */
-    @Select("select di.dict_id,di.dict_name,di.description,di.sort,di.create_time,di.update_time from my_dict di  where di.dict_id = #{dictId}")
+    @Select("select di.dict_id,di.dict_name,di.description,di.sort,di.create_time,di.update_time from dict di  where di.dict_id = #{dictId}")
     MyDict getDictById(Integer dictId);
 
     /**

@@ -375,8 +375,17 @@ layui.define(['table', 'jquery', 'element', 'form', 'tab', 'menu', 'frame'],
 
 		function buildLinkHtml() {
 			var links = "";
+			var domain = window.location.hostname;
+			var port = window.location.port;
+			var baseUrl = "http://" + domain + (port ? ":" + port : "");
+			
 			$.each(getData().links, function(i, value) {
-				links += '<a class="more-menu-item" href="' + value.href + '" target="_blank">' +
+				var href = value.href;
+				// 如果是相对路径，则使用动态生成的baseUrl
+				if (href.startsWith("/")) {
+					href = baseUrl + href;
+				}
+				links += '<a class="more-menu-item" href="' + href + '" target="_blank">' +
 					'<i class="' + value.icon + '" style="font-size: 19px;"></i> ' + value.title +
 					'</a>'
 			})

@@ -25,7 +25,7 @@ public interface DictDetailDao {
      * @param myDictDetail
      * @return
      */
-    @Insert("INSERT INTO my_dict_detail(dict_id,label,value, sort,create_time, update_time)values(#{dictId},#{label},#{value},#{sort}, now(), now())")
+    @Insert("INSERT INTO dict_detail(dict_id,label,value, sort,create_time, update_time)values(#{dictId},#{label},#{value},#{sort}, now(), now())")
     int insertDictDetail(MyDictDetail myDictDetail);
 
     /**
@@ -33,7 +33,7 @@ public interface DictDetailDao {
      * @param id
      * @return
      */
-    @Select("select did.id,did.dict_id,did.label,did.value,did.sort,did.create_time,did.update_time from my_dict_detail did  where did.id = #{id}")
+    @Select("select did.id,did.dict_id,did.label,did.value,did.sort,did.create_time,did.update_time from dict_detail did  where did.id = #{id}")
     MyDictDetail getDictDetailById(Integer id);
 
     /**
@@ -58,6 +58,6 @@ public interface DictDetailDao {
      * @param id
      * @return
      */
-    @Delete("DELETE from my_dict_detail where dict_id = #{dictId}")
+    @Delete("DELETE from dict_detail where dict_id = #{dictId}")
     int deleteDictDetailByDictId(Integer dictId);
 }

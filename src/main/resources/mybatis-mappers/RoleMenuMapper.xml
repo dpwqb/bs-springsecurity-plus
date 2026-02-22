@@ -5,7 +5,7 @@
 <mapper namespace="com.codermy.myspringsecurityplus.admin.dao.RoleMenuDao">
 
     <insert id="save">
-        insert into my_role_menu(role_id, menu_id) values
+        insert into role_menu(role_id, menu_id) values
         <foreach collection="menuIds" item="menuId"
                  separator=",">
             (#{roleId}, #{menuId})
