@@ -1,0 +1,181 @@
+@startuml 系统总体E-R图
+hide circle
+skinparam linetype ortho
+skinparam shadowing false
+
+entity "用户(User)" {
+  *user_id : INT <<PK>>
+  --
+  dept_id : INT
+  user_name : VARCHAR(255)
+  password : VARCHAR(255)
+  nick_name : VARCHAR(255)
+  phone : VARCHAR(255)
+  email : VARCHAR(255)
+  status : TINYINT
+  create_time : DATETIME
+  update_time : DATETIME
+}
+
+entity "资源信息(ResourceInfo)" {
+  *resource_id : INT <<PK>>
+  --
+  title : VARCHAR(200)
+  description : TEXT
+  category_id : INT <<FK>>
+  file_name : VARCHAR(255)
+  file_path : VARCHAR(500)
+  file_size : BIGINT
+  file_type : VARCHAR(20)
+  cover_image : VARCHAR(500)
+  view_count : INT
+  download_count : INT
+  collect_count : INT
+  uploader_id : INT <<FK>>
+  uploader_name : VARCHAR(100)
+  status : TINYINT
+  create_time : DATETIME
+  update_time : DATETIME
+}
+
+entity "资源分类(ResourceCategory)" {
+  *category_id : INT <<PK>>
+  --
+  parent_id : INT <<FK>>
+  category_name : VARCHAR(100)
+  description : VARCHAR(500)
+  icon : VARCHAR(100)
+  sort_order : INT
+  status : TINYINT
+  create_time : DATETIME
+  update_time : DATETIME
+}
+
+entity "资源标签(ResourceTag)" {
+  *tag_id : INT <<PK>>
+  --
+  tag_name : VARCHAR(50)
+  use_count : INT
+  create_time : DATETIME
+}
+
+entity "文章(Article)" {
+  *article_id : INT <<PK>>
+  --
+  title : VARCHAR(200)
+  content : MEDIUMTEXT
+  summary : VARCHAR(500)
+  category_id : INT <<FK>>
+  cover_image : VARCHAR(500)
+  view_count : INT
+  like_count : INT
+  author_id : INT <<FK>>
+  author_name : VARCHAR(100)
+  status : TINYINT
+  create_time : DATETIME
+  update_time : DATETIME
+  publish_time : DATETIME
+}
+
+entity "文章分类(ArticleCategory)" {
+  *category_id : INT <<PK>>
+  --
+  parent_id : INT <<FK>>
+  category_name : VARCHAR(100)
+  description : VARCHAR(500)
+  icon : VARCHAR(100)
+  sort_order : INT
+  status : TINYINT
+  create_time : DATETIME
+  update_time : DATETIME
+}
+
+entity "AI对话历史(AiChatHistory)" {
+  *chat_id : INT <<PK>>
+  --
+  user_id : INT <<FK>>
+  session_id : VARCHAR(100)
+  question_text : TEXT
+  answer_text : TEXT
+  model_name : VARCHAR(50)
+  tokens_used : INT
+  create_time : DATETIME
+}
+
+entity "下载记录(DownloadRecord)" {
+  *record_id : INT <<PK>>
+  --
+  resource_id : INT <<FK>>
+  user_id : INT <<FK>>
+  user_name : VARCHAR(100)
+  resource_title : VARCHAR(200)
+  download_time : DATETIME
+  ip_address : VARCHAR(50)
+}
+
+entity "收藏记录(FavoriteRecord)" {
+  *favorite_id : INT <<PK>>
+  --
+  user_id : INT <<FK>>
+  resource_id : INT <<FK>>
+  create_time : DATETIME
+}
+
+entity "文章浏览记录(ArticleViewRecord)" {
+  *record_id : INT <<PK>>
+  --
+  article_id : INT <<FK>>
+  user_id : INT
+  view_time : DATETIME
+  ip_address : VARCHAR(50)
+}
+
+entity "资源标签关系(ResourceTagRelation)" {
+  *id : INT <<PK>>
+  --
+  resource_id : INT <<FK>>
+  tag_id : INT <<FK>>
+  create_time : DATETIME
+}
+
+entity "文章标签关系(ArticleTagRelation)" {
+  *id : INT <<PK>>
+  --
+  article_id : INT <<FK>>
+  tag_id : INT <<FK>>
+  create_time : DATETIME
+}
+
+entity "文章点赞记录(ArticleLikeRecord)" {
+  *record_id : INT <<PK>>
+  --
+  article_id : INT <<FK>>
+  user_id : INT <<FK>>
+  user_name : VARCHAR(100)
+  article_title : VARCHAR(200)
+  is_cancelled : TINYINT
+  create_time : DATETIME
+  cancel_time : DATETIME
+}
+
+' 关系定义
+User ||--o{ ResourceInfo : 上传\n(1:N)
+User ||--o{ Article : 发布\n(1:N)
+User ||--o{ DownloadRecord : 下载\n(1:N)
+User ||--o{ FavoriteRecord : 收藏\n(1:N)
+User ||--o{ ArticleViewRecord : 浏览\n(0:N,支持游客)
+User ||--o{ AiChatHistory : 对话\n(1:N)
+User ||--o{ ArticleLikeRecord : 点赞\n(1:N)
+
+ResourceInfo }|..|| ResourceCategory : 属于\n(N:1) : 属于\n(N:1)
+ResourceInfo }|..|| ResourceTagRelation : 关联\n(M:N) : 关联\n(M:N)
+ResourceTagRelation ||--|| ResourceTag : 标签
+
+Article }|..|| ArticleCategory : 属于\n(N:1) : 属于\n(N:1)
+Article }|..|| ArticleTagRelation : 关联\n(M:N) : 关联\n(M:N)
+ArticleTagRelation ||--|| ResourceTag : 标签
+
+ResourceCategory ||--o{ ResourceCategory : 父分类\n(自关联)
+ArticleCategory ||--o{ ArticleCategory : 父分类\n(自关联)
+
+@enduml
