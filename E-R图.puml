@@ -1,0 +1,200 @@
+@startuml
+' 样式设置
+skinparam entity {
+    BackgroundColor #f0f8ff
+    BorderColor #2c3e50
+    FontName 微软雅黑
+    FontSize 10
+}
+skinparam relationship {
+    FontName 微软雅黑
+    FontSize 9
+    LineColor #2c3e50
+}
+skinparam note {
+    BackgroundColor #fef9e7
+    BorderColor #f39c12
+}
+
+' 1. 用户实体
+entity "用户\nuser" as U {
+    <u>user_id</u> : int <<PK>>
+    dept_id : int
+    user_name : varchar(255)
+    password : varchar(255)
+    nick_name : varchar(255)
+    phone : varchar(11)
+    email : varchar(50)
+    status : tinyint
+    create_time : datetime
+    update_time : datetime
+}
+
+' 2. 资源信息实体
+entity "资源信息\nresource_info" as RI {
+    <u>resource_id</u> : int <<PK>>
+    title : varchar(200)
+    description : text
+    <u>category_id</u> : int <<FK>>
+    file_name : varchar(255)
+    file_path : varchar(500)
+    file_size : bigint
+    file_type : varchar(20)
+    cover_image : varchar(500)
+    view_count : int
+    download_count : int
+    collect_count : int
+    <u>uploader_id</u> : int <<FK>>
+    uploader_name : varchar(100)
+    status : tinyint
+    create_time : datetime
+    update_time : datetime
+}
+
+' 3. 资源分类实体
+entity "资源分类\nresource_category" as RC {
+    <u>category_id</u> : int <<PK>>
+    <u>parent_id</u> : int <<FK-自关联>>
+    category_name : varchar(100)
+    description : varchar(500)
+    icon : varchar(100)
+    sort_order : int(5)
+    status : tinyint
+    create_time : datetime
+    update_time : datetime
+}
+
+' 4. 资源标签实体
+entity "资源标签\nresource_tag" as RT {
+    <u>tag_id</u> : int <<PK>>
+    tag_name : varchar(50)
+    use_count : int
+    create_time : datetime
+}
+
+' 5. 文章实体
+entity "文章\narticle" as A {
+    <u>article_id</u> : int <<PK>>
+    title : varchar(200)
+    content : mediumtext
+    summary : varchar(500)
+    <u>category_id</u> : int <<FK>>
+    cover_image : varchar(500)
+    view_count : int
+    like_count : int
+    <u>author_id</u> : int <<FK>>
+    author_name : varchar(100)
+    status : tinyint
+    create_time : datetime
+    update_time : datetime
+    publish_time : datetime
+}
+
+' 6. 文章分类实体
+entity "文章分类\narticle_category" as AC {
+    <u>category_id</u> : int <<PK>>
+    <u>parent_id</u> : int <<FK-自关联>>
+    category_name : varchar(100)
+    description : varchar(500)
+    icon : varchar(100)
+    sort_order : int(5)
+    status : tinyint
+    create_time : datetime
+    update_time : datetime
+}
+
+' 7. AI对话历史实体
+entity "AI对话历史\nai_chat_history" as ACH {
+    <u>chat_id</u> : int <<PK>>
+    <u>user_id</u> : int <<FK>>
+    session_id : varchar(100)
+    question_text : text
+    answer_text : text
+    model_name : varchar(50)
+    tokens_used : int
+    create_time : datetime
+}
+
+' 8. 下载记录实体
+entity "下载记录\ndownload_record" as DR {
+    <u>record_id</u> : int <<PK>>
+    <u>resource_id</u> : int <<FK>>
+    <u>user_id</u> : int <<FK>>
+    user_name : varchar(100)
+    resource_title : varchar(200)
+    download_time : datetime
+    ip_address : varchar(50)
+}
+
+' 9. 收藏记录实体
+entity "收藏记录\nfavorite_record" as FR {
+    <u>favorite_id</u> : int <<PK>>
+    <u>user_id</u> : int <<FK>>
+    <u>resource_id</u> : int <<FK>>
+    create_time : datetime
+}
+
+' 10. 文章点赞记录实体
+entity "文章点赞记录\narticle_like_record" as ALR {
+    <u>record_id</u> : int <<PK>>
+    <u>article_id</u> : int <<FK>>
+    <u>user_id</u> : int <<FK>>
+    user_name : varchar(100)
+    article_title : varchar(200)
+    is_cancelled : tinyint
+    create_time : datetime
+    cancel_time : datetime
+}
+
+' 11. 文章浏览记录实体
+entity "文章浏览记录\narticle_view_record" as AVR {
+    <u>record_id</u> : int <<PK>>
+    <u>article_id</u> : int <<FK>>
+    <u>user_id</u> : int <<FK>>
+    view_time : datetime
+    ip_address : varchar(50)
+}
+
+' 多对多中间表
+entity "资源标签关系\nresource_tag_relation" as RTR {
+    <u>id</u> : int <<PK>>
+    <u>resource_id</u> : int <<FK>>
+    <u>tag_id</u> : int <<FK>>
+    create_time : datetime
+}
+entity "文章标签关系\narticle_tag_relation" as ATR {
+    <u>id</u> : int <<PK>>
+    <u>article_id</u> : int <<FK>>
+    <u>tag_id</u> : int <<FK>>
+    create_time : datetime
+}
+
+' 关系定义：1对多(1--)、多对1(--*)、多对多(*--*)、自关联
+' 用户与其他实体的1:n关系
+U ||--o{ RI : 上传 | 1:n
+U ||--o{ A : 发布 | 1:n
+U ||--o{ ACH : 发起 | 1:n
+U ||--o{ DR : 产生 | 1:n
+U ||--o{ FR : 产生 | 1:n
+U ||--o{ ALR : 产生 | 1:n
+U ||--o{ AVR : 产生 | 1:n
+
+' 资源相关1:n/n:m关系
+RC ||--o{ RI : 包含 | 1:n
+RC ||--o{ RC : 包含子分类 | 1:n <<自关联>>
+RI ||--o{ DR : 被下载 | 1:n
+RI ||--o{ FR : 被收藏 | 1:n
+RI }|--|{ RT : 关联 | n:m }|--|{ RTR
+
+' 文章相关1:n/n:m关系
+AC ||--o{ A : 包含 | 1:n
+AC ||--o{ AC : 包含子分类 | 1:n <<自关联>>
+A ||--o{ ALR : 被点赞 | 1:n
+A ||--o{ AVR : 被浏览 | 1:n
+A }|--|{ RT : 关联 | n:m }|--|{ ATR
+
+note bottom of U
+  核心基础实体，所有用户行为记录均关联此实体
+  user_id为全局外键核心关联字段
+end note
+@enduml
