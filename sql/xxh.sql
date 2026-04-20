@@ -1,10 +1,3 @@
--- --------------------------------------------------------
--- 主机:                           localhost
--- 服务器版本:                        11.7.2-MariaDB - mariadb.org binary distribution
--- 服务器操作系统:                      Win64
--- HeidiSQL 版本:                  12.10.0.7000
--- --------------------------------------------------------
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET NAMES utf8 */;
 /*!50503 SET NAMES utf8mb4 */;
@@ -215,10 +208,10 @@ CREATE TABLE IF NOT EXISTS `article` (
 
 -- 正在导出表  xue-xiang-hui.article 的数据：~3 rows (大约)
 INSERT INTO `article` (`article_id`, `title`, `content`, `summary`, `category_id`, `cover_image`, `view_count`, `like_count`, `author_id`, `author_name`, `status`, `create_time`, `update_time`, `publish_time`) VALUES
-	(1, '第一篇文章的标题', '第一篇文章的内容', '本项目的开发设计方案', 2, NULL, 39, 22, 1, '管理员', 1, '2026-02-15 17:20:59', '2026-02-20 23:57:16', NULL),
-	(7, '测试文章发布', '<h1><u><em><strong>这里是文章的正文</strong></em></u></h1>', '用于测试文章封面及文章标签', 1, NULL, 12, 0, 1, '管理员', 1, '2026-02-19 13:37:30', '2026-02-21 21:20:53', NULL),
-	(8, '测试文章发布', '<h1>测试封面测试封面测试封面测试封面测试封面！</h1>', '用于测试文章封面及文章标签', 1, '/uploads/article/2026/02/18dd948b88d1427da69833c0655bfb98.jpg', 66, 1, 1, '管理员', 1, '2026-02-19 17:33:16', '2026-02-21 22:18:07', '2026-02-19 23:49:05'),
-	(11, '回归测试', '<h1>回归测试回归测试回归测试回归测试</h1><p><br></p><ul><li>回归测试回归测试</li><li>回归测试回归测试</li><li>回归测试回归测试</li><li>回归测试回归测试</li></ul>', '测试文章创建', 10, '/uploads/article/2026/02/62ea577a18db49dbbbf521b456eea07c.jpg', 1, 0, 1, '管理员', 1, '2026-02-21 22:57:57', '2026-02-21 22:57:58', NULL);
+	(1, '开学第一课', '<h1 style="text-align: center;">开学第一课</h1><p style="text-indent: 2em;">初秋的晨光透过教室的玻璃窗，落在崭新的课桌上。当上课铃清脆地响起，黑板上被粉笔郑重写下五个字：“开学第一课”。没有公式，没有课文，只有老师温和而坚定的目光。那一刻我忽然明白，这并非某门学科的起点，而是一场成长的序章。</p><p style="text-indent: 2em;">开学第一课，从不急于翻开教材。它更像一面镜子，照见我们过去一年的跋涉，也映出未来的轮廓。老师问：“你们为什么而学？”有人答为梦想，有人答为前程，也有人低头沉默。其实，答案不必急于给出。真正的学习，始于对世界的好奇，成于面对挫折的韧性。那些解不出的难题、背不完的篇章、考砸后的叹息，都是课堂之外的必修课。这堂课提醒我们：分数不是终点，而是丈量脚步的刻度；失败不是句号，而是重新出发的逗号。</p><p style="text-indent: 2em;">这堂课，也把目光从书桌引向更广阔的天地。窗外的梧桐正抽出新芽，而世界的变化从未停歇。人工智能正重塑知识的获取方式，全球性议题呼唤青年的理性与担当，多元文化要求我们以开放之心倾听异见。开学第一课告诉我们：读书，不只是为了走出舒适区，更是为了理解他者；求知，不只为独善其身，更要兼济天下。当我们在实验室里严谨记录，在志愿服务中递出援手，在公共讨论中坚守底线，知识才真正有了温度与重量。</p><p style="text-indent: 2em;">黑板上的粉笔字渐渐干涸，但心中的种子已悄然生根。开学第一课的魔力，不在于它传授了多少新知，而在于它唤醒了多少沉睡的可能。新学期不必豪言壮语，只需每天早到十分钟预习，遇到瓶颈时多问一句“为什么”，在他人需要时伸出一只手。把宏大愿景拆解为微小坚持，把这堂课的精神写进每一页笔记、每一次晨读、每一场考试。</p><p style="text-indent: 2em;">铃声再次响起，合上笔记本，走出教室。阳光正好，微风不燥。开学第一课早已结束，但它的影响才刚刚开始。人生没有真正的“最后一课”，却永远需要“第一课”的清醒与热望。愿我们带着这堂课的馈赠，在岁月的长卷上，写下不负时代、不负自己的答案。</p>', '本项目的开发设计方案', 2, NULL, 39, 22, 1, '管理员', 1, '2026-02-15 17:20:59', '2026-02-20 23:57:16', NULL),
+	(7, '在喧嚣中保持清醒', '<h1 style="text-align: center;">在喧嚣中保持清醒</h1><h1 style="text-align: right;">——给思想装上“过滤网”</h1><p style="text-indent: 2em;">算法编织的信息茧房、短视频里转瞬即逝的“健康秘方”、热搜榜单上非黑即白的立场对立……我们正身处一个前所未有的信息丰饶时代，却也前所未有地面临“认知过载”的困境。当碎片化观点如潮水般涌来，当情绪极易替代理性发声，我们比任何时候都更需要一种内在的定力——批判性思维。它并非一把用来挑刺的匕首，而是一张细密的过滤网，帮我们在喧嚣中打捞真知，在盲从前保持清醒。</p><p style="text-indent: 2em;">长久以来，批判性思维常被误读为“抬杠”或“全盘否定”。实则不然。真正的批判性思维，是对信息、观点与证据进行主动、理性、系统评估的认知过程。它不教人“该想什么”，而是教人“怎么想”。正如教育学者理查德·保罗所言，它是一种心智的纪律：敢于质疑隐含的前提，谨慎区分事实与观点，乐于在多元视角中校准自己的坐标。怀疑的终点从来不是虚无，而是构建更坚实的证据链。当我们学会在“专家说”“千万人转发”面前停顿三秒，追问一句“证据何在？样本几何？利益相关方是谁？”时，思维的锚点便已悄然落下。</p><p style="text-indent: 2em;">这种思维的价值，在现实场景中尤为锋利。面对“每天喝柠檬水可逆转糖尿病”的爆款视频，批判性思维会引导我们穿透情绪化标题，追溯原始文献、审视临床指南与个体差异；面对“哥伦布发现新大陆”的单一叙事，它会提醒我们拆解话语背后的立场，引入原住民史料，将“发现”还原为复杂的“接触与碰撞”；面对算法不断投喂的“同类信息”，它会主动打破信息茧房，强制订阅对立观点，用交叉验证抵御确认偏误。我们常无意识掉入逻辑的陷阱：用“诉诸权威”代替独立判断，用“滑坡谬误”制造无端恐慌，用“虚假两难”封堵讨论空间。而批判性思维，正是照见这些认知暗区的探照灯。</p><p style="text-indent: 2em;">然而，批判性思维并非天赋，而是一项可训练、可迭代的技艺。它始于觉察——记录那些让我们瞬间狂热或反感的观点，辨认情绪背后的触发词；成于工具——用逻辑图拆解论证链条，用证据矩阵权衡信息权重，在自我坚信的领域里主动寻找“反证”；终于输出——在公共讨论中坚守理性底线，在学术阅读中敢于提出异见，将宏大叙事拆解为具体追问。真正的思想开放，是允许自己的观点被更好的论证推翻。把每一次信息消费转化为一次微型思维实验，批判性思维便从书本概念，内化为呼吸般的认知习惯。</p><p style="text-indent: 2em;">信息洪流奔涌向前，技术迭代日新月异，但人类认知的底层逻辑从未改变：知识可以速成，判断力却需慢养。在教我们如何汲取的今天，更需教我们如何筛选。愿我们都能为思想装上这张名为“批判”的过滤网，不盲从、不轻信、不愤世，在纷繁世界中守住理性的微光。当喧嚣退去，留下的不是算法的回声，而是经过时间、逻辑与证据共同淬炼的真知。</p>', '给思想装上“过滤网”', 1, NULL, 12, 0, 1, '管理员', 1, '2026-02-19 13:37:30', '2026-02-21 21:20:53', NULL),
+	(8, '“过滤网”的缝隙', '<h1 style="text-align: center;">“过滤网”的缝隙</h1><h1 style="text-align: right;">——当批判性思维遭遇现实重力</h1><p style="text-indent: 2em;">前文《在喧嚣中保持清醒》以“过滤网”为喻，呼吁在信息洪流中植入批判性思维，立意清晰，逻辑自洽。然而，若以批判性思维的反身性（reflexivity）审视该文本身，便会发现其精妙的修辞背后，隐藏着一组值得警惕的预设：将认知困境简化为个体心智的“技术升级”，将理性与情绪对立，将“证据”与“逻辑”视为天然中立的尺度。当批判性思维被包装成一套可个人化下载的“认知插件”时，我们是否忽略了思想在现实重力场中的摩擦与损耗？</p><p style="text-indent: 2em;">文章的核心隐喻是“给思想装上过滤网”，这暗示信息是被动产出的“原材料”，而个体只需提升“筛分精度”即可。但这一模型忽略了当代信息生态的结构性权力。算法并非中立管道，而是以“注意力变现”为目标的商业引擎；平台经济通过即时反馈回路，系统性削弱用户的长程专注力。要求普通人在通勤间隙、工作疲惫之余，持续执行“查证文献-审视样本-交叉验证”的认知操作，无异于要求行人在暴雨中自备抽水泵。批判性思维若脱离对信息生产机制、教育公平性与认知资源分配的审视，便会滑向一种隐性的“认知精英主义”——它默认了人人皆有闲暇、训练与心智带宽去“保持清醒”，却遮蔽了结构性不平等对思考能力的无形剥夺。</p><p style="text-indent: 2em;">文中将“情绪化反应”“非黑即白”与“理性”“证据链”置于对立两端，隐含了“情感是理性的干扰项”这一传统启蒙假设。然而，认知科学与道德心理学早已指出：情感并非理性的敌人，而是价值判断的底层操作系统。没有共情与道德直觉，纯粹的逻辑推演可能滑向冷漠的功利计算；没有对“他者处境”的情感共鸣，批判性思维极易异化为“智力优越感”的展演。当我们在公共讨论中仅以“证据不足”“逻辑谬误”否定他人时，若缺失了倾听的意愿与对话的善意，批判便不再是通向真理的桥梁，而成了话语权的壁垒。真正的思想清醒，不是剔除情绪，而是学会与情绪共处，让理性为其导航，而非将其放逐。</p><p style="text-indent: 2em;">文章列举的“验证路径”与“逻辑谬误”清单，呈现了一种高度理想化的知识图景：只要方法正确，真相即可显现。但“证据”从来不是真空中的客观物，而是被权力、文化与历史所塑造的产物。谁有资格定义“可靠信源”？哪些群体的经验被排除在“同行评议”之外？当批判性思维过度依赖形式逻辑与技术理性时，可能无意中边缘化了情境性智慧、整体性思维与地方性知识。更需警惕的是，批判性思维若缺乏伦理锚点，极易蜕变为“为怀疑而怀疑”的虚无主义，或被用作解构一切共识的武器。在真相碎片化、共识脆弱的语境下，比“如何证伪”更紧迫的命题或许是：“我们为何而信？”以及“批判之后，如何重建？”</p><p style="text-indent: 2em;">因此，批判性思维不应止步于个人心智的“防身术”，而需升维为一场集体性的“认知生态治理”。它要求我们：在个体层面，接纳认知的有限性，将“我不知道”视为思考的起点而非缺陷；在制度层面，推动算法透明、媒体问责与公共教育中的思维训练普惠化；在文化层面，将批判与共情、怀疑与建设、逻辑与伦理编织为一张更具韧性的意义之网。思想从来不是在真空中过滤杂质，而是在泥泞中跋涉前行。当我们不再幻想一张完美无缺的“过滤网”，而是学会在重力中调整姿态、在缝隙中辨认微光时，批判性思维才真正完成了从“技术”到“智慧”的跃迁。清醒，不是隔绝喧嚣，而是带着对复杂性的敬畏，依然选择理性地站立。</p>', '当批判性思维遭遇现实重力', 1, '/uploads/article/2026/02/18dd948b88d1427da69833c0655bfb98.jpg', 66, 1, 1, '管理员', 1, '2026-02-19 17:33:16', '2026-02-21 22:18:07', '2026-02-19 23:49:05'),
+	(11, '批判的自反性陷阱', '<h1 style="text-align: center;">批判的自反性陷阱</h1><h1 style="text-align: right;">——当“清醒”成为另一种盲视</h1><p style="text-indent: 2em;">前文《“过滤网”的缝隙》以结构视角拆解了批判性思维的个体化迷思，指出其背后隐藏的认知精英主义、情感/理性二元对立以及证据的中立性幻觉，并呼吁将批判升维至“认知生态治理”与“伦理锚点”。这一反思已触及问题的肌理，但若以批判性思维的反身性（reflexivity）继续向下挖掘，便会发现：任何试图“修补”或“升维”批判的框架，本身仍在重复它所要警惕的逻辑。当我们用批判去批判批判时，极易滑入一场没有出口的认知套娃；而追求“更深刻的清醒”，反而可能成为遮蔽行动与责任的新型盲视。</p><p style="text-indent: 2em;">首先，元批判的无限倒退消解了思想落地的可能。前文指出“过滤网”隐喻忽略了结构性不平等，主张以制度透明与教育普惠替代个体心智训练。这一诊断固然准确，却默认了“只要我们看清结构，就能设计更公平的认知生态”。然而，结构本身并非静止的客体，而是由无数话语、实践与利益博弈动态编织的网络。要求算法透明、推动媒体问责、重塑教育范式，这些诉求本身就需要权力让渡与资源重组，而权力从来不会因“逻辑更严密”或“道德更自洽”就自动退场。将批判的终点指向“治理”与“重建”，无形中预设了一个能够超然于结构之外的“设计者视角”。可批判性思维若真要贯彻到底，就必须承认：我们皆是结构的产物，亦是结构的共谋；任何试图从外部“校准”系统的方案，都难免携带其自身的盲区与特权。</p><p style="text-indent: 2em;">其次，批判正日益沦为一种文化资本与话语表演。在学术圈、公共讨论乃至自媒体语境中，“指出逻辑谬误”“揭示权力叙事”“强调情境知识”已成为一套娴熟的修辞操演。前文对“认知精英主义”的警惕极为必要，却未充分意识到：当“批判”本身被制度化、术语化、圈子化时，它便从一种开放的思维方式，退化为划定边界的身份标识。谁能熟练调用“确认偏误”“信息茧房”“地方性知识”等概念，谁便掌握了话语的高地；而真正身处信息贫困、教育边缘或生存重压中的人群，往往连参与这场“清醒游戏”的入场券都未曾获得。批判若脱离对物质条件、时间分配与生存焦虑的体察，便极易沦为智力阶层的自我加冕。解构一切之后，留下的不是平等的对话空间，而是新的知识等级。</p><p style="text-indent: 2em;">更深层的困境在于：过度自反的批判，正在制造认知的瘫痪。前文呼吁接纳“我不知道”作为思考起点，警惕形式逻辑对多元智慧的边缘化，这本是极具洞见的认知谦逊。但当“所有证据皆被权力塑造”“所有逻辑皆含文化预设”“所有批判皆具自我指涉性”成为不容置疑的前提时，思想便容易陷入“知得越多，越不敢断言”的僵局。现实世界从不等待我们完成完美的认知校准：气候危机需要减排决策，公共政策需要资源分配，个体生命需要价值取舍。当批判性思维蜕变为“永远准备批判，却从不准备承诺”的悬置状态，它便从抵御盲从的盾牌，异化为逃避责任的避风港。没有临时性立场的批判，如同没有船锚的罗盘；它指向所有方向，却抵达不了任何地方。</p><p style="text-indent: 2em;">因此，批判性思维的出路，或许不在于寻找“更深刻”的框架，而在于接受其固有的不完整性，并将思想重新锚定于具身实践与风险承担。我们无需幻想一张无瑕的过滤网，也不必奢求一套能容纳所有视角的元理论；我们只需要在具体情境中做出“有风险的承诺”：承认自己的立场必带偏见，但仍选择为某一价值辩护；知道自己的证据必有限度，但仍愿意为其后果负责；理解他人的逻辑必有盲区，但仍尝试在差异中寻找可协作的底线。批判不是用来证明“我比你清醒”的武器，而是用来检验“我是否仍愿与世界发生真实关联”的试金石。</p><p style="text-indent: 2em;">思想的深度，从不体现在它能拆解多少幻觉，而在于它能否在拆解之后，依然敢于相信、敢于行动、敢于犯错。当批判性思维走出自反的镜像迷宫，放下对“绝对清醒”的执念，它才真正从一种认知技艺，回归为一种生命姿态：在不完美中前行，在不确定中抉择，在明知可能偏航时，依然保持对真相的敬畏与对同类的共情。清醒的终极形态，或许不是看透一切，而是带着已知的盲视，依然选择向前走去。</p>', '当“清醒”成为另一种盲视', 10, '/uploads/article/2026/02/62ea577a18db49dbbbf521b456eea07c.jpg', 1, 0, 1, '管理员', 1, '2026-02-21 22:57:57', '2026-02-21 22:57:58', NULL);
 
 -- 导出  表 xue-xiang-hui.dept 结构
 CREATE TABLE IF NOT EXISTS `dept` (
@@ -231,7 +224,7 @@ CREATE TABLE IF NOT EXISTS `dept` (
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`dept_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- 正在导出表  xue-xiang-hui.dept 的数据：~7 rows (大约)
 INSERT INTO `dept` (`dept_id`, `parent_id`, `ancestors`, `dept_name`, `sort`, `status`, `create_time`, `update_time`) VALUES
@@ -243,41 +236,6 @@ INSERT INTO `dept` (`dept_id`, `parent_id`, `ancestors`, `dept_name`, `sort`, `s
 	(6, 5, '0,5', 'VIP用户', 1, b'1', '2025-08-19 11:08:40', '2025-08-21 20:32:40'),
 	(7, 5, '0,5', '测试人员', 2, b'1', '2025-08-19 11:08:56', '2025-09-08 18:03:56');
 
--- 导出  表 xue-xiang-hui.dict 结构
-CREATE TABLE IF NOT EXISTS `dict` (
-  `dict_id` int(32) NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `dict_name` varchar(255) DEFAULT NULL COMMENT '字典名称',
-  `description` varchar(255) DEFAULT NULL COMMENT '字典描述',
-  `sort` int(32) DEFAULT NULL COMMENT '字典排序',
-  `create_by` varchar(255) DEFAULT NULL COMMENT '创建者',
-  `update_by` varchar(255) DEFAULT NULL COMMENT '更新者',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`dict_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=DYNAMIC;
-
--- 正在导出表  xue-xiang-hui.dict 的数据：~0 rows (大约)
-INSERT INTO `dict` (`dict_id`, `dict_name`, `description`, `sort`, `create_by`, `update_by`, `create_time`, `update_time`) VALUES
-	(1, '性别', '性别字典', 1, 'admin', 'admin', '2025-11-07 15:06:18', '2025-11-07 15:06:20');
-
--- 导出  表 xue-xiang-hui.dict_detail 结构
-CREATE TABLE IF NOT EXISTS `dict_detail` (
-  `id` int(32) NOT NULL AUTO_INCREMENT COMMENT 'id值',
-  `dict_id` int(32) DEFAULT NULL COMMENT '字典id',
-  `label` varchar(255) DEFAULT NULL COMMENT '字典标签',
-  `value` varchar(255) DEFAULT NULL COMMENT '字典值',
-  `sort` int(32) DEFAULT NULL COMMENT '字典详情排序',
-  `create_by` varchar(255) DEFAULT NULL COMMENT '创建者',
-  `update_by` varchar(255) DEFAULT NULL COMMENT '更新者',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=DYNAMIC;
-
--- 正在导出表  xue-xiang-hui.dict_detail 的数据：~2 rows (大约)
-INSERT INTO `dict_detail` (`id`, `dict_id`, `label`, `value`, `sort`, `create_by`, `update_by`, `create_time`, `update_time`) VALUES
-	(1, 1, '男', '1', 1, NULL, NULL, NULL, NULL),
-	(2, 1, '女', '2', 2, NULL, NULL, NULL, NULL);
 
 -- 导出  表 xue-xiang-hui.job 结构
 CREATE TABLE IF NOT EXISTS `job` (
@@ -288,7 +246,7 @@ CREATE TABLE IF NOT EXISTS `job` (
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`job_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- 正在导出表  xue-xiang-hui.job 的数据：~3 rows (大约)
 INSERT INTO `job` (`job_id`, `job_name`, `status`, `sort`, `create_time`, `update_time`) VALUES
@@ -310,7 +268,7 @@ CREATE TABLE IF NOT EXISTS `log` (
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `exception_detail` text DEFAULT NULL COMMENT '异常详细信息',
   PRIMARY KEY (`log_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- 导出  表 xue-xiang-hui.menu 结构
 CREATE TABLE IF NOT EXISTS `menu` (
@@ -325,7 +283,7 @@ CREATE TABLE IF NOT EXISTS `menu` (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`menu_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- 正在导出表  xue-xiang-hui.menu 的数据：~41 rows (大约)
 INSERT INTO `menu` (`menu_id`, `parent_id`, `menu_name`, `icon`, `url`, `permission`, `sort`, `type`, `create_time`, `update_time`) VALUES
@@ -354,22 +312,13 @@ INSERT INTO `menu` (`menu_id`, `parent_id`, `menu_name`, `icon`, `url`, `permiss
 	(78, 68, '部门新增', 'layui-icon ', '', 'dept:add', 8, 2, '2025-08-23 16:34:39', '2025-08-23 16:34:39'),
 	(79, 68, '部门修改', 'layui-icon ', '', 'dept:edit', 9, 2, '2025-08-23 16:35:18', '2025-08-23 16:35:18'),
 	(80, 68, '部门删除', 'layui-icon ', '', 'dept:del', 10, 2, '2025-08-23 16:35:41', '2025-08-23 16:35:41'),
-	(81, 7, '在线用户', 'layui-icon layui-icon layui-icon layui-icon-username', '/api/online/index', '', 7, 1, '2025-08-26 14:34:16', '2025-08-26 14:38:16'),
-	(86, 3, '字典管理', 'layui-icon layui-icon-form', '/api/dict/index', 'dict:list', 9, 1, '2025-11-07 14:44:36', '2025-11-07 14:45:33'),
-	(87, 86, '字典新增', 'layui-icon ', '', 'dict:add', 11, 2, '2025-11-07 14:46:21', '2025-11-07 14:46:21'),
-	(88, 86, '字典修改', 'layui-icon ', '', 'dict:edit', 12, 2, '2025-11-07 14:46:52', '2025-11-07 14:46:52'),
-	(89, 86, '字典删除', 'layui-icon ', '', 'dict:del', 13, 2, '2025-11-07 14:47:15', '2025-11-07 14:47:15'),
 	(90, 0, '学享汇管理', 'layui-icon layui-icon-file', '', '', 4, 0, '2026-02-08 22:54:50', '2026-02-08 22:54:50'),
 	(91, 90, '资源列表', 'layui-icon layui-icon-file', '/api/admin/resource/list', 'resource:list', 1, 1, '2026-02-08 22:54:50', '2026-02-14 19:46:35'),
 	(92, 90, '资源分类', 'layui-icon layui-icon-app', '/api/admin/resource/category', 'resource:category:list', 2, 1, '2026-02-08 22:54:50', '2026-02-14 19:46:35'),
 	(93, 90, '标签管理', 'layui-icon layui-icon-note', '/api/admin/resource/tag', 'resource:tag:list', 3, 1, '2026-02-08 22:54:50', '2026-02-14 19:46:35'),
 	(94, 90, '下载记录', 'layui-icon layui-icon-download-circle', '/api/admin/resource/download', 'resource:download:list', 4, 1, '2026-02-08 22:54:50', '2026-02-14 19:46:35'),
 	(95, 90, '文章列表', 'layui-icon layui-icon-read', '/api/admin/article/list', 'article:list', 5, 1, '2026-02-08 22:54:50', '2026-02-14 19:46:35'),
-	(96, 90, '文章分类', 'layui-icon layui-icon-app', '/api/admin/article/category', 'article:category:list', 6, 1, '2026-02-08 22:54:50', '2026-02-14 19:46:35'),
-	(97, 90, 'AI对话历史', 'layui-icon layui-icon-dialogue', '/admin/ai/history', 'ai:history:list', 7, 1, '2026-02-08 22:54:50', '2026-02-08 22:54:50'),
-	(98, 90, 'Token统计', 'layui-icon layui-icon-chart', '/admin/ai/tokens', 'ai:token:list', 8, 1, '2026-02-08 22:54:50', '2026-02-08 22:54:50'),
-	(99, 90, '数据概览', 'layui-icon layui-icon-chart-screen', '/admin/statistics/dashboard', 'statistics:view', 9, 1, '2026-02-08 22:54:50', '2026-02-08 22:54:50'),
-	(100, 90, '用户排行', 'layui-icon layui-icon-user', '/admin/statistics/user', 'statistics:user', 10, 1, '2026-02-08 22:54:50', '2026-02-08 22:54:50');
+	(96, 90, '文章分类', 'layui-icon layui-icon-app', '/api/admin/article/category', 'article:category:list', 6, 1, '2026-02-08 22:54:50', '2026-02-14 19:46:35');
 
 -- 导出  表 xue-xiang-hui.role 结构
 CREATE TABLE IF NOT EXISTS `role` (
@@ -380,7 +329,7 @@ CREATE TABLE IF NOT EXISTS `role` (
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `data_scope` char(1) DEFAULT NULL COMMENT '数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）',
   PRIMARY KEY (`role_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- 正在导出表  xue-xiang-hui.role 的数据：~2 rows (大约)
 INSERT INTO `role` (`role_id`, `role_name`, `description`, `create_time`, `update_time`, `data_scope`) VALUES
@@ -392,7 +341,7 @@ CREATE TABLE IF NOT EXISTS `role_dept` (
   `role_id` int(32) NOT NULL COMMENT '角色id',
   `dept_id` int(32) NOT NULL COMMENT '部门id',
   PRIMARY KEY (`role_id`,`dept_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- 正在导出表  xue-xiang-hui.role_dept 的数据：~3 rows (大约)
 INSERT INTO `role_dept` (`role_id`, `dept_id`) VALUES
@@ -405,7 +354,7 @@ CREATE TABLE IF NOT EXISTS `role_menu` (
   `role_id` int(32) NOT NULL COMMENT '角色id',
   `menu_id` int(32) NOT NULL COMMENT '菜单id',
   PRIMARY KEY (`role_id`,`menu_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- 正在导出表  xue-xiang-hui.role_menu 的数据：~55 rows (大约)
 INSERT INTO `role_menu` (`role_id`, `menu_id`) VALUES
@@ -434,11 +383,6 @@ INSERT INTO `role_menu` (`role_id`, `menu_id`) VALUES
 	(1, 78),
 	(1, 79),
 	(1, 80),
-	(1, 81),
-	(1, 86),
-	(1, 87),
-	(1, 88),
-	(1, 89),
 	(1, 90),
 	(1, 91),
 	(1, 92),
@@ -446,10 +390,6 @@ INSERT INTO `role_menu` (`role_id`, `menu_id`) VALUES
 	(1, 94),
 	(1, 95),
 	(1, 96),
-	(1, 97),
-	(1, 98),
-	(1, 99),
-	(1, 100),
 	(2, 1),
 	(2, 2),
 	(2, 3),
@@ -470,7 +410,7 @@ CREATE TABLE IF NOT EXISTS `role_user` (
   `user_id` int(32) NOT NULL COMMENT '用户id',
   `role_id` int(32) NOT NULL COMMENT '角色id',
   PRIMARY KEY (`user_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- 正在导出表  xue-xiang-hui.role_user 的数据：~8 rows (大约)
 INSERT INTO `role_user` (`user_id`, `role_id`) VALUES
@@ -496,7 +436,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`user_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- 正在导出表  xue-xiang-hui.user 的数据：~8 rows (大约)
 INSERT INTO `user` (`user_id`, `dept_id`, `user_name`, `password`, `nick_name`, `phone`, `email`, `status`, `create_time`, `update_time`) VALUES
@@ -514,7 +454,7 @@ CREATE TABLE IF NOT EXISTS `user_job` (
   `user_id` int(32) NOT NULL COMMENT '岗位id',
   `job_id` int(32) NOT NULL COMMENT '工作id',
   PRIMARY KEY (`user_id`,`job_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- 正在导出表  xue-xiang-hui.user_job 的数据：~9 rows (大约)
 INSERT INTO `user_job` (`user_id`, `job_id`) VALUES
@@ -585,11 +525,11 @@ CREATE TABLE IF NOT EXISTS `resource_info` (
 
 -- 正在导出表  xue-xiang-hui.resource_info 的数据：~4 rows (大约)
 INSERT INTO `resource_info` (`resource_id`, `title`, `description`, `category_id`, `file_name`, `file_path`, `file_size`, `file_type`, `cover_image`, `view_count`, `download_count`, `collect_count`, `uploader_id`, `uploader_name`, `status`, `create_time`, `update_time`) VALUES
-	(1, '学享汇资源共享平台', '这是一段资源描述内容', 3, '学享汇开发方案.txt', '2026/02/523adc7cd5ca451eabc9e681043df7dc.txt', 33414, 'txt', NULL, 34, 6, 5, 1, '管理员', 1, '2026-02-14 21:37:53', '2026-02-21 14:41:01'),
-	(2, '文件上传测试', '测试测试测试测试测试', 1, '文件上传测试.pptx', '2026/02/2aeed9a85a014301bf86a07405596fbd.pptx', 33174, 'pptx', NULL, 23, 12, 1, 1, '管理员', 1, '2026-02-19 15:14:47', '2026-02-21 17:58:30'),
-	(3, '文件上传测试', 'PDF上传测试，PDF上传测试。', 6, '文件上传测试.pdf', '2026/02/71288acfbae84ce8b1b673e823a29f30.pdf', 5188, 'pdf', NULL, 0, 0, 0, 1, '管理员', 0, '2026-02-19 15:21:17', '2026-02-20 17:11:46'),
-	(7, '新建 Microsoft Word 文档', '这是一个新建的 Microsoft Word 文档', 2, '新建 Microsoft Word 文档.docx', '2026/02/4f84ea88ccd841e0b40ceece1eb09d76.docx', 16098, 'docx', NULL, 10, 4, 0, 2, '测试用户', 1, '2026-02-20 21:59:32', '2026-02-21 21:20:51'),
-	(8, '文件上传测试', '资源上传の回归测试\r\n回归测试', 1, '文件上传测试.zip', '2026/02/a5962e0d530a44e2bc6b716a01b3f6e2.zip', 38015, 'zip', NULL, 1, 1, 0, 1, '管理员', 1, '2026-02-21 23:04:03', '2026-02-21 23:04:13');
+	(1, '学享汇资源共享平台', '学享汇资源共享平台的开发方案', 3, '学享汇开发方案.txt', '2026/02/523adc7cd5ca451eabc9e681043df7dc.txt', 33414, 'txt', NULL, 34, 6, 5, 1, '管理员', 1, '2026-02-14 21:37:53', '2026-02-21 14:41:01'),
+	(2, '常用开发工具介绍', '知识分享', 1, '编程工具介绍.pptx', '2026/02/2aeed9a85a014301bf86a07405596fbd.pptx', 33174, 'pptx', NULL, 23, 12, 1, 1, '管理员', 1, '2026-02-19 15:14:47', '2026-02-21 17:58:30'),
+	(3, '平台使用说明书', '使用说明', 6, '学享汇平台使用说明.pdf', '2026/02/71288acfbae84ce8b1b673e823a29f30.pdf', 5188, 'pdf', NULL, 0, 0, 0, 1, '管理员', 0, '2026-02-19 15:21:17', '2026-02-20 17:11:46'),
+	(7, '美文美句分享', '学而时习之，必有其用之', 2, '美言美句.docx', '2026/02/4f84ea88ccd841e0b40ceece1eb09d76.docx', 16098, 'docx', NULL, 10, 4, 0, 2, '测试用户', 1, '2026-02-20 21:59:32', '2026-02-21 21:20:51'),
+	(8, '编程工具', '编程工具的分享', 1, 'IDE.zip', '2026/02/a5962e0d530a44e2bc6b716a01b3f6e2.zip', 38015, 'zip', NULL, 1, 1, 0, 1, '管理员', 1, '2026-02-21 23:04:03', '2026-02-21 23:04:13');
 
 -- 导出  表 xue-xiang-hui.resource_tag 结构
 CREATE TABLE IF NOT EXISTS `resource_tag` (

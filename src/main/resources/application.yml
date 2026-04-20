@@ -67,6 +67,9 @@ mybatis:
 logging:
   file:
     path: src\main\resources\logger\ # logger文件夹需要提前生成
+  level:
+    # 抑制Swagger的Illegal DefaultValue警告（Springfox 2.9.2已知问题）
+    io.swagger.models.parameters.AbstractSerializableParameter: ERROR
 
 jwt:
   tokenHeader: Authorization #JWT存储的请求头
